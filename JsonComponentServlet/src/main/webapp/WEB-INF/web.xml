@@ -4,4 +4,14 @@
 
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
+  <servlet>
+  	<servlet-name>JsonConnectServlet</servlet-name>
+  	<display-name>JsonConnectServlet</display-name>
+  	<description></description>
+  	<servlet-class>hu.csega.toolshed.servlet.JsonConnectServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>JsonConnectServlet</servlet-name>
+  	<url-pattern>/connect</url-pattern>
+  </servlet-mapping>
 </web-app>
