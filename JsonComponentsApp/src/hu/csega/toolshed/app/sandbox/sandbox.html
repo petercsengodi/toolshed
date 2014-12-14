@@ -1,0 +1,15 @@
+<html>
+  <head>
+    <title>Page Translate Bitch</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="author" content="csega"/>
+    <meta name="description" content="A tool to do the tough stuff, too…"/>
+    <link rel="shortcut icon" href="favicon" type="image/x-icon" />
+    <script type="text/javascript" src="jquery"></script>
+  </head>
+  <body>
+  	<textarea id="jsonFormatBox" cols="80" rows="40"></textarea>
+  	<br />
+  	<input type="button" id="formatJson" value="Format" onClick="$('#jsonFormatBox').val($('#jsonFormatBox').val().replace(/,\s*/g, ',\x0A').replace(/{\s*/g, '{\x0A'));"/>
+  </body>
+</html>
