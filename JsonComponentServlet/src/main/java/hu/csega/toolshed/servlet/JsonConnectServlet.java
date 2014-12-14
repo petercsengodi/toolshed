@@ -51,7 +51,7 @@ public class JsonConnectServlet extends HttpServlet {
 				
 				response.setContentType("application/json; charset=utf-8");
 				PrintWriter writer = response.getWriter();
-				writer.println(object);
+				writer.println(object.build());
 				writer.close();
 			}
 		} catch(Throwable t) {
@@ -69,7 +69,7 @@ public class JsonConnectServlet extends HttpServlet {
 	
 				response.setContentType("application/json; charset=utf-8");
 				PrintWriter writer = response.getWriter();
-				writer.println(object);
+				writer.println(object.build());
 				writer.close();
 			} catch(Throwable t2) {
 				throw new ServletException(t2);
