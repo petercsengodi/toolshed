@@ -25,4 +25,9 @@ public class WrapperByteArrayBuilderOutputStream extends ByteArrayBuilderOutputS
 	public void write(byte[] b, int off, int len) throws IOException {
 		stream.write(b, off, len);
 	}
+	
+	@Override
+	public void dispose() {
+		stream = null;
+	}
 }

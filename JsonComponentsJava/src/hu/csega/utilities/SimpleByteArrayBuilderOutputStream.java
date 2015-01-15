@@ -41,8 +41,29 @@ public class SimpleByteArrayBuilderOutputStream extends ByteArrayBuilderOutputSt
 	
 	@Override
 	public void write(byte[] b, int off, int len) throws IOException {
-		// TODO: override this in order to optimize
-		super.write(b, off, len);
+		while(index + len > current.length) {
+			int delta = (current.length - index);
+			if(delta > 0) {
+				System.arraycopy(b, off, current, index, delta);
+				off += delta;
+				len -= delta;
+				length += delta;
+				index += delta;
+			}
+			
+			if(len > 0) {
+				list.add(current);
+				int newBlockSize = getNextBlockSize();
+				current = new byte[newBlockSize];
+				index = 0;
+			}
+		}
+		
+		if(len > 0) {
+			System.arraycopy(b, off, current, index, len);
+			index += len; 
+			length += len;
+		}
 	}
 	
 	@Override
@@ -64,5 +85,10 @@ public class SimpleByteArrayBuilderOutputStream extends ByteArrayBuilderOutputSt
 		}
 		
 		return ret;
+	}
+	
+	@Override
+	public void dispose() {
+		list = null;
 	}
 }
