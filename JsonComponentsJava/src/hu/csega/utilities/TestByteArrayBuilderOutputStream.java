@@ -20,7 +20,7 @@ public class TestByteArrayBuilderOutputStream {
 
 	@Test
 	public void testBlockBoundary() throws Exception {
-		int[] sizes = new int[] {900, 1000, 1000};
+		int[] sizes = new int[] {900, 1000, 1100};
 		for(int blockSize : sizes) {
 			SimpleByteArrayBuilderOutputStream stream = new SimpleByteArrayBuilderOutputStream(blockSize);
 			
