@@ -12,7 +12,6 @@ import javax.swing.JTextField;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.NativeJavaObject;
-import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.Scriptable;
 
 
@@ -70,40 +69,12 @@ public class JsonConsole extends JFrame implements KeyListener {
 					Object ret;
 					if(tokenizer.checkFirstWord(inputText)) {
 						String[] params = tokenizer.tokenize(inputText);
-						String cmd = "main." + params[0] + "(";
-						for(int i = 1; i < params.length; i++) {
-							if(i > 1) {
-								cmd += ", ";
-							}
-							cmd += '\"' + params[i] + "\"";
-						}
-						
-						cmd += ")";
-						
-						ret = cx.evaluateString(scope, cmd, "console", 1, null);
+						ret = runParams(params);
 					} else {
 						ret = cx.evaluateString(scope, inputText, "console", 1, null);
 					}
 					
-					
-					if(ret == null) {
-						output.setText("NULL");
-					} else {
-						
-						if(ret instanceof NativeJavaObject) {
-							NativeJavaObject object = (NativeJavaObject) ret;
-							ret = object.getDefaultValue(null);
-						}
-						
-						String retString = ret.toString();
-						if(retString == null) {
-							output.setText("NULL String");
-						} else if(retString.trim().length() == 0) {
-							output.setText("Empty String");
-						} else {
-							output.setText(retString);
-						}
-					}
+					output.setText(extractOutput(ret));
 				}
 			}
 			
@@ -113,6 +84,43 @@ public class JsonConsole extends JFrame implements KeyListener {
 		}
 	}
 	
+	private static String extractOutput(Object ret) {
+		if(ret == null) {
+			return "NULL";
+		} else {
+			
+			if(ret instanceof NativeJavaObject) {
+				NativeJavaObject object = (NativeJavaObject) ret;
+				ret = object.getDefaultValue(null);
+			}
+			
+			String retString = ret.toString();
+			if(retString == null) {
+				return "NULL String";
+			} else if(retString.trim().length() == 0) {
+				return "Empty String";
+			} else {
+				return retString;
+			}
+		}
+	}
+
+
+	private Object runParams(String[] params) {
+		String cmd = "main." + params[0] + "(";
+		for(int i = 1; i < params.length; i++) {
+			if(i > 1) {
+				cmd += ", ";
+			}
+			cmd += '\"' + params[i] + "\"";
+		}
+		
+		cmd += ")";
+		
+		return cx.evaluateString(scope, cmd, "console", 1, null);
+	}
+
+
 	public static String errorAndStackTrace(Exception e) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Exception occured: ");
@@ -163,7 +171,14 @@ public class JsonConsole extends JFrame implements KeyListener {
 
 	public static void main(String[] args) throws Exception {
 		JsonConsole console = new JsonConsole();
-		console.setVisible(true);
+		
+		if(args == null || args.length == 0) {
+			console.setVisible(true);
+		} else {
+			console.setUpScriptEngine();
+			System.out.println(extractOutput(console.runParams(args)));
+			System.exit(0);
+		}
 	}
 
 }
