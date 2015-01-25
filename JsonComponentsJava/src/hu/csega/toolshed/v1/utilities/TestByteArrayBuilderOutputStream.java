@@ -1,4 +1,4 @@
-package hu.csega.utilities;
+package hu.csega.toolshed.v1.utilities;
 
 import static org.junit.Assert.fail;
 

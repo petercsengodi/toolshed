@@ -1,6 +1,6 @@
-package hu.csega.toolshed.app.sandbox;
+package hu.csega.toolshed.v1.app.sandbox;
 
-import hu.csega.toolshed.app.Source;
+import hu.csega.toolshed.v1.app.Source;
 
 public class JQuery extends Source {
 

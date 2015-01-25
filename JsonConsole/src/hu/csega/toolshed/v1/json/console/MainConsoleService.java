@@ -1,4 +1,4 @@
-package hu.csega.json.console;
+package hu.csega.toolshed.v1.json.console;
 
 public class MainConsoleService {
 

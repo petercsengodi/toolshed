@@ -1,4 +1,4 @@
-package hu.csega.common;
+package hu.csega.toolshed.v1.common;
 
 import java.util.TreeSet;
 

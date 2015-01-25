@@ -1,6 +1,6 @@
-package hu.csega.json.common;
+package hu.csega.toolshed.v1.json.common;
 
-import hu.csega.common.ModuleInfo;
+import hu.csega.toolshed.v1.common.ModuleInfo;
 
 import java.io.StringReader;
 import java.io.StringWriter;

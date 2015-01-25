@@ -1,4 +1,4 @@
-package hu.csega.utilities;
+package hu.csega.toolshed.v1.utilities;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

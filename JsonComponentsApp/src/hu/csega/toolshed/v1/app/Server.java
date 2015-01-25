@@ -1,7 +1,7 @@
-package hu.csega.toolshed.app;
+package hu.csega.toolshed.v1.app;
 
-import hu.csega.toolshed.app.sandbox.JQuery;
-import hu.csega.toolshed.app.sandbox.Sandbox;
+import hu.csega.toolshed.v1.app.sandbox.JQuery;
+import hu.csega.toolshed.v1.app.sandbox.Sandbox;
 
 import java.awt.Desktop;
 import java.io.BufferedReader;

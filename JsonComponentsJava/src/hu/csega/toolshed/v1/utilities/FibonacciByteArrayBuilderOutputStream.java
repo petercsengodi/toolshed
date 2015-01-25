@@ -1,4 +1,4 @@
-package hu.csega.utilities;
+package hu.csega.toolshed.v1.utilities;
 
 public class FibonacciByteArrayBuilderOutputStream extends SimpleByteArrayBuilderOutputStream {
 

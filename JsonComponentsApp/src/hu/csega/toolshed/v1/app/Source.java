@@ -1,4 +1,4 @@
-package hu.csega.toolshed.app;
+package hu.csega.toolshed.v1.app;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
