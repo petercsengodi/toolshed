@@ -1,2 +1,9 @@
 JsonComponentsJava/bin
-JsonComponentsJava/bin/*
+JsonComponentsApp/bin
+BFGenerator/bin
+BFInterpreter/bin
+LoseR1/bin
+Moap/bin
+mofl/bin
+simple_parser/bin
+
