@@ -49,6 +49,7 @@ public class BFGenerator {
 				);
 	}
 	
+	@SuppressWarnings("unused")
 	private static BFCmd createProgram_001() {
 		return new BFProgram("csega", "BF gen test").write('H').write('e').write('l').write('l').write('o').write('!');
 	}

@@ -1,7 +1,5 @@
 package hu.csega.toolshed.v1.similarities;
 
-import java.util.Arrays;
-
 public class Converter {
 
 	private int length;

@@ -28,6 +28,7 @@ public class BFInterpreter {
 		System.out.println("\n-------------------------------------------------------\n\n");
 	}
 	
+	@SuppressWarnings("unused")
 	public static void play(String file) throws Exception {
 		BFTape tape = new BFTape();
 		if(VERBOSE_MODE) {
