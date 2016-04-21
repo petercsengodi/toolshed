@@ -1,62 +1,65 @@
-package hu.csega.toolshed.simple.parser.preprocessor;
+package hu.csega.toolshed.simple.parser;
 
 import hu.csega.toolshed.simple.parser.helper.ExpressionWithPositions;
 import hu.csega.toolshed.simple.parser.helper.UnprocessedChunkWithPositions;
 import hu.csega.toolshed.simple.parser.helper.UnprocessedText;
+import hu.csega.toolshed.simple.parser.preprocessor.DropIgnorableExpressions;
+import hu.csega.toolshed.simple.parser.preprocessor.IdentifyOperatorSequences;
+import hu.csega.toolshed.simple.parser.preprocessor.IdentifyStandAloneOperators;
+import hu.csega.toolshed.simple.parser.preprocessor.IdentifyStringsAndComments;
+import hu.csega.toolshed.simple.parser.preprocessor.IdentifyWhitespaceSequences;
+import hu.csega.toolshed.simple.parser.preprocessor.PreProcessorException;
+import hu.csega.toolshed.simple.parser.preprocessor.TransformUnprocessedExpressions;
+import hu.csega.toolshed.simple.parser.preprocessor.ValidateExpressions;
+import hu.csega.units.AbstractUnit;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
-public class ParserUtil {
+public class SimpleParserImpl extends AbstractUnit<SimpleParserImpl, SimpleParserState> implements SimpleParser {
 
-	public static UnprocessedText loadFile(File file) 
-			throws PreProcessorException, IOException {
-		if(!file.exists() || file.isDirectory()) {
-			throw new FileNotFoundException("File can't be opened");
-		}
+	public List<ExpressionWithPositions> parseText(UnprocessedText text) throws PreProcessorException {
+		naturalStoppingPoint(SimpleParserState.INIT);
+		
+		List<ExpressionWithPositions> chunks = Arrays.asList((ExpressionWithPositions) new UnprocessedChunkWithPositions(text));
 
-		InputStream stream = new FileInputStream(file);
-		UnprocessedText text = ConvertInputStreamIntoUnprocessedText.read(stream);
-		stream.close();
-		return text;
-	}
-	
-	public static UnprocessedText loadString(String text) {
-		UnprocessedText ret = ConvertInputStreamIntoUnprocessedText.read(text);
-		return ret;
-	}
-
-	public static List<ExpressionWithPositions> parseText(UnprocessedText text) 
-			throws PreProcessorException {
-		List<ExpressionWithPositions> chunks = Arrays.asList(
-				(ExpressionWithPositions) new UnprocessedChunkWithPositions(text));
-
+		naturalStoppingPoint(SimpleParserState.UNPROCESSED);
+		
 		IdentifyStringsAndComments identifyStringsAndComments = new IdentifyStringsAndComments();
 		chunks = identifyStringsAndComments.process(chunks, text);
 
+		naturalStoppingPoint(SimpleParserState.STRINGS_AND_COMMENTS_IDENTIFIED);
+		
 		IdentifyWhitespaceSequences identifyWhitespaceSequences = new IdentifyWhitespaceSequences();
 		chunks = identifyWhitespaceSequences.process(chunks, text);
 
+		naturalStoppingPoint(SimpleParserState.WHITESPACES_IDENTIFIED);
+		
 		IdentifyStandAloneOperators identifyStandAloneOperators = new IdentifyStandAloneOperators();
 		chunks = identifyStandAloneOperators.process(chunks, text);
 
+		naturalStoppingPoint(SimpleParserState.STANDALONE_OPERATORS_IDENTIFIED);
+		
 		IdentifyOperatorSequences identifyOperatorSequences = new IdentifyOperatorSequences();
 		chunks = identifyOperatorSequences.process(chunks, text);
 
+		naturalStoppingPoint(SimpleParserState.OPERATOR_SEQUENCES_IDENTIFIED);
+		
 		TransformUnprocessedExpressions transformUnprocessedExpressions = new TransformUnprocessedExpressions();
 		chunks = transformUnprocessedExpressions.process(chunks, text);
 
+		naturalStoppingPoint(SimpleParserState.UNPROCESSED_EXPRESSIONS_TRANSFORMED);
+		
 		DropIgnorableExpressions dropIgnorableExpressions = new DropIgnorableExpressions();
 		chunks = dropIgnorableExpressions.process(chunks, text);
 
+		naturalStoppingPoint(SimpleParserState.IGNORABLE_EXPRESSIONS_DROPPED);
+		
 		ValidateExpressions validateExpressions = new ValidateExpressions();
 		chunks = validateExpressions.process(chunks, text);
 
+		naturalStoppingPoint(SimpleParserState.VALIDATED);
+		
 		return chunks;
 	}
 	

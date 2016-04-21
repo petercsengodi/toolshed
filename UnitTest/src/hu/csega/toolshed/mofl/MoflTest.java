@@ -4,32 +4,28 @@ import hu.csega.toolshed.logging.Level;
 import hu.csega.toolshed.logging.Logger;
 import hu.csega.toolshed.logging.LoggerFactory;
 import hu.csega.toolshed.loser1oo.analyzer.Node;
-import hu.csega.toolshed.loser1oo.analyzer.TreeBuilder;
 import hu.csega.toolshed.loser1oo.analyzer.TreeBuilderFactory;
-import hu.csega.toolshed.loser1oo.formulas.FormulaBook;
-import hu.csega.toolshed.mofl.converters.SimpleParserConverter;
-import hu.csega.toolshed.mofl.formulas.FormulaFactory;
-import hu.csega.toolshed.simple.parser.helper.ExpressionWithPositions;
+import hu.csega.toolshed.simple.parser.SimpleParserUtil;
 import hu.csega.toolshed.simple.parser.helper.UnprocessedText;
-import hu.csega.toolshed.simple.parser.preprocessor.ParserUtil;
+import hu.csega.units.UnitStore;
 
-import java.util.List;
+import org.junit.Test;
 
-public class TestMofl {
+public class MoflTest {
 	
-	private static final Logger logger = LoggerFactory.getDefaultImplementation(TreeBuilderFactory.class);
-
+	private static Logger logger;
+	
 	public static final String TEST_STRING = "12+(-23) * 2 // valami comment";
 	
-	public static void main(String[] args) throws Exception {
+	@Test
+	public void test() throws Exception {
 		LoggerFactory.setDefaultLevel(Level.DEBUG);
-		UnprocessedText text = ParserUtil.loadString(TEST_STRING);
-		List<ExpressionWithPositions> parsed = ParserUtil.parseText(text);
-		SimpleParserConverter converter = new SimpleParserConverter(text);
-		List<Node> converted = converter.convertFromSimpleParserExpressions(parsed);
-		FormulaBook formulaBook = FormulaFactory.formulaBook;
-		TreeBuilder builder = TreeBuilderFactory.createBuilder(formulaBook);
-		Node rootNode = builder.build(converted);
+		logger = LoggerFactory.getDefaultImplementation(TreeBuilderFactory.class);
+		UnprocessedText text = SimpleParserUtil.loadString(TEST_STRING);
+		
+		MoflParser parser = UnitStore.createOrGetUnit(MoflParser.class);
+		Node rootNode = parser.parse(text);
+		
 		log(rootNode);
 	}
 
