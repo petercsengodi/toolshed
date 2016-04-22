@@ -1,0 +1,33 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- The HTML 4.01 Transitional DOCTYPE declaration-->
+<!-- above set at the top of the file will set     -->
+<!-- the browser's rendering engine into           -->
+<!-- "Quirks Mode". Replacing this declaration     -->
+<!-- with a "Standards Mode" doctype is supported, -->
+<!-- but may lead to some differences in layout.   -->
+
+<html>
+  <head>
+    <title>##title##</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="author" content="tool"/>
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link href="/css/index.css?stamp=##timestamp##" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="/js/index.js?stamp=##timestamp##"></script>
+    
+    <script type="text/javascript">
+        function runOnLoad() {
+            webComponents(##script##);
+        }
+    </script>
+  </head>
+  <body id="body" onload="runOnLoad();">
+    ##menu##
+    
+    <h1>##title##</h1>
+    
+    ##breadcrumbs##
+    
+  </body>
+</html>
