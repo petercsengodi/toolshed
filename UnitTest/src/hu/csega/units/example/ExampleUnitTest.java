@@ -13,7 +13,7 @@ public class ExampleUnitTest {
 
 	@Test
 	public void testRealComponents() {
-		ExampleUnit example = UnitStore.createOrGetUnit(null, ExampleUnit.class);
+		ExampleUnit example = UnitStore.instance(ExampleUnit.class);
 		ExampleUnitImpl impl = ((ExampleUnitImpl)example); 
 		
 		impl.registerStateListener(new UnitStateListener<ExampleUnitImpl, ExampleState>() {

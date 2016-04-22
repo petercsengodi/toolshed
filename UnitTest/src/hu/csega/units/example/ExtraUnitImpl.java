@@ -3,7 +3,7 @@ package hu.csega.units.example;
 import hu.csega.units.AbstractUnit;
 import hu.csega.units.Parent;
 
-public class ExtraUnitImpl extends AbstractUnit<ExtraUnitImpl> implements ExtraUnit {
+public class ExtraUnitImpl extends AbstractUnit implements ExtraUnit {
 	
 	@Parent
 	public void setParent(ExampleUnit parent) {

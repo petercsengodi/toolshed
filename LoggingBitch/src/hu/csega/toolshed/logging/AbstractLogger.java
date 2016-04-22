@@ -1,45 +1,47 @@
 package hu.csega.toolshed.logging;
 
+import java.util.function.Function;
+
 public abstract class AbstractLogger implements Logger {
 
 	private final Level level;
 	private final String className;
-	
+
 	protected AbstractLogger(String className, Level level) {
 		this.level = level;
 		this.className = className;
 	}
-	
+
 	protected abstract void print(String className, Level level, String message);
-	
+
 	@Override
-	public void trace(String message) {
+	public void trace(Object message) {
 		if(level.getSeverity() >= Level.TRACE.getSeverity())
-			print(className, Level.TRACE, message);
+			print(className, Level.TRACE, convert(message));
 	}
 
 	@Override
-	public void debug(String message) {
+	public void debug(Object message) {
 		if(level.getSeverity() >= Level.DEBUG.getSeverity())
-			print(className, Level.DEBUG, message);
+			print(className, Level.DEBUG, convert(message));
 	}
 
 	@Override
-	public void info(String message) {
+	public void info(Object message) {
 		if(level.getSeverity() >= Level.INFO.getSeverity())
-			print(className, Level.INFO, message);
+			print(className, Level.INFO, convert(message));
 	}
 
 	@Override
-	public void warning(String message) {
+	public void warning(Object message) {
 		if(level.getSeverity() >= Level.WARNING.getSeverity())
-			print(className, Level.WARNING, message);
+			print(className, Level.WARNING, convert(message));
 	}
 
 	@Override
-	public void error(String message) {
+	public void error(Object message) {
 		if(level.getSeverity() >= Level.ERROR.getSeverity())
-			print(className, Level.ERROR, message);
+			print(className, Level.ERROR, convert(message));
 	}
 
 	@Override
@@ -67,4 +69,11 @@ public abstract class AbstractLogger implements Logger {
 		return (level.getSeverity() >= Level.ERROR.getSeverity());
 	}
 
+	private static final String convert(Object object) {
+		return convert(object, (Object o) -> (o == null ? "null" : o.toString()));
+	}
+
+	private static final <T> T convert(Object object, Function<Object, T> method) {
+		return method.apply(object);
+	}
 }

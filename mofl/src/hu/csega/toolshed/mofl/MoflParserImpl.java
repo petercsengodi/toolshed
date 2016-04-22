@@ -14,7 +14,7 @@ import hu.csega.units.Unit;
 
 import java.util.List;
 
-public class MoflParserImpl extends AbstractUnit<MoflParserImpl> implements MoflParser {
+public class MoflParserImpl extends AbstractUnit implements MoflParser {
 
 	@Unit
 	public void setSimpleParser(SimpleParser simpleParser) {

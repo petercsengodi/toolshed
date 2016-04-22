@@ -3,7 +3,7 @@ package hu.csega.units;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractUnitWithState<UNIT, STATE extends Enum<?>> extends AbstractUnit<UNIT> {
+public abstract class AbstractUnitWithState<UNIT, STATE extends Enum<?>> extends AbstractUnit {
 
 	public void registerStateListener(UnitStateListener<UNIT, STATE> stateListener) {
 		if(listeners == null)
