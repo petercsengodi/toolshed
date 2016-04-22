@@ -2,29 +2,14 @@ package hu.csega.units;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.Parameter;
 
-public abstract class AbstractUnit<UNIT, STATE extends Enum<?>> {
-
-	public void registerStateListener(UnitStateListener<UNIT, STATE> stateListener) {
-		if(listeners == null)
-			listeners = new ArrayList<>();
-		listeners.add(stateListener);
-	}
+public abstract class AbstractUnit<UNIT> {
 	
 	protected AbstractUnit() {
 	}
 	
-	@SuppressWarnings("unchecked")
-	protected void naturalStoppingPoint(STATE state) {
-		if(listeners != null) {
-			for(UnitStateListener<UNIT, STATE> listener : listeners)
-				listener.onState((UNIT)this, state);
-		}
-	}
-	
-	void injectComponents() {
+	void injectComponents(Object parent) {
 		Method[] methods = this.getClass().getMethods();
 		for(Method method : methods) {
 			Class<?>[] parameterTypes = method.getParameterTypes();
@@ -32,12 +17,53 @@ public abstract class AbstractUnit<UNIT, STATE extends Enum<?>> {
 			if(length == 0)
 				continue;
 			
-			Unit annotation = method.getAnnotation(Unit.class);
-			if(annotation != null) {
+			Parent parentAnnotation = method.getAnnotation(Parent.class);
+			if(parentAnnotation != null) {
 				Object[] objects = new Object[length];
 				
 				for(int i = 0; i < length; i++)
-					objects[i] = UnitStore.createOrGetUnit(parameterTypes[i]);
+					objects[i] = parent;
+				
+				try {
+					method.invoke(this, objects);
+				} catch (InvocationTargetException | IllegalArgumentException | IllegalAccessException e) {
+					throw new RuntimeException(e);
+				}
+				
+				// !!!
+				continue;
+			}
+			
+			New newAnnotation = method.getAnnotation(New.class);
+			if(newAnnotation != null) {
+				Object[] objects = new Object[length];
+				
+				for(int i = 0; i < length; i++)
+					objects[i] = UnitStore.createNewObject(this, parameterTypes[i]);
+				
+				try {
+					method.invoke(this, objects);
+				} catch (InvocationTargetException | IllegalArgumentException | IllegalAccessException e) {
+					throw new RuntimeException(e);
+				}
+				
+				// !!!
+				continue;
+			}
+			
+			Unit unitAnnotation = method.getAnnotation(Unit.class);
+			if(unitAnnotation != null) {
+				Object[] objects = new Object[length];
+				Parameter[] parameters = method.getParameters();
+				
+				for(int i = 0; i < length; i++) {
+					if(parameters[i].getAnnotation(Parent.class) != null)
+						objects[i] = parent;
+					else if(parameters[i].getAnnotation(New.class) != null)
+						objects[i] = UnitStore.createNewObject(this, parameterTypes[i]);
+					else
+						objects[i] = UnitStore.createOrGetUnit(this, parameterTypes[i]);
+				}
 				
 				try {
 					method.invoke(this, objects);
@@ -47,6 +73,5 @@ public abstract class AbstractUnit<UNIT, STATE extends Enum<?>> {
 			}
 		}
 	}
-	
-	private List<UnitStateListener<UNIT, STATE>> listeners;
+
 }

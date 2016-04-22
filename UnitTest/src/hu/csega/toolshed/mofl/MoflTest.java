@@ -23,7 +23,7 @@ public class MoflTest {
 		logger = LoggerFactory.getDefaultImplementation(TreeBuilderFactory.class);
 		UnprocessedText text = SimpleParserUtil.loadString(TEST_STRING);
 		
-		MoflParser parser = UnitStore.createOrGetUnit(MoflParser.class);
+		MoflParser parser = UnitStore.createOrGetUnit(null, MoflParser.class);
 		Node rootNode = parser.parse(text);
 		
 		log(rootNode);

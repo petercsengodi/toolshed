@@ -1,7 +1,8 @@
 package hu.csega.units.example;
 
-import hu.csega.units.AbstractUnit;
+import hu.csega.units.DefaultImplementation;
 
-public class ExtraUnit extends AbstractUnit<ExtraUnit, ExtraState> {
+@DefaultImplementation(ExtraUnitImpl.class)
+public interface ExtraUnit {
 	
 }

@@ -11,12 +11,12 @@ import hu.csega.toolshed.simple.parser.preprocessor.IdentifyWhitespaceSequences;
 import hu.csega.toolshed.simple.parser.preprocessor.PreProcessorException;
 import hu.csega.toolshed.simple.parser.preprocessor.TransformUnprocessedExpressions;
 import hu.csega.toolshed.simple.parser.preprocessor.ValidateExpressions;
-import hu.csega.units.AbstractUnit;
+import hu.csega.units.AbstractUnitWithState;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class SimpleParserImpl extends AbstractUnit<SimpleParserImpl, SimpleParserState> implements SimpleParser {
+public class SimpleParserImpl extends AbstractUnitWithState<SimpleParserImpl, SimpleParserState> implements SimpleParser {
 
 	public List<ExpressionWithPositions> parseText(UnprocessedText text) throws PreProcessorException {
 		naturalStoppingPoint(SimpleParserState.INIT);

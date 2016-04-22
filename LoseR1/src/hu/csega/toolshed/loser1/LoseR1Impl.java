@@ -8,7 +8,7 @@ import hu.csega.toolshed.loser1oo.analyzer.TreeBuilderFactory;
 import hu.csega.toolshed.loser1oo.formulas.FormulaBook;
 import hu.csega.units.AbstractUnit;
 
-public class LoseR1Impl extends AbstractUnit<LoseR1Impl, LoseR1State> implements LoseR1 {
+public class LoseR1Impl extends AbstractUnit<LoseR1Impl> implements LoseR1 {
 
 	@Override
 	public Node buildTree(FormulaBook formulaBook, List<Node> converted) {
