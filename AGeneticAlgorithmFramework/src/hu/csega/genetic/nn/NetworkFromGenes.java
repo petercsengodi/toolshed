@@ -12,20 +12,20 @@ public class NetworkFromGenes {
 			throw new RuntimeException("Gene must be " + length() + " long!");
 		}
 
-		for(int i = 0; i < 10; i++) {
-			for(int j = 0; j < 10; j++) {
+		for(int i = 0; i < NODES; i++) {
+			for(int j = 0; j < NODES; j++) {
 				firstParameters[i][j] = byteToDouble(genes[counter++]);
 			}
 		}
 
-		for(int i = 0; i < 10; i++) {
-			for(int j = 0; j < 10; j++) {
+		for(int i = 0; i < NODES; i++) {
+			for(int j = 0; j < NODES; j++) {
 				secondParameters[i][j] = byteToDouble(genes[counter++]);
 			}
 		}
 
 		for(int i = 0; i < 1; i++) {
-			for(int j = 0; j < 10; j++) {
+			for(int j = 0; j < NODES; j++) {
 				thirdParameters[i][j] = byteToDouble(genes[counter++]);
 			}
 		}
@@ -36,20 +36,20 @@ public class NetworkFromGenes {
 
 		int counter = 0;
 
-		for(int i = 0; i < 10; i++) {
-			for(int j = 0; j < 10; j++) {
+		for(int i = 0; i < NODES; i++) {
+			for(int j = 0; j < NODES; j++) {
 				genes[counter++] = doubleToByte(firstParameters[i][j]);
 			}
 		}
 
-		for(int i = 0; i < 10; i++) {
-			for(int j = 0; j < 10; j++) {
+		for(int i = 0; i < NODES; i++) {
+			for(int j = 0; j < NODES; j++) {
 				genes[counter++] = doubleToByte(secondParameters[i][j]);
 			}
 		}
 
 		for(int i = 0; i < 1; i++) {
-			for(int j = 0; j < 10; j++) {
+			for(int j = 0; j < NODES; j++) {
 				genes[counter++] = doubleToByte(thirdParameters[i][j]);
 			}
 		}
@@ -70,22 +70,22 @@ public class NetworkFromGenes {
 		}
 
 		// fill first layer
-		for(int i = 0; i < 10; i++) {
-			for(int j = 0; j < 10; j++) {
+		for(int i = 0; i < NODES; i++) {
+			for(int j = 0; j < NODES; j++) {
 				firstLayer[i] += firstParameters[i][j] * input[j];
 			}
 		}
 
 		// fill second layer
-		for(int i = 0; i < 10; i++) {
-			for(int j = 0; j < 10; j++) {
+		for(int i = 0; i < NODES; i++) {
+			for(int j = 0; j < NODES; j++) {
 				secondLayer[i] += secondParameters[i][j] * firstLayer[j];
 			}
 		}
 
 		// third second layer
 		for(int i = 0; i < 1; i++) {
-			for(int j = 0; j < 10; j++) {
+			for(int j = 0; j < NODES; j++) {
 				thirdLayer[i] += thirdParameters[i][j] * secondLayer[j];
 			}
 		}
@@ -114,7 +114,5 @@ public class NetworkFromGenes {
 	private double[] secondLayer = new double[NODES];
 	private double[] thirdLayer = new double[1];
 
-
-
-	private static final int NODES = 10;
+	public static final int NODES = 10;
 }

@@ -53,11 +53,20 @@ public class NetworkTest {
 				.adamAndEve(adamAndEve)
 				.build();
 
-		for(int rounds = 0; rounds < 10000; rounds++) {
+		int ROUNDS = 10000;
+		int DIV = ROUNDS / 10;
+		System.out.print("[");
+
+		for(int rounds = 0; rounds < ROUNDS; rounds++) {
 			population.mutate(500);
 			population.crossOverSameLength(500);
-			population.keep(300);
+			population.keep(1000);
+
+			if((rounds + 1) % DIV == 0)
+				System.out.print(".");
 		}
+
+		System.out.println("]");
 
 		population.keep(1);
 
@@ -69,6 +78,6 @@ public class NetworkTest {
 		System.out.println("Duration: " + ((end - start) / 1000.0) + " sec.");
 	}
 
-	private static final double[] array = new double[10];
+	private static final double[] array = new double[NetworkFromGenes.NODES];
 	private static final NetworkFromGenes NETWORK = new NetworkFromGenes();
 }
