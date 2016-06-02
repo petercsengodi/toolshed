@@ -4,8 +4,9 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import hu.csega.genetic.framework.DistanceFromOptimum;
-import hu.csega.genetic.framework.Genom;
+import hu.csega.genetic.framework.Chromosome;
 import hu.csega.genetic.framework.Population;
+import hu.csega.genetic.framework.PopulationKey;
 
 public class GeneticTest {
 
@@ -19,10 +20,10 @@ public class GeneticTest {
 		PATTERN.put(4.0, 2.0);
 	}
 
-	public static final DistanceFromOptimum<Genom> DISTANCE = new DistanceFromOptimum<Genom>() {
+	public static final DistanceFromOptimum DISTANCE = new DistanceFromOptimum() {
 
 		@Override
-		public double calculate(Genom genom) {
+		public double calculate(Chromosome genom) {
 			byte[] genes = genom.getGenes();
 			double C0 = genes[0] / 10.0;
 			double C1 = genes[1] / 10.0;
@@ -47,7 +48,7 @@ public class GeneticTest {
 
 
 	public static void main(String[] args) throws Exception {
-		Genom adamAndEve = new Genom(5);
+		Chromosome adamAndEve = new Chromosome(5);
 		System.out.println("Initial value: " + DISTANCE.calculate(adamAndEve));
 
 		Population population = Population.builder(DISTANCE)
@@ -57,27 +58,27 @@ public class GeneticTest {
 		population.mutate(100);
 		population.keep(5);
 
-		for(Map.Entry<Double, Genom> genom : population) {
-			System.out.println("Mutated: " + genom.getKey() + " - " + genom);
+		for(Map.Entry<PopulationKey, Chromosome> chromosome : population) {
+			System.out.println("Mutated: " + chromosome);
 		}
 
-		population.crossOver(100);
+		population.crossOverSameLength(100);
 		population.keep(5);
 
-		for(Map.Entry<Double, Genom> genom : population) {
-			System.out.println("Crossover: " + genom.getKey() + " - " + genom);
+		for(Map.Entry<PopulationKey, Chromosome> chromosome : population) {
+			System.out.println("Crossover: " + chromosome);
 		}
 
-		for(int rounds = 0; rounds < 100000; rounds++) {
+		for(int rounds = 0; rounds < 10000; rounds++) {
 			population.mutate(500);
-			population.crossOver(500);
+			population.crossOverSameLength(500);
 			population.keep(1000);
 		}
 
 		population.keep(1);
 
-		for(Map.Entry<Double, Genom> genom : population) {
-			System.out.println("Final: " + genom.getKey() + " - " + genom);
+		for(Map.Entry<PopulationKey, Chromosome> chromosome : population) {
+			System.out.println("Final: " + chromosome);
 		}
 	}
 

@@ -7,14 +7,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-public class Population implements Iterable<Map.Entry<Double, Genom>> {
+public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>> {
 
 	public static class Builder {
 
-		public Builder adamAndEve(Genom genom) {
-			population.genoms = new TreeMap<>();
-			double dist = population.distance.calculate(genom);
-			population.genoms.put(dist, genom);
+		public Builder adamAndEve(Chromosome chromosome) {
+			population.chromosomes = new TreeMap<>();
+			double distance = population.strategy.calculate(chromosome);
+			population.chromosomes.put(new PopulationKey(distance), chromosome);
 			return this;
 		}
 
@@ -25,74 +25,97 @@ public class Population implements Iterable<Map.Entry<Double, Genom>> {
 		private Population population;
 	}
 
-	public static Builder builder(DistanceFromOptimum<Genom> distance) {
+	public static Builder builder(DistanceFromOptimum distance) {
 		Builder builder = new Builder();
 		builder.population = new Population();
-		builder.population.distance = distance;
+		builder.population.strategy = distance;
 		return builder;
 	}
 
 	public void mutate(int numberOfMutations) {
-		TreeMap<Double, Genom> result = new TreeMap<>();
-		result.putAll(genoms);
+		TreeMap<PopulationKey, Chromosome> result = new TreeMap<>();
+		result.putAll(chromosomes);
 
-		Iterator<Genom> it = genoms.values().iterator();
+		Iterator<Chromosome> it = chromosomes.values().iterator();
 		if(!it.hasNext())
 			throw new RuntimeException("No genoms to mutate!");
 
 		for(int i = 0; i < numberOfMutations; i++) {
 
 			if(!it.hasNext()) {
-				it = genoms.values().iterator();
+				it = chromosomes.values().iterator();
 			}
 
-			Genom genomToMutate = it.next();
-			Genom mutated = Genom.mutate(genomToMutate);
-			double dist = distance.calculate(mutated);
-			result.put(dist, mutated);
+			Chromosome genomToMutate = it.next();
+			Chromosome mutated = Chromosome.mutate(genomToMutate);
+			double distance = strategy.calculate(mutated);
+			result.put(new PopulationKey(distance), mutated);
 		}
 
-		genoms = result;
+		chromosomes = result;
 	}
 
-	public void crossOver(int numberOfCrossOvers) {
-		TreeMap<Double, Genom> result = new TreeMap<>();
-		result.putAll(genoms);
+	public void crossOverSameLength(int numberOfCrossOvers) {
+		TreeMap<PopulationKey, Chromosome> result = new TreeMap<>();
+		result.putAll(chromosomes);
 
-		List<Genom> list = new ArrayList<>(genoms.values());
+		List<Chromosome> list = new ArrayList<>(chromosomes.values());
 		int listSize = list.size();
-		Genom genom1, genom2, genomNew;
-		double dist;
+		Chromosome chromosome1, chromosome2;
+		PopulationChildren children;
+		double distance;
 
 		for(int i = 0; i < numberOfCrossOvers; i++) {
-			genom1 = list.get(Genom.RND.nextInt(listSize));
-			genom2 = list.get(Genom.RND.nextInt(listSize));
-			genomNew = Genom.crossOver(genom1, genom2);
-			dist = distance.calculate(genomNew);
-			result.put(dist, genomNew);
-			genomNew = Genom.crossOver(genom2, genom1);
-			dist = distance.calculate(genomNew);
-			result.put(dist, genomNew);
+			chromosome1 = list.get(Chromosome.RND.nextInt(listSize));
+			chromosome2 = list.get(Chromosome.RND.nextInt(listSize));
+			children = Chromosome.crossOverSameLength(chromosome1, chromosome2);
+			distance = strategy.calculate(children.chromosome1);
+			result.put(new PopulationKey(distance), children.chromosome1);
+			distance = strategy.calculate(children.chromosome2);
+			result.put(new PopulationKey(distance), children.chromosome2);
 		}
 
-		genoms = result;
+		chromosomes = result;
+	}
+
+	public void crossOverVariateLength(int numberOfCrossOvers) {
+		TreeMap<PopulationKey, Chromosome> result = new TreeMap<>();
+		result.putAll(chromosomes);
+
+		List<Chromosome> list = new ArrayList<>(chromosomes.values());
+		int listSize = list.size();
+		Chromosome chromosome1, chromosome2;
+		PopulationChildren children;
+		double distance;
+
+		for(int i = 0; i < numberOfCrossOvers; i++) {
+			chromosome1 = list.get(Chromosome.RND.nextInt(listSize));
+			chromosome2 = list.get(Chromosome.RND.nextInt(listSize));
+			children = Chromosome.crossOverVariateLength(chromosome1, chromosome2);
+			distance = strategy.calculate(children.chromosome1);
+			result.put(new PopulationKey(distance), children.chromosome1);
+			distance = strategy.calculate(children.chromosome2);
+			result.put(new PopulationKey(distance), children.chromosome2);
+		}
+
+		chromosomes = result;
 	}
 
 	public void keep(int numberOfGenomsToKeep) {
-		TreeMap<Double, Genom> result = new TreeMap<>();
-		Iterator<Map.Entry<Double, Genom>> it = genoms.entrySet().iterator();
+		TreeMap<PopulationKey, Chromosome> result = new TreeMap<>();
+		Iterator<Map.Entry<PopulationKey, Chromosome>> it = chromosomes.entrySet().iterator();
 		while(it.hasNext() && numberOfGenomsToKeep-- > 0) {
-			Entry<Double, Genom> e = it.next();
+			Entry<PopulationKey, Chromosome> e = it.next();
 			result.put(e.getKey(), e.getValue());
 		}
 
-		genoms = result;
+		chromosomes = result;
 	}
 
-	public Iterator<Map.Entry<Double, Genom>> iterator() {
-		return genoms.entrySet().iterator();
+	public Iterator<Map.Entry<PopulationKey, Chromosome>> iterator() {
+		return chromosomes.entrySet().iterator();
 	}
 
-	private TreeMap<Double, Genom> genoms;
-	private DistanceFromOptimum<Genom> distance;
+	private TreeMap<PopulationKey, Chromosome> chromosomes;
+	private DistanceFromOptimum strategy;
 }
