@@ -68,10 +68,10 @@ public class GeneticTest {
 			System.out.println("Crossover: " + genom.getKey() + " - " + genom);
 		}
 
-		for(int rounds = 0; rounds < 20000; rounds++) {
-			population.mutate(1000);
-			population.crossOver(1000);
-			population.keep(3000);
+		for(int rounds = 0; rounds < 100000; rounds++) {
+			population.mutate(500);
+			population.crossOver(500);
+			population.keep(1000);
 		}
 
 		population.keep(1);

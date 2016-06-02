@@ -70,6 +70,9 @@ public class Population implements Iterable<Map.Entry<Double, Genom>> {
 			genomNew = Genom.crossOver(genom1, genom2);
 			dist = distance.calculate(genomNew);
 			result.put(dist, genomNew);
+			genomNew = Genom.crossOver(genom2, genom1);
+			dist = distance.calculate(genomNew);
+			result.put(dist, genomNew);
 		}
 
 		genoms = result;
