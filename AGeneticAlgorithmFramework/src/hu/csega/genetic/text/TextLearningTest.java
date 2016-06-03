@@ -33,7 +33,8 @@ public class TextLearningTest {
 	private static final int ROUNDS = 100;
 	private static final int CROSS_OVER = 1000;
 	private static final int MUTATION = 1000;
-	private static final int KEEP = 150;
+	private static final int MAX_MUTATED_BYTES = 20;
+	private static final int KEEP = 1500;
 
 	private static final int PRINT_AFTER = 10;
 
@@ -61,7 +62,7 @@ public class TextLearningTest {
 
 	private static List<String> sliceTextWrapper(String text) {
 		List<String> result = new ArrayList<>();
-		int inputLength = NetworkForText.NUMBER_OF_INPUTS;
+		int inputLength = NetworkForTextV2.NUMBER_OF_INPUTS;
 		StringTokenizer tokenizer = new StringTokenizer(text);
 
 		StringBuilder builder = new StringBuilder();
@@ -120,7 +121,7 @@ public class TextLearningTest {
 		List<double[]> result = new ArrayList<>();
 
 		for(String s : input) {
-			result.add(stringToDouble(s, 0, NetworkForText.NUMBER_OF_INPUTS));
+			result.add(stringToDouble(s, 0, NetworkForTextV2.NUMBER_OF_INPUTS));
 		}
 
 		return result;
@@ -164,9 +165,11 @@ public class TextLearningTest {
 			NETWORK.fillFromChromosome(chromosome);
 
 			double sum = 0.0;
-			for (Map.Entry<double[], Boolean> e : TRAINING_DATA.entrySet())
-				if (e.getValue() != NETWORK.output(e.getKey()))
-					sum++;
+			for (Map.Entry<double[], Boolean> e : TRAINING_DATA.entrySet()) {
+				double y = (e.getValue() ? 1.0 : 0.0);
+				double res = NETWORK.output(e.getKey());
+				sum += Math.abs((y - res)*(y - res));
+			}
 
 			return sum;
 		}
@@ -188,7 +191,7 @@ public class TextLearningTest {
 
 			while(true) {
 				population.crossOverSameLength(CROSS_OVER);
-				population.mutate(MUTATION);
+				population.mutate(MUTATION, MAX_MUTATED_BYTES);
 				population.keep(KEEP);
 
 				counter++;
@@ -205,7 +208,7 @@ public class TextLearningTest {
 
 			savePopulation(population);
 
-		} while(CONTINUOUS && System.currentTimeMillis() > 0);
+		} while(System.currentTimeMillis() > 0 && CONTINUOUS);
 
 		population.keep(1);
 
@@ -227,7 +230,7 @@ public class TextLearningTest {
 		String testFile = readWholeFile(TEST_FILE);
 		List<String> slices = sliceTextWrapper(testFile);
 		for(String s : slices) {
-			int result = NETWORK.output(stringToDouble(s, 0, NetworkForText.NUMBER_OF_INPUTS))
+			int result = NETWORK.output(stringToDouble(s, 0, NetworkForTextV2.NUMBER_OF_INPUTS)) >= 0.5
 					? 1 : 0;
 
 			if(lastResult != result) {
@@ -280,11 +283,11 @@ public class TextLearningTest {
 		}
 
 		System.out.println("Creating new population.");
-		Chromosome adamAndEve = NETWORK.toChromosome();
+		Chromosome adamAndEve = new Chromosome(NetworkForTextV2.LENGTH_PARAMETERS);
 		return Population.builder(DISTANCE)
 				.adamAndEve(adamAndEve)
 				.build();
 	}
 
-	private static final NetworkForText NETWORK = new NetworkForText();
+	private static final NetworkForTextV2 NETWORK = new NetworkForTextV2();
 }

@@ -34,6 +34,10 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 	}
 
 	public void mutate(int numberOfMutations) {
+		mutate(numberOfMutations, 1);
+	}
+
+	public void mutate(int numberOfMutations, int maxMutatedBytes) {
 		TreeMap<PopulationKey, Chromosome> result = new TreeMap<>();
 		result.putAll(chromosomes);
 
@@ -48,7 +52,7 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 			}
 
 			Chromosome genomToMutate = it.next();
-			Chromosome mutated = Chromosome.mutate(genomToMutate);
+			Chromosome mutated = Chromosome.mutate(genomToMutate, maxMutatedBytes);
 			double distance = strategy.calculate(mutated);
 			result.put(new PopulationKey(distance), mutated);
 		}

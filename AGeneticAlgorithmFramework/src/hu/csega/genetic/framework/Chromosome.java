@@ -55,11 +55,21 @@ public class Chromosome implements Serializable {
 		return children;
 	}
 
-	public static Chromosome mutate(Chromosome chromosome) {
-		int length = chromosome.genes.length;
-		int modify = RND.nextInt(length);
+	public static Chromosome mutate(Chromosome chromosome, int maxMutatedBytes) {
+		int numberOfMutations;
+		if(maxMutatedBytes < 2)
+			numberOfMutations = 1;
+		else
+			numberOfMutations = RND.nextInt(maxMutatedBytes - 1) + 1;
+
 		Chromosome result = new Chromosome(chromosome.genes);
-		result.genes[modify] = ((byte)(RND.nextInt(256) - 128));
+
+		int length = chromosome.genes.length;
+		for(int i = 0; i < numberOfMutations; i++) {
+			int modify = RND.nextInt(length);
+			result.genes[modify] = ((byte)(RND.nextInt(256) - 128));
+		}
+
 		return result;
 	}
 
