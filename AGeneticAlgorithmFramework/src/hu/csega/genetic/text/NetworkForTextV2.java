@@ -29,10 +29,11 @@ public class NetworkForTextV2 {
 		int targetOffset = 0;
 		int parametersOffset = 0;
 		for(int i = 0; i < NODES_FIRST_LAYER; i++) {
+			int row = i * (NUMBER_OF_INPUTS + 1);
 			for(int j = 0; j < NUMBER_OF_INPUTS; j++) {
-				layers[targetOffset + i] += parameters[parametersOffset + i * NUMBER_OF_INPUTS + j] * input[j];
+				layers[targetOffset + i] += parameters[parametersOffset + row + j] * input[j];
 			}
-			layers[targetOffset + i] += parameters[parametersOffset + i * NUMBER_OF_INPUTS + NUMBER_OF_INPUTS];
+			layers[targetOffset + i] += parameters[parametersOffset + row + NUMBER_OF_INPUTS] /* x 1 */;
 		}
 
 		// fill second layer
@@ -40,10 +41,11 @@ public class NetworkForTextV2 {
 		targetOffset += NODES_FIRST_LAYER;
 		parametersOffset += NODES_FIRST_LAYER * (NUMBER_OF_INPUTS + 1);
 		for(int i = 0; i < NODES_SECOND_LAYER; i++) {
+			int row = i * (NODES_FIRST_LAYER + 1);
 			for(int j = 0; j < NODES_FIRST_LAYER; j++) {
-				layers[targetOffset + i] += parameters[parametersOffset + i * NODES_FIRST_LAYER + j] * input[j];
+				layers[targetOffset + i] += parameters[parametersOffset + row + j] * layers[sourceOffset + j];
 			}
-			layers[targetOffset + i] += parameters[parametersOffset + i * NODES_FIRST_LAYER + NODES_FIRST_LAYER];
+			layers[targetOffset + i] += parameters[parametersOffset + row + NODES_FIRST_LAYER] /* x 1 */;
 		}
 
 		// third second layer
@@ -51,10 +53,11 @@ public class NetworkForTextV2 {
 		targetOffset += NODES_SECOND_LAYER;
 		parametersOffset += NODES_SECOND_LAYER * (NODES_FIRST_LAYER + 1);
 		for(int i = 0; i < NODES_THIRD_LAYER; i++) {
+			int row = i * (NODES_SECOND_LAYER + 1);
 			for(int j = 0; j < NODES_SECOND_LAYER; j++) {
-				layers[targetOffset + i] += parameters[parametersOffset + i * NODES_SECOND_LAYER + j] * input[j];
+				layers[targetOffset + i] += parameters[parametersOffset + row + j] * layers[sourceOffset + j];
 			}
-			layers[targetOffset + i] += parameters[parametersOffset + i * NODES_SECOND_LAYER + NODES_SECOND_LAYER];
+			layers[targetOffset + i] += parameters[parametersOffset + row + NODES_SECOND_LAYER] /* x 1 */;
 		}
 
 		// return output
@@ -68,12 +71,12 @@ public class NetworkForTextV2 {
 	}
 
 	private static double sigmoid(double x) {
-		return 1.0 / (1.0 - Math.exp(x));
+		return 1.0 / (1.0 + Math.exp(-x));
 	}
 
 	public static final int NUMBER_OF_INPUTS = 20;
-	public static final int NODES_FIRST_LAYER = 20;
-	public static final int NODES_SECOND_LAYER = 10;
+	public static final int NODES_FIRST_LAYER = 10;
+	public static final int NODES_SECOND_LAYER = 5;
 	public static final int NODES_THIRD_LAYER = 1;
 
 	public static final int LENGTH_PARAMETERS = NODES_FIRST_LAYER * (NUMBER_OF_INPUTS + 1)

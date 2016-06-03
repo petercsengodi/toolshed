@@ -33,14 +33,14 @@ public class TextLearningTest {
 	private static final int ROUNDS = 100;
 	private static final int CROSS_OVER = 1000;
 	private static final int MUTATION = 1000;
-	private static final int MAX_MUTATED_BYTES = 20;
+	private static final int MAX_MUTATED_BYTES = 10;
 	private static final int KEEP = 1500;
 
 	private static final int PRINT_AFTER = 10;
 
 	private static final boolean SMALL_TRAINING = true;
-	private static final int SMALL_TRAINING_COUNT = 200;
-	private static final boolean CONTINUOUS = true;
+	private static final int SMALL_TRAINING_COUNT = 80;
+	private static final boolean CONTINUOUS = false;
 
 	private static final String readWholeFile(String fileName) {
 		try {
@@ -168,7 +168,7 @@ public class TextLearningTest {
 			for (Map.Entry<double[], Boolean> e : TRAINING_DATA.entrySet()) {
 				double y = (e.getValue() ? 1.0 : 0.0);
 				double res = NETWORK.output(e.getKey());
-				sum += Math.abs((y - res)*(y - res));
+				sum += Math.abs(y - res);
 			}
 
 			return sum;
@@ -198,8 +198,8 @@ public class TextLearningTest {
 
 				if(counter % PRINT_AFTER == 0) {
 					Map.Entry<PopulationKey, Chromosome> chromosome = population.iterator().next();
-					int value = (int)chromosome.getKey().getDistance();
-					System.out.println("After " + counter + " rounds – errors: " + value);
+					double value = chromosome.getKey().getDistance();
+					System.out.println("After " + counter + " rounds – error value: " + value);
 					if(counter >= ROUNDS) {
 						break;
 					}
