@@ -67,11 +67,19 @@ public class Chromosome implements Serializable {
 		int length = chromosome.genes.length;
 		for(int i = 0; i < numberOfMutations; i++) {
 			int modify = RND.nextInt(length);
-			byte newValue = ((byte)(RND.nextInt(256) - 128));
+			byte newValue = getRandomByte();;
 			result.genes[modify] = newValue;
 		}
 
 		return result;
+	}
+
+	public static byte getRandomByte() {
+		return ((byte)(RND.nextInt(256) - 128));
+	}
+
+	public static double getRandomDouble() {
+		return RND.nextDouble();
 	}
 
 	@Override
