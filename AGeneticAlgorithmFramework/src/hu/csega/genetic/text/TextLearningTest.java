@@ -30,15 +30,16 @@ public class TextLearningTest {
 
 	public static final String POPULATION_FILE = "/tmp/population.ser";
 
-	private static final int ROUNDS = 1000;
-	private static final int CROSS_OVER = 300;
-	private static final int MUTATION = 300;
-	private static final int KEEP = 300;
+	private static final int ROUNDS = 100;
+	private static final int CROSS_OVER = 1000;
+	private static final int MUTATION = 1000;
+	private static final int KEEP = 150;
 
-	private static final int PRINT_AFTER = 100;
+	private static final int PRINT_AFTER = 10;
 
 	private static final boolean SMALL_TRAINING = true;
-	private static final int SMALL_TRAINING_COUNT = 80;
+	private static final int SMALL_TRAINING_COUNT = 200;
+	private static final boolean CONTINUOUS = true;
 
 	private static final String readWholeFile(String fileName) {
 		try {
@@ -181,26 +182,30 @@ public class TextLearningTest {
 		System.out.println();
 		long start = System.currentTimeMillis();
 
-		int counter = 0;
+		do {
 
-		while(true) {
-			population.crossOverSameLength(CROSS_OVER);
-			population.mutate(MUTATION);
-			population.keep(KEEP);
+			int counter = 0;
 
-			counter++;
+			while(true) {
+				population.crossOverSameLength(CROSS_OVER);
+				population.mutate(MUTATION);
+				population.keep(KEEP);
 
-			if(counter % PRINT_AFTER == 0) {
-				Map.Entry<PopulationKey, Chromosome> chromosome = population.iterator().next();
-				int value = (int)chromosome.getKey().getDistance();
-				System.out.println("After " + counter + " rounds – errors: " + value);
-				if(counter >= ROUNDS) {
-					break;
+				counter++;
+
+				if(counter % PRINT_AFTER == 0) {
+					Map.Entry<PopulationKey, Chromosome> chromosome = population.iterator().next();
+					int value = (int)chromosome.getKey().getDistance();
+					System.out.println("After " + counter + " rounds – errors: " + value);
+					if(counter >= ROUNDS) {
+						break;
+					}
 				}
 			}
-		}
 
-		savePopulation(population);
+			savePopulation(population);
+
+		} while(CONTINUOUS && System.currentTimeMillis() > 0);
 
 		population.keep(1);
 
@@ -217,7 +222,7 @@ public class TextLearningTest {
 			NETWORK.fillFromChromosome(chromosome.getValue());
 		}
 
-		counter = 0;
+		int counter = 0;
 		int lastResult = -1;
 		String testFile = readWholeFile(TEST_FILE);
 		List<String> slices = sliceTextWrapper(testFile);
