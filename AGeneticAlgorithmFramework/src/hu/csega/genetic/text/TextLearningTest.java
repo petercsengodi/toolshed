@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+// TODO: make best genes in favor
 public class TextLearningTest {
 
 	public static final String JAVA_FILE = "java.txt";
@@ -30,17 +31,17 @@ public class TextLearningTest {
 
 	public static final String POPULATION_FILE = "/tmp/population.ser";
 
-	private static final int ROUNDS = 100;
-	private static final int CROSS_OVER = 1000;
-	private static final int MUTATION = 1000;
-	private static final int MAX_MUTATED_BYTES = 10;
-	private static final int KEEP = 1500;
+	private static final int ROUNDS = 20;
+	private static final int CROSS_OVER = 100;
+	private static final int MUTATION = 100;
+	private static final int MAX_MUTATED_BYTES = NetworkForTextV2.LENGTH_PARAMETERS;
+	private static final int KEEP = 10000;
 
-	private static final int PRINT_AFTER = 10;
+	private static final int PRINT_AFTER = 1;
 
 	private static final boolean SMALL_TRAINING = true;
-	private static final int SMALL_TRAINING_COUNT = 80;
-	private static final boolean CONTINUOUS = false;
+	private static final int SMALL_TRAINING_COUNT = 200;
+	private static final boolean CONTINUOUS = true;
 
 	private static final String readWholeFile(String fileName) {
 		try {
@@ -208,6 +209,18 @@ public class TextLearningTest {
 
 			savePopulation(population);
 
+			// logging all genes
+//			counter = 0;
+//			System.out.println();
+//			for(Map.Entry<PopulationKey, Chromosome> chromosome : population) {
+//				if(counter > 100)
+//					break;
+//
+//				counter++;
+//				System.out.println(counter + ".: " + chromosome);
+//			}
+//			System.out.println();
+
 		} while(System.currentTimeMillis() > 0 && CONTINUOUS);
 
 		population.keep(1);
@@ -229,6 +242,9 @@ public class TextLearningTest {
 		int lastResult = -1;
 		String testFile = readWholeFile(TEST_FILE);
 		List<String> slices = sliceTextWrapper(testFile);
+
+		slices.clear(); // OFF-SWITCH
+
 		for(String s : slices) {
 			int result = NETWORK.output(stringToDouble(s, 0, NetworkForTextV2.NUMBER_OF_INPUTS)) >= 0.5
 					? 1 : 0;

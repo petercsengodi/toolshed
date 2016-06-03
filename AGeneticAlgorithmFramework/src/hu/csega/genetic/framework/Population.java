@@ -15,7 +15,7 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 		public Builder adamAndEve(Chromosome chromosome) {
 			population.chromosomes = new TreeMap<>();
 			double distance = population.strategy.calculate(chromosome);
-			population.chromosomes.put(new PopulationKey(distance), chromosome);
+			population.chromosomes.put(new PopulationKey(distance, chromosome.getGenes()), chromosome);
 			return this;
 		}
 
@@ -54,7 +54,7 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 			Chromosome genomToMutate = it.next();
 			Chromosome mutated = Chromosome.mutate(genomToMutate, maxMutatedBytes);
 			double distance = strategy.calculate(mutated);
-			result.put(new PopulationKey(distance), mutated);
+			result.put(new PopulationKey(distance, mutated.getGenes()), mutated);
 		}
 
 		chromosomes = result;
@@ -75,9 +75,9 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 			chromosome2 = list.get(Chromosome.RND.nextInt(listSize));
 			children = Chromosome.crossOverSameLength(chromosome1, chromosome2);
 			distance = strategy.calculate(children.chromosome1);
-			result.put(new PopulationKey(distance), children.chromosome1);
+			result.put(new PopulationKey(distance, children.chromosome1.getGenes()), children.chromosome1);
 			distance = strategy.calculate(children.chromosome2);
-			result.put(new PopulationKey(distance), children.chromosome2);
+			result.put(new PopulationKey(distance, children.chromosome2.getGenes()), children.chromosome2);
 		}
 
 		chromosomes = result;
@@ -98,9 +98,9 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 			chromosome2 = list.get(Chromosome.RND.nextInt(listSize));
 			children = Chromosome.crossOverVariateLength(chromosome1, chromosome2);
 			distance = strategy.calculate(children.chromosome1);
-			result.put(new PopulationKey(distance), children.chromosome1);
+			result.put(new PopulationKey(distance, children.chromosome1.getGenes()), children.chromosome1);
 			distance = strategy.calculate(children.chromosome2);
-			result.put(new PopulationKey(distance), children.chromosome2);
+			result.put(new PopulationKey(distance, children.chromosome2.getGenes()), children.chromosome2);
 		}
 
 		chromosomes = result;

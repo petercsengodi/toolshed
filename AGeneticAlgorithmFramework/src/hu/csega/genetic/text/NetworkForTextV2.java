@@ -74,9 +74,9 @@ public class NetworkForTextV2 {
 		return 1.0 / (1.0 + Math.exp(-x));
 	}
 
-	public static final int NUMBER_OF_INPUTS = 20;
-	public static final int NODES_FIRST_LAYER = 10;
-	public static final int NODES_SECOND_LAYER = 5;
+	public static final int NUMBER_OF_INPUTS = 30;
+	public static final int NODES_FIRST_LAYER = 100;
+	public static final int NODES_SECOND_LAYER = 50;
 	public static final int NODES_THIRD_LAYER = 1;
 
 	public static final int LENGTH_PARAMETERS = NODES_FIRST_LAYER * (NUMBER_OF_INPUTS + 1)

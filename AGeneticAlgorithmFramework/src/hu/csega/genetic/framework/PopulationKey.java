@@ -1,13 +1,20 @@
 package hu.csega.genetic.framework;
 
 import java.io.Serializable;
-import java.util.UUID;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class PopulationKey implements Comparable<PopulationKey>, Serializable {
 
-	public PopulationKey(double distance) {
-		this.uuid = UUID.randomUUID().toString() + '-' + System.currentTimeMillis();
-		this.distance = distance;
+	public PopulationKey(double distance, byte[] gene) {
+		try {
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			byte[] thedigest = md.digest(gene);
+			this.uuid = new String(thedigest);
+			this.distance = distance;
+		} catch (NoSuchAlgorithmException ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 
 	@Override

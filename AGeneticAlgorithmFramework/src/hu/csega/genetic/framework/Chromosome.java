@@ -67,7 +67,8 @@ public class Chromosome implements Serializable {
 		int length = chromosome.genes.length;
 		for(int i = 0; i < numberOfMutations; i++) {
 			int modify = RND.nextInt(length);
-			result.genes[modify] = ((byte)(RND.nextInt(256) - 128));
+			byte newValue = ((byte)(RND.nextInt(256) - 128));
+			result.genes[modify] = newValue;
 		}
 
 		return result;
