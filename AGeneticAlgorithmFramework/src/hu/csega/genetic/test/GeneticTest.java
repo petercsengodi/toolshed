@@ -43,6 +43,8 @@ public class GeneticTest {
 			return Math.pow((result-y), 2);
 		}
 
+
+		private static final long serialVersionUID = 1L;
 	};
 
 	public static void main(String[] args) throws Exception {

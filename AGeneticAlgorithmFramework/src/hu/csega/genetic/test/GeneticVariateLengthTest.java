@@ -42,6 +42,8 @@ public class GeneticVariateLengthTest {
 				result += (genes[i] / 10.0) * Math.pow(x, i);
 			return Math.pow((result - y), 2);
 		}
+
+		private static final long serialVersionUID = 1L;
 	};
 
 	public static void main(String[] args) throws Exception {

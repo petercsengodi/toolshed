@@ -41,6 +41,7 @@ public class NetworkTest {
 			return Math.pow(NETWORK.output(array) - y, 2);
 		}
 
+		private static final long serialVersionUID = 1L;
 	};
 
 	public static void main(String[] args) throws Exception {
@@ -53,14 +54,14 @@ public class NetworkTest {
 				.adamAndEve(adamAndEve)
 				.build();
 
-		int ROUNDS = 10000;
+		int ROUNDS = 1000;
 		int DIV = ROUNDS / 10;
 		System.out.print("[");
 
 		for(int rounds = 0; rounds < ROUNDS; rounds++) {
-			population.mutate(500);
-			population.crossOverSameLength(500);
-			population.keep(1000);
+			population.crossOverSameLength(2000);
+			population.mutate(10000);
+			population.keep(5000);
 
 			if((rounds + 1) % DIV == 0)
 				System.out.print(".");

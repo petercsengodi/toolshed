@@ -1,0 +1,47 @@
+My favorite way to read a small file is to use a BufferedReader and a StringBuilder. It is very simple and to the point (though not particularly effective, but good enough for most cases):
+
+BufferedReader br = new BufferedReader(new FileReader("file.txt"));
+try {
+    StringBuilder sb = new StringBuilder();
+    String line = br.readLine();
+
+    while (line != null) {
+        sb.append(line);
+        sb.append(System.lineSeparator());
+        line = br.readLine();
+    }
+    String everything = sb.toString();
+} finally {
+    br.close();
+}
+Some has pointed out that after Java 7 you should use try-with-resources (i.e. auto close) features:
+
+try(BufferedReader br = new BufferedReader(new FileReader("file.txt"))) {
+    StringBuilder sb = new StringBuilder();
+    String line = br.readLine();
+
+    while (line != null) {
+        sb.append(line);
+        sb.append(System.lineSeparator());
+        line = br.readLine();
+    }
+    String everything = sb.toString();
+}
+When I read strings like this, I usually want to do some string handling per line anyways, so then I go for this implementation.
+
+Though if I want to actually just read a file into a String, I always use Apache Commons IO with the class IOUtils.toString() method. You can have a look at the source here:
+
+http://www.docjar.com/html/api/org/apache/commons/io/IOUtils.java.html
+
+FileInputStream inputStream = new FileInputStream("foo.txt");
+try {
+    String everything = IOUtils.toString(inputStream);
+} finally {
+    inputStream.close();
+}
+And even simpler with Java 7:
+
+try(FileInputStream inputStream = new FileInputStream("foo.txt")) {
+    Session IOUtils;
+    String everything = IOUtils.toString(inputStream);
+}

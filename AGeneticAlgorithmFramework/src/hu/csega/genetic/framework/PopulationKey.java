@@ -1,8 +1,9 @@
 package hu.csega.genetic.framework;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public class PopulationKey implements Comparable<PopulationKey> {
+public class PopulationKey implements Comparable<PopulationKey>, Serializable {
 
 	public PopulationKey(double distance) {
 		this.uuid = UUID.randomUUID().toString() + '-' + System.currentTimeMillis();
@@ -50,4 +51,6 @@ public class PopulationKey implements Comparable<PopulationKey> {
 
 	private double distance;
 	private String uuid;
+
+	private static final long serialVersionUID = 1L;
 }

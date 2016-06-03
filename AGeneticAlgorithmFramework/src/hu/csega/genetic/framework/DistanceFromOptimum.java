@@ -1,6 +1,8 @@
 package hu.csega.genetic.framework;
 
-public interface DistanceFromOptimum {
+import java.io.Serializable;
+
+public interface DistanceFromOptimum extends Serializable {
 
 	double calculate(Chromosome chromosome);
 

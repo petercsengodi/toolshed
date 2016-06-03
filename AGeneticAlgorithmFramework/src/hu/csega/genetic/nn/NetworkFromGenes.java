@@ -114,5 +114,5 @@ public class NetworkFromGenes {
 	private double[] secondLayer = new double[NODES];
 	private double[] thirdLayer = new double[1];
 
-	public static final int NODES = 10;
+	public static final int NODES = 4;
 }

@@ -1,8 +1,9 @@
 package hu.csega.genetic.framework;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public class Chromosome {
+public class Chromosome implements Serializable {
 
 	public static final Random RND = new Random(System.currentTimeMillis());
 
@@ -78,4 +79,6 @@ public class Chromosome {
 	}
 
 	private byte[] genes;
+
+	private static final long serialVersionUID = 1L;
 }

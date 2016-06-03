@@ -1,5 +1,6 @@
 package hu.csega.genetic.framework;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>> {
+public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>>, Serializable {
 
 	public static class Builder {
 
@@ -118,4 +119,6 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 
 	private TreeMap<PopulationKey, Chromosome> chromosomes;
 	private DistanceFromOptimum strategy;
+
+	private static final long serialVersionUID = 1L;
 }
