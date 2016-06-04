@@ -1,6 +1,8 @@
 package hu.csega.genetic.text;
 
+import hu.csega.genetic.framework.BestsInFavorCrossOverStrategy;
 import hu.csega.genetic.framework.Chromosome;
+import hu.csega.genetic.framework.CrossOverStrategy;
 import hu.csega.genetic.framework.DistanceFromOptimum;
 import hu.csega.genetic.framework.Population;
 import hu.csega.genetic.framework.PopulationKey;
@@ -32,10 +34,11 @@ public class TextLearningTest {
 	public static final String POPULATION_FILE = "/tmp/population.ser";
 
 	private static final int ROUNDS = 20;
-	private static final int CROSS_OVER = 100;
-	private static final int MUTATION = 100;
-	private static final int MAX_MUTATED_BYTES = NetworkForTextV2.LENGTH_PARAMETERS;
-	private static final int KEEP = 10000;
+	private static final int CROSS_OVER_COUNT = 100;
+	private static final int MUTATION_COUNT = 100;
+	private static final int NEW_RANDOM_COUNT = 100;
+	private static final int MAX_MUTATED_BYTES = 4;
+	private static final int KEEP_COUNT = 1000;
 
 	private static final int PRINT_AFTER = 1;
 
@@ -191,9 +194,11 @@ public class TextLearningTest {
 			int counter = 0;
 
 			while(true) {
-				population.crossOverSameLength(CROSS_OVER);
-				population.mutate(MUTATION, MAX_MUTATED_BYTES);
-				population.keep(KEEP);
+				population.initCrossOverStrategy(CROSS_OVER);
+				population.crossOverSameLength(CROSS_OVER_COUNT, CROSS_OVER);
+				population.mutate(MUTATION_COUNT, MAX_MUTATED_BYTES);
+				population.createRandomGenes(NEW_RANDOM_COUNT, NetworkForTextV2.LENGTH_PARAMETERS);
+				population.keep(KEEP_COUNT);
 
 				counter++;
 
@@ -302,8 +307,10 @@ public class TextLearningTest {
 		Chromosome adamAndEve = new Chromosome(NetworkForTextV2.LENGTH_PARAMETERS);
 		return Population.builder(DISTANCE)
 				.adamAndEve(adamAndEve)
+				.randomGenes(KEEP_COUNT - 1, NetworkForTextV2.LENGTH_PARAMETERS)
 				.build();
 	}
 
+	private static final CrossOverStrategy CROSS_OVER = new BestsInFavorCrossOverStrategy();
 	private static final NetworkForTextV2 NETWORK = new NetworkForTextV2();
 }

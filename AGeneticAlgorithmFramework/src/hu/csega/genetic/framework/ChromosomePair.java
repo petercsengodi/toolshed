@@ -1,6 +1,6 @@
 package hu.csega.genetic.framework;
 
-public class PopulationChildren {
+public class ChromosomePair {
 	public Chromosome chromosome1;
 	public Chromosome chromosome2;
 }

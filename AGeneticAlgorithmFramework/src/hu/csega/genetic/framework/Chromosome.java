@@ -7,6 +7,17 @@ public class Chromosome implements Serializable {
 
 	public static final Random RND = new Random(System.currentTimeMillis());
 
+	public static Chromosome createEmptyGene(int length) {
+		return new Chromosome(length);
+	}
+
+	public static Chromosome createRandomGene(int length) {
+		Chromosome chromosome = new Chromosome(length);
+		for(int i = 0; i < length; i++)
+			chromosome.genes[i] = getRandomByte();
+		return chromosome;
+	}
+
 	public Chromosome(int length) {
 		this.genes = new byte[length];
 	}
@@ -16,12 +27,12 @@ public class Chromosome implements Serializable {
 		System.arraycopy(genes, 0, this.genes, 0, genes.length);
 	}
 
-	public static PopulationChildren crossOverSameLength(Chromosome chromosome1, Chromosome chromosome2) {
+	public static ChromosomePair crossOverSameLength(Chromosome chromosome1, Chromosome chromosome2) {
 		int length = chromosome1.genes.length;
 		int prefix = RND.nextInt(length - 2) + 1;
 		int suffix = length - prefix;
 
-		PopulationChildren children = new PopulationChildren();
+		ChromosomePair children = new ChromosomePair();
 
 		children.chromosome1 = new Chromosome(length);
 		System.arraycopy(chromosome1.genes, 0, children.chromosome1.genes, 0, prefix);
@@ -34,7 +45,7 @@ public class Chromosome implements Serializable {
 		return children;
 	}
 
-	public static PopulationChildren crossOverVariateLength(Chromosome chromosome1, Chromosome chromosome2) {
+	public static ChromosomePair crossOverVariateLength(Chromosome chromosome1, Chromosome chromosome2) {
 		int length1 = chromosome1.genes.length;
 		int prefix1 = RND.nextInt(length1 - 2) + 1;
 		int suffix1 = length1 - prefix1;
@@ -42,7 +53,7 @@ public class Chromosome implements Serializable {
 		int prefix2 = RND.nextInt(length2 - 2) + 1;
 		int suffix2 = length2 - prefix2;
 
-		PopulationChildren children = new PopulationChildren();
+		ChromosomePair children = new ChromosomePair();
 
 		children.chromosome1 = new Chromosome(prefix1 + suffix2);
 		System.arraycopy(chromosome1.genes, 0, children.chromosome1.genes, 0, prefix1);

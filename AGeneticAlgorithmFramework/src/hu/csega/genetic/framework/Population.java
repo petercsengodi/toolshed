@@ -1,9 +1,7 @@
 package hu.csega.genetic.framework;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -13,9 +11,19 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 	public static class Builder {
 
 		public Builder adamAndEve(Chromosome chromosome) {
-			population.chromosomes = new TreeMap<>();
-			double distance = population.strategy.calculate(chromosome);
+			if(population.chromosomes == null)
+				population.chromosomes = new TreeMap<>();
+
+			double distance = population.distanceStrategy.calculate(chromosome);
 			population.chromosomes.put(new PopulationKey(distance, chromosome.getGenes()), chromosome);
+			return this;
+		}
+
+		public Builder randomGenes(int numberOfRandomGenes, int length) {
+			if(population.chromosomes == null)
+				population.chromosomes = new TreeMap<>();
+
+			population.createRandomGenes(numberOfRandomGenes, length);
 			return this;
 		}
 
@@ -29,8 +37,16 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 	public static Builder builder(DistanceFromOptimum distance) {
 		Builder builder = new Builder();
 		builder.population = new Population();
-		builder.population.strategy = distance;
+		builder.population.distanceStrategy = distance;
 		return builder;
+	}
+
+	public void createRandomGenes(int numberOfRandomGenes, int length) {
+		for(int i = 0; i < numberOfRandomGenes; i++) {
+			Chromosome chromosome = Chromosome.createRandomGene(length);
+			double distance = distanceStrategy.calculate(chromosome);
+			chromosomes.put(new PopulationKey(distance, chromosome.getGenes()), chromosome);
+		}
 	}
 
 	public void mutate(int numberOfMutations) {
@@ -53,30 +69,45 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 
 			Chromosome genomToMutate = it.next();
 			Chromosome mutated = Chromosome.mutate(genomToMutate, maxMutatedBytes);
-			double distance = strategy.calculate(mutated);
+			double distance = distanceStrategy.calculate(mutated);
 			result.put(new PopulationKey(distance, mutated.getGenes()), mutated);
 		}
 
 		chromosomes = result;
 	}
 
+	// FIXME csega: this is sh*t
+	public void initCrossOverStrategy(CrossOverStrategy crossOverStrategy) {
+		crossOverStrategy.setChromosomes(chromosomes.values());
+	}
+
 	public void crossOverSameLength(int numberOfCrossOvers) {
+		crossOverSameLength(numberOfCrossOvers, new RandomCrossOverStrategy());
+	}
+
+	public void crossOverSameLength(int numberOfCrossOvers, CrossOverStrategy crossOverStrategy) {
 		TreeMap<PopulationKey, Chromosome> result = new TreeMap<>();
 		result.putAll(chromosomes);
 
-		List<Chromosome> list = new ArrayList<>(chromosomes.values());
-		int listSize = list.size();
-		Chromosome chromosome1, chromosome2;
-		PopulationChildren children;
+		ChromosomePair children;
 		double distance;
 
 		for(int i = 0; i < numberOfCrossOvers; i++) {
-			chromosome1 = list.get(Chromosome.RND.nextInt(listSize));
-			chromosome2 = list.get(Chromosome.RND.nextInt(listSize));
-			children = Chromosome.crossOverSameLength(chromosome1, chromosome2);
-			distance = strategy.calculate(children.chromosome1);
+			ChromosomePair pair = crossOverStrategy.select();
+
+			if(pair == null) {
+				System.out.println("Algorithm could select only " + i + " pairs, exiting loop.");
+				break;
+			}
+
+			children = Chromosome.crossOverSameLength(pair.chromosome1, pair.chromosome2);
+
+			// TODO csega: if new chromosomes already exist in map, shouldn't re-calculate them
+
+			distance = distanceStrategy.calculate(children.chromosome1);
 			result.put(new PopulationKey(distance, children.chromosome1.getGenes()), children.chromosome1);
-			distance = strategy.calculate(children.chromosome2);
+
+			distance = distanceStrategy.calculate(children.chromosome2);
 			result.put(new PopulationKey(distance, children.chromosome2.getGenes()), children.chromosome2);
 		}
 
@@ -84,22 +115,28 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 	}
 
 	public void crossOverVariateLength(int numberOfCrossOvers) {
+		crossOverSameLength(numberOfCrossOvers, new RandomCrossOverStrategy());
+	}
+
+	public void crossOverVariateLength(int numberOfCrossOvers, CrossOverStrategy crossOverStrategy) {
 		TreeMap<PopulationKey, Chromosome> result = new TreeMap<>();
 		result.putAll(chromosomes);
 
-		List<Chromosome> list = new ArrayList<>(chromosomes.values());
-		int listSize = list.size();
-		Chromosome chromosome1, chromosome2;
-		PopulationChildren children;
+		ChromosomePair children;
 		double distance;
 
 		for(int i = 0; i < numberOfCrossOvers; i++) {
-			chromosome1 = list.get(Chromosome.RND.nextInt(listSize));
-			chromosome2 = list.get(Chromosome.RND.nextInt(listSize));
-			children = Chromosome.crossOverVariateLength(chromosome1, chromosome2);
-			distance = strategy.calculate(children.chromosome1);
+			ChromosomePair pair = crossOverStrategy.select();
+
+			if(pair == null) {
+				System.out.println("Algorithm could select only " + i + " pairs, exiting loop.");
+				break;
+			}
+
+			children = Chromosome.crossOverVariateLength(pair.chromosome1, pair.chromosome2);
+			distance = distanceStrategy.calculate(children.chromosome1);
 			result.put(new PopulationKey(distance, children.chromosome1.getGenes()), children.chromosome1);
-			distance = strategy.calculate(children.chromosome2);
+			distance = distanceStrategy.calculate(children.chromosome2);
 			result.put(new PopulationKey(distance, children.chromosome2.getGenes()), children.chromosome2);
 		}
 
@@ -122,7 +159,7 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 	}
 
 	private TreeMap<PopulationKey, Chromosome> chromosomes;
-	private DistanceFromOptimum strategy;
+	private DistanceFromOptimum distanceStrategy;
 
 	private static final long serialVersionUID = 1L;
 }
