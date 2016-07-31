@@ -82,8 +82,12 @@ public class JSONUtil {
 
     		try {
 	        	Object value = m.invoke(object);
-	        	String jsonValue = (String)converter.toJSONValue(value);
-	            jg.write(fieldName, jsonValue);
+	        	if(value == null) {
+	        		jg.writeNull(fieldName);
+	        	} else {
+	        		String jsonValue = (String)converter.toJSONValue(value);
+	        		jg.write(fieldName, jsonValue);
+	        	}
     		} catch(Exception ex) {
     			throw new RuntimeException("Error writing field " + fieldName + " from " +
     					objectClass.getName() + '.' + m.getName() + "()", ex);
@@ -139,7 +143,7 @@ public class JSONUtil {
         	}
 
         	String fieldName = convertSetterName(m.getName());
-        	String jsonValue = jobj.getString(fieldName);
+        	String jsonValue = jobj.getString(fieldName, null);
         	Object value = converter.fromJSONValue(jsonValue);
 
     		try {
