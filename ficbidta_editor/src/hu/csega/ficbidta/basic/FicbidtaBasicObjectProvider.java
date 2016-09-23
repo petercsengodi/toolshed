@@ -2,9 +2,9 @@ package hu.csega.ficbidta.basic;
 
 import hu.csega.ficbidta.FicbidtaAbstractObjectProvider;
 import hu.csega.ficbidta.basic.connections.FicbidtaBasicGenericConnection;
+import hu.csega.ficbidta.basic.generation.SampleCodeGenerator;
 import hu.csega.ficbidta.basic.nodes.FicbidtaBasicGenericNode;
 import hu.csega.ficbidta.code.generation.CodeGenerator;
-import hu.csega.ficbidta.code.generation.SampleCodeGenerator;
 
 import java.util.Arrays;
 import java.util.List;

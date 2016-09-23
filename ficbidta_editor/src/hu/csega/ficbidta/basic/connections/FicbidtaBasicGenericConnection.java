@@ -4,7 +4,7 @@ import hu.csega.ficbidta.properties.FicbidtaObject;
 import hu.csega.ficbidta.properties.FicbidtaProperty;
 import hu.csega.ficbidta.properties.FicbidtaStringProperty;
 
-@FicbidtaObject(name = "Generic Connection")
+@FicbidtaObject(name = "Private Field")
 public class FicbidtaBasicGenericConnection {
 
 	@FicbidtaProperty(name = "Description", property = FicbidtaStringProperty.class)
@@ -12,5 +12,5 @@ public class FicbidtaBasicGenericConnection {
 
 	@FicbidtaProperty(name = "Comment", property = FicbidtaStringProperty.class)
 	public String comment;
-	
+
 }
