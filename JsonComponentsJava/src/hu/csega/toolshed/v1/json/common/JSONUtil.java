@@ -46,7 +46,7 @@ public class JSONUtil {
         StringWriter sw = new StringWriter();
 
         Map<String, Object> properties = new HashMap<>(1);
-        properties.put(JsonGenerator.PRETTY_PRINTING, true);
+        properties.put(JsonGenerator.PRETTY_PRINTING, false);
 
         JsonGeneratorFactory jf = Json.createGeneratorFactory(properties);
         JsonGenerator jg = jf.createGenerator(sw);
