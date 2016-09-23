@@ -7,17 +7,17 @@ import javax.swing.event.ListDataListener;
 
 import hu.csega.ficbidta.properties.FicbidtaObject;
 
-public class FicbidtaObjectTypes implements ComboBoxModel {
+public class FicbidtaObjectTypes implements ComboBoxModel<String> {
 
 	public String[] values = null;
 	public String[] displayValues = null;
 	public int selectedIndex = 0;
-	
-	public Object getElementAt(int index) {
+
+	public String getElementAt(int index) {
 		if(values == null || values.length <= index) {
 			return null;
 		}
-		
+
 		return displayValues[index];
 	}
 
@@ -25,16 +25,15 @@ public class FicbidtaObjectTypes implements ComboBoxModel {
 		if(values == null) {
 			return 0;
 		}
-		
+
 		return values.length;
 	}
 
 	public Object getSelectedItem() {
-		if(displayValues == null || selectedIndex < 0 || 
-				selectedIndex >= displayValues.length) {
+		if(displayValues == null || selectedIndex < 0 || selectedIndex >= displayValues.length) {
 			return null;
 		}
-		
+
 		return displayValues[selectedIndex];
 	}
 
@@ -56,7 +55,7 @@ public class FicbidtaObjectTypes implements ComboBoxModel {
 		if(types == null) {
 			throw new NullPointerException("possibleValues must not be null");
 		}
-		
+
 		int length = types.size();
 		if(length == 0) {
 			throw new IllegalArgumentException("possibleValues must not be empty");
@@ -64,20 +63,20 @@ public class FicbidtaObjectTypes implements ComboBoxModel {
 
 		this.values = new String[length + 1];
 		this.displayValues = new String[length + 1];
-		
+
 		this.values[0] = "";
 		this.displayValues[0] = "< no type >";
-		
+
 		for(int i = 0; i < length; i++) {
 			Class<?> classValue = types.get(i);
 			String name = classValue.getName();
 			this.values[i + 1] = name;
-			
+
 			FicbidtaObject ann = classValue.getAnnotation(FicbidtaObject.class);
 			name = (ann == null ? name : ann.name());
 			this.displayValues[i + 1] = name;
 		}
-		
+
 		selectedIndex = 0;
 		for(int i = 0; i < length + 1; i++) {
 			if(this.values[i].equals(oldType)) {
@@ -85,18 +84,18 @@ public class FicbidtaObjectTypes implements ComboBoxModel {
 			}
 		}
 	}
-	
+
 	public String getSelectedValue() {
 		if(selectedIndex > -1 && selectedIndex < this.values.length) {
 			return this.values[selectedIndex];
 		}
-		
+
 		return null;
 	}
-	
+
 	public void addListDataListener(ListDataListener arg0) {
 	}
-	
+
 	public void removeListDataListener(ListDataListener arg0) {
 	}
 

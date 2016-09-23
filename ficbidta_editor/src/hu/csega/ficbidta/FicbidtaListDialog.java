@@ -15,42 +15,36 @@ import hu.csega.toolshed.AbstractTool;
 
 public class FicbidtaListDialog extends JDialog{
 
-	/**
-	 * Default serial version uid.
-	 */
-	private static final long serialVersionUID = 1L;
-	
 	private AbstractTool tool;
-	public JComboBox field;
+	public JComboBox<String> field;
 	public FicbidtaComboBoxModel comboBoxModel;
 
 	public FicbidtaListDialog(final AbstractTool tool) {
-		super(tool.getWindow().getAwtWindow(), "List", 
-				ModalityType.APPLICATION_MODAL);
+		super(tool.getWindow().getAwtWindow(), "List", ModalityType.APPLICATION_MODAL);
 		this.tool = tool;
 
 		comboBoxModel = new FicbidtaComboBoxModel();
-		field = new JComboBox(comboBoxModel);
-		
+		field = new JComboBox<String>(comboBoxModel);
+
 		JPanel buttonPanel = new JPanel();
 		JButton okButton = new JButton("Ok");
 		JButton cancelButton = new JButton("Cancel");
 		buttonPanel.setLayout(new FlowLayout());
 		buttonPanel.add(okButton);
 		buttonPanel.add(cancelButton);
-		
+
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				tool.getComponent(FicbidtaPropertyDialog.class).stringDialog.setVisible(false);
 			}
 		});
-		
+
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				tool.getComponent(FicbidtaPropertyDialog.class).stringDialog.setVisible(false);
 			}
 		});
-		
+
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add("North", field);
 		getContentPane().add("South", buttonPanel);
@@ -58,5 +52,10 @@ public class FicbidtaListDialog extends JDialog{
 		setResizable(false);
 		pack();
 	}
-	
+
+	/**
+	 * Default serial version UID.
+	 */
+	private static final long serialVersionUID = 1L;
+
 }

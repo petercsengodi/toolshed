@@ -25,7 +25,7 @@ public class MenuSaveListener extends ToolComponent implements ActionListener {
 			try {
 				getComponent(ModelSaver.class).saveModelIntoFile(file);
 			} catch (IOException ex) {
-				getWindow().showMessage("Nem siker�lt a ment�s :-(");
+				getWindow().showMessage("Saving failed :-(");
 			}
 		}
 	}

@@ -9,18 +9,13 @@ import javax.swing.JOptionPane;
 
 public class ToolFrame extends JFrame implements ToolWindow {
 
-	/**
-	 * Default serial version uid.
-	 */
-	private static final long serialVersionUID = 1L;
-	
 	private AbstractTool tool;
 
 	public ToolFrame() {
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		addWindowListener(new ToolWindowAdapter(this));
 	}
-	
+
 	public void embed(AbstractTool tool) {
 		tool.setWindow(this);
 		this.tool = tool;
@@ -29,22 +24,22 @@ public class ToolFrame extends JFrame implements ToolWindow {
 	}
 
 	public void doOnClose() {
-		int resp = JOptionPane.showConfirmDialog(this, "Bez�r a baz�r?");
+		int resp = JOptionPane.showConfirmDialog(this, "Really close application?");
 		if(resp == JOptionPane.YES_OPTION) {
 			finish();
 		}
 	}
-	
+
 	public void start() {
 		setResizable(false);
 		pack();
 
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-		this.setLocation(dim.width/2-this.getSize().width/2, 
+		this.setLocation(dim.width/2-this.getSize().width/2,
 				dim.height/2-this.getSize().height/2);
 		setVisible(true);
 	}
-	
+
 	public void finish() {
 		tool.finishWork();
 		System.exit(0);
@@ -57,5 +52,10 @@ public class ToolFrame extends JFrame implements ToolWindow {
 	public void showMessage(String message) {
 		JOptionPane.showMessageDialog(this, message);
 	}
+
+	/**
+	 * Default serial version uid.
+	 */
+	private static final long serialVersionUID = 1L;
 
 }
