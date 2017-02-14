@@ -234,7 +234,18 @@ public class PushDownAutomaton {
 							return exp;
 					}
 
-					stack.peek().getChildren().add(exp);
+					Expression top = stack.peek();
+					top.getChildren().add(exp);
+					if(top instanceof LangKeyValuePair) {
+						stack.pop();
+						stack.peek().getChildren().add(top);
+						state = State.OBJECT_GOT_VALUE;
+					} else if(top instanceof LangArray) {
+						state = State.ARRAY_GOT_ITEM;
+					} else {
+						throw new IllegalStateException("Stack peek should be either object or array!");
+					}
+
 				} else if(token.getType() == Type.STRING_TOKEN) {
 					Expression exp = new LangKeyValuePair();
 					exp.children.add(new LangString(token));
@@ -329,7 +340,18 @@ public class PushDownAutomaton {
 							return exp;
 					}
 
-					stack.peek().getChildren().add(exp);
+					Expression top = stack.peek();
+					top.getChildren().add(exp);
+					if(top instanceof LangKeyValuePair) {
+						stack.pop();
+						stack.peek().getChildren().add(top);
+						state = State.OBJECT_GOT_VALUE;
+					} else if(top instanceof LangArray) {
+						state = State.ARRAY_GOT_ITEM;
+					} else {
+						throw new IllegalStateException("Stack peek should be either object or array!");
+					}
+
 				} else if(token.getType() == Type.OPEN_OBJECT) {
 					Expression exp = new LangObject();
 					stack.push(exp);
