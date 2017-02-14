@@ -58,6 +58,11 @@ public class PushDownAutomaton {
 
 		public abstract void print();
 
+		@Override
+		public String toString() {
+			return this.getClass().getSimpleName();
+		}
+
 		protected Type type;
 		protected Token token;
 		protected List<Expression> children = new ArrayList<>();
@@ -158,195 +163,229 @@ public class PushDownAutomaton {
 	}
 
 	public enum State {
-		AWAITING_SOMETHING,
-		INSIDE_OBJECT,
-		END_OF_OBJECT,
-		INSIDE_ARRAY,
-		END_OF_ARRAY,
-		GOT_KEY,
-		GOT_SEMICOLON,
-		GOT_COMMA
+		START,
+		OBJECT_STARTED,
+		OBJECT_GOT_KEY,
+		OBJECT_GOT_SEMICOLON,
+		OBJECT_GOT_VALUE,
+		OBJECT_GOT_COMMA,
+		ARRAY_STARTED,
+		ARRAY_GOT_ITEM,
+		ARRAY_GOT_COMMA,
+		SUCCESSFUL,
+		ERROR
 	}
 
-
 	public Expression parseAndReturnAbstractSyntaxTree(List<Token> tokens) {
+		try {
+			Expression ret = process(tokens);
+			state = State.SUCCESSFUL;
+			return ret;
+		} catch(RuntimeException ex) {
+			state = State.ERROR;
+			throw ex;
+		}
+	}
+
+	public Expression process(List<Token> tokens) {
 		if(tokens == null || tokens.size() == 0)
 			return new LangString(new Token(Type.STRING_TOKEN, ""));
 
 		Iterator<Token> iterator = tokens.iterator();
-		Token token = iterator.next();
-
-		while(true) {
-			if(!iterator.hasNext())
-				throw new RuntimeException("Unexpected end of file!");
-			token = iterator.next();
+		while(iterator.hasNext()) {
+			Token token = iterator.next();
 
 			switch(state) {
 
-			case AWAITING_SOMETHING:
-				break;
-
-			case INSIDE_OBJECT:
-				if(token.getType() == Type.CLOSE_OBJECT) {
-
-					Expression exp = stack.pop();
-					if(exp instanceof LangObject) {
-						if(stack.isEmpty()) {
-							if(iterator.hasNext())
-								throw new RuntimeException("Invalid upcoming token: " + token);
-							else
-								return exp;
-						} else {
-							stack.peek().getChildren().add(exp);
-							state = State.END_OF_BLOCK;
-						}
-					} else {
-						throw new RuntimeException("Should close object!");
-					}
-
-				} else if(token.getType() == Type.STRING_TOKEN) {
-
-					Expression exp = new LangKeyValuePair();
-					exp.getChildren().add(new LangString(token));
-					stack.push(exp);
-					state = State.GOT_KEY;
-
-				} else {
-					throw new RuntimeException("Invalid upcoming token: " + token);
-				}
-				break;
-
-			case END_OF_OBJECT:
-				if(token.getType() == Type.CLOSE_OBJECT) {
-
-					Expression exp = stack.pop();
-					if(exp instanceof LangObject) {
-						if(stack.isEmpty()) {
-							if(iterator.hasNext())
-								throw new RuntimeException("Invalid upcoming token: " + token);
-							else
-								return exp;
-						} else {
-							stack.peek().getChildren().add(exp);
-							state = State.END_OF_BLOCK;
-						}
-					} else {
-						throw new RuntimeException("Should close object!");
-					}
-
-				} else if(token.getType() == Type.ENUMERATION_SIGN) {
-					state = State.INSIDE_OBJECT;
-				} else {
-					throw new RuntimeException("Invalid upcoming token: " + token);
-				}
-				break;
-
-			case GOT_KEY:
-				if(token.getType() == Type.KEY_VALUE_PAIR_SIGN) {
-					state = State.GOT_SEMICOLON;
-				} else {
-					throw new RuntimeException("Invalid upcoming token: " + token);
-				}
-				break;
-
-			case GOT_SEMICOLON:
+			case START:
 				if(token.getType() == Type.OPEN_OBJECT) {
+
 					Expression exp = new LangObject();
 					stack.push(exp);
-					state = State.INSIDE_OBJECT;
+					state = State.OBJECT_STARTED;
+
 				} else if(token.getType() == Type.OPEN_ARRAY) {
+
 					Expression exp = new LangArray();
 					stack.push(exp);
-					state = State.INSIDE_ARRAY;
+					state = State.ARRAY_STARTED;
+
 				} else if(token.getType() == Type.STRING_TOKEN) {
-					stack.peek().getChildren().add(new LangString(token));
-					state = State.END_OF_OBJECT;
+
+					Expression exp = new LangString(token);
+					if(iterator.hasNext())
+						throw new RuntimeException("Invalid upcoming token: " + token);
+					else
+						return exp;
+
 				} else {
 					throw new RuntimeException("Invalid upcoming token: " + token);
 				}
 				break;
 
-			case GOT_COMMA:
-				if(token.getType() == Type.OPEN_OBJECT) {
-					Expression exp = new LangObject();
-					stack.push(exp);
-					state = State.INSIDE_OBJECT;
-				} else if(token.getType() == Type.OPEN_ARRAY) {
-					Expression exp = new LangArray();
-					stack.push(exp);
-					state = State.INSIDE_ARRAY;
-				} else if(token.getType() == Type.STRING_TOKEN) {
-					LangString exp = new LangString(token);
+			case OBJECT_STARTED:
+				if(token.getType() == Type.CLOSE_OBJECT) {
+					Expression exp = stack.pop();
 
-					if(stack.size() == 0) {
-
+					if(stack.isEmpty()) {
 						if(iterator.hasNext())
 							throw new RuntimeException("Invalid upcoming token: " + token);
 						else
 							return exp;
-
-					} else {
-						Expression parent = stack.peek();
-						parent.getChildren().add(exp);
-						if(parent instanceof LangKeyValuePair)
-							state = State.END_OF;
 					}
 
-				} else {
-					throw new RuntimeException("Invalid upcoming token: " + token);
-				}
-				break;
-
-			case INSIDE_ARRAY:
-				if(token.getType() == Type.CLOSE_ARRAY) {
-
-					Expression exp = stack.pop();
-					if(exp instanceof LangArray) {
-						if(stack.isEmpty()) {
-							if(iterator.hasNext())
-								throw new RuntimeException("Invalid upcoming token: " + iterator.next());
-							else
-								return exp;
-						} else {
-							stack.peek().getChildren().add(exp);
-							state = State.END_OF_BLOCK;
-						}
-					} else {
-						throw new RuntimeException("Should close object!");
-					}
-
+					stack.peek().getChildren().add(exp);
 				} else if(token.getType() == Type.STRING_TOKEN) {
-
 					Expression exp = new LangKeyValuePair();
-					exp.getChildren().add(new LangString(token));
+					exp.children.add(new LangString(token));
 					stack.push(exp);
-					state = State.GOT_KEY;
-
+					state = State.OBJECT_GOT_KEY;
 				} else {
 					throw new RuntimeException("Invalid upcoming token: " + token);
 				}
 				break;
 
-			case END_OF_ARRAY:
-				if(token.getType() == Type.CLOSE_ARRAY) {
+			case OBJECT_GOT_KEY:
+				if(token.getType() == Type.KEY_VALUE_PAIR_SIGN) {
+					state = State.OBJECT_GOT_SEMICOLON;
+				} else {
+					throw new RuntimeException("Invalid upcoming token: " + token);
+				}
+				break;
 
-					Expression exp = stack.pop();
-					if(exp instanceof LangArray) {
-						if(stack.isEmpty()) {
-							if(iterator.hasNext())
-								throw new RuntimeException("Invalid upcoming token: " + token);
-							else
-								return exp;
-						} else {
-							stack.peek().getChildren().add(exp);
-							state = State.END_OF_BLOCK;
-						}
+			case OBJECT_GOT_SEMICOLON:
+				if(token.getType() == Type.OPEN_OBJECT) {
+					Expression exp = new LangObject();
+					stack.push(exp);
+					state = State.OBJECT_STARTED;
+				} else if(token.getType() == Type.OPEN_ARRAY) {
+					Expression exp = new LangArray();
+					stack.push(exp);
+					state = State.ARRAY_STARTED;
+				} else if(token.getType() == Type.STRING_TOKEN) {
+					Expression exp = new LangString(token);
+					Expression keyAndValue = stack.pop();
+					keyAndValue.getChildren().add(exp);
+					stack.peek().getChildren().add(keyAndValue);
+					state = State.OBJECT_GOT_VALUE;
+				} else {
+					throw new RuntimeException("Invalid upcoming token: " + token);
+				}
+				break;
+
+			case OBJECT_GOT_VALUE:
+				if(token.getType() == Type.CLOSE_OBJECT) {
+					Expression object = stack.pop();
+
+					if(stack.isEmpty()) {
+
+						if(iterator.hasNext())
+							throw new RuntimeException("Invalid upcoming token: " + token);
+						else
+							return object;
+
 					} else {
-						throw new RuntimeException("Should close object!");
+
+						Expression top = stack.peek();
+						top.getChildren().add(object);
+						if(top instanceof LangKeyValuePair) {
+							stack.pop();
+							stack.peek().getChildren().add(top);
+							state = State.OBJECT_GOT_VALUE;
+						} else if(top instanceof LangArray) {
+							state = State.ARRAY_GOT_ITEM;
+						} else {
+							throw new IllegalStateException("Stack peek should be either object or array!");
+						}
+
 					}
 
 				} else if(token.getType() == Type.ENUMERATION_SIGN) {
-					state = State.INSIDE_ARRAY;
+					state = State.OBJECT_GOT_COMMA;
+				} else {
+					throw new RuntimeException("Invalid upcoming token: " + token);
+				}
+				break;
+
+			case OBJECT_GOT_COMMA:
+				if(token.getType() == Type.STRING_TOKEN) {
+					Expression exp = new LangKeyValuePair();
+					exp.children.add(new LangString(token));
+					stack.push(exp);
+					state = State.OBJECT_GOT_KEY;
+				} else {
+					throw new RuntimeException("Invalid upcoming token: " + token);
+				}
+				break;
+
+			case ARRAY_STARTED:
+				if(token.getType() == Type.CLOSE_ARRAY) {
+					Expression exp = stack.pop();
+
+					if(stack.isEmpty()) {
+						if(iterator.hasNext())
+							throw new RuntimeException("Invalid upcoming token: " + token);
+						else
+							return exp;
+					}
+
+					stack.peek().getChildren().add(exp);
+				} else if(token.getType() == Type.OPEN_OBJECT) {
+					Expression exp = new LangObject();
+					stack.push(exp);
+					state = State.OBJECT_STARTED;
+				} else if(token.getType() == Type.OPEN_ARRAY) {
+					Expression exp = new LangArray();
+					stack.push(exp);
+					state = State.ARRAY_STARTED;
+				} else if(token.getType() == Type.STRING_TOKEN) {
+					Expression exp = new LangString(token);
+					stack.peek().getChildren().add(exp);
+					state = State.ARRAY_GOT_ITEM;
+				} else {
+					throw new RuntimeException("Invalid upcoming token: " + token);
+				}
+				break;
+
+			case ARRAY_GOT_ITEM:
+				if(token.getType() == Type.CLOSE_ARRAY) {
+					Expression array = stack.pop();
+
+					if(stack.isEmpty()) {
+
+						if(iterator.hasNext())
+							throw new RuntimeException("Invalid upcoming token: " + token);
+						else
+							return array;
+
+					} else {
+
+						Expression top = stack.peek();
+						top.getChildren().add(array);
+						if(top instanceof LangKeyValuePair) {
+							stack.pop();
+							stack.peek().getChildren().add(top);
+							state = State.OBJECT_GOT_VALUE;
+						} else if(top instanceof LangArray) {
+							state = State.ARRAY_GOT_ITEM;
+						} else {
+							throw new IllegalStateException("Stack peek should be either key-value-pair or array!");
+						}
+
+					}
+
+				} else if(token.getType() == Type.ENUMERATION_SIGN) {
+					state = State.ARRAY_GOT_COMMA;
+				} else {
+					throw new RuntimeException("Invalid upcoming token: " + token);
+				}
+				break;
+
+			case ARRAY_GOT_COMMA:
+				if(token.getType() == Type.STRING_TOKEN) {
+					Expression exp = new LangString(token);
+					stack.peek().getChildren().add(exp);
+					state = State.ARRAY_GOT_ITEM;
 				} else {
 					throw new RuntimeException("Invalid upcoming token: " + token);
 				}
@@ -357,13 +396,12 @@ public class PushDownAutomaton {
 
 			} // end of switch
 
+		} // end while
 
-		}
-
-		throw new RuntimeException("This part of the code should not be accessed!");
+		throw new RuntimeException("Unexpected end of file!");
 	}
 
-	private State state = State.AWAITING_SOMETHING;
+	private State state = State.START;
 	private Stack<Expression> stack = new Stack<>();
 
 	public static void main(String[] args) {
@@ -390,6 +428,14 @@ public class PushDownAutomaton {
 		ret.add(new Token(Type.ENUMERATION_SIGN, ","));
 		ret.add(new Token(Type.STRING_TOKEN, "!"));
 		ret.add(new Token(Type.CLOSE_ARRAY, "]"));
+		ret.add(new Token(Type.ENUMERATION_SIGN, ","));
+		ret.add(new Token(Type.STRING_TOKEN, "This"));
+		ret.add(new Token(Type.KEY_VALUE_PAIR_SIGN, ":"));
+		ret.add(new Token(Type.OPEN_OBJECT, "{"));
+		ret.add(new Token(Type.STRING_TOKEN, "is"));
+		ret.add(new Token(Type.KEY_VALUE_PAIR_SIGN, ":"));
+		ret.add(new Token(Type.STRING_TOKEN, "test!"));
+		ret.add(new Token(Type.CLOSE_OBJECT, "}"));
 		ret.add(new Token(Type.CLOSE_OBJECT, "}"));
 
 		return ret;
