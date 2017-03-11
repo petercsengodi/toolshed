@@ -6,6 +6,9 @@ LoseR1/bin
 Moap/bin
 Moap/target
 mofl/bin
+SearchEngine/bin
+SearchEngine/target
 simple_parser/bin
 WebComponents/bin
-
+WebEditor/bin
+WebEditor/target
