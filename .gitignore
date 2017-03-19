@@ -2,6 +2,7 @@ JsonComponentsJava/bin
 JsonComponentsApp/bin
 BFGenerator/bin
 BFInterpreter/bin
+ficbidta_editor/bin
 LoseR1/bin
 Moap/bin
 Moap/target
@@ -19,6 +20,7 @@ PlatformTomcat/target
 SearchEngine/bin
 SearchEngine/target
 simple_parser/bin
+tool_shed/bin
 Units/bin
 Units/target
 WebComponents/bin

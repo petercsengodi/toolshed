@@ -23,10 +23,10 @@ public class IdentifyStringsAndComments extends PreProcessorStep {
 	private boolean processableItemFound = false;
 
 	@Override
-	public List<ExpressionWithPositions> process(List<ExpressionWithPositions> chunks, 
-			UnprocessedText text) throws PreProcessorException {
+	public List<ExpressionWithPositions> process(List<ExpressionWithPositions> chunks, UnprocessedText text) throws PreProcessorException {
+
 		List<ExpressionWithPositions> ret = new ArrayList<ExpressionWithPositions>();
-		
+
 		// Strings may be only in one row
 		for(ExpressionWithPositions chunk : chunks) {
 			if(chunk.processable()) {
@@ -41,21 +41,18 @@ public class IdentifyStringsAndComments extends PreProcessorStep {
 				internalCommentStarted = false;
 				externalCommentStarted = false;
 				lastCharacter = 0;
-				
+
 				while(it.hasNext()) {
 					lastPosition.x = it.getActualColumn();
 					lastPosition.y = it.getActualRow();
 					c = it.next();
-					
+
 					if(nothingStarted() && !enabledCharacter(c)) {
-						throw new PreProcessorException("Illegal character!", 
-								it.getPosition());
+						throw new PreProcessorException("Illegal character!", it.getPosition());
 					} else if(c == '\n' && stringStarted) {
-						throw new PreProcessorException("String is not closed!", 
-								it.getPosition());
+						throw new PreProcessorException("String is not closed!", it.getPosition());
 					} else if(c == '\n' && characterStarted) {
-						throw new PreProcessorException("Character constant is not closed!", 
-								it.getPosition());
+						throw new PreProcessorException("Character constant is not closed!", it.getPosition());
 					} else if(c == '\n' && internalCommentStarted) {
 						// do nothing
 					} else if(c == '\n' && externalCommentStarted) {
@@ -118,20 +115,17 @@ public class IdentifyStringsAndComments extends PreProcessorStep {
 					} else {
 						// do nothing
 					}
-					
+
 					lastCharacter = c;
 				}
-				
+
 				if(processableItemFound) {
 					if(stringStarted) {
-						throw new PreProcessorException("String is not closed!", 
-								it.getPosition());
+						throw new PreProcessorException("String is not closed!", it.getPosition());
 					} else if(characterStarted) {
-						throw new PreProcessorException("Character constant is not closed!", 
-								it.getPosition());
+						throw new PreProcessorException("Character constant is not closed!", it.getPosition());
 					} else if(internalCommentStarted) {
-							throw new PreProcessorException("Comment is not closed!", 
-									it.getPosition());
+							throw new PreProcessorException("Comment is not closed!", it.getPosition());
 					} else if(externalCommentStarted) {
 						lastPosition = it.getPosition();
 						if(isAfter(lastPosition, startPosition)) {
@@ -152,18 +146,16 @@ public class IdentifyStringsAndComments extends PreProcessorStep {
 				ret.add(chunk);
 			}
 		}
-		
+
 		return ret;
 	}
 
 	private boolean nothingStarted() {
-		return !externalCommentStarted && !internalCommentStarted
-				&& !characterStarted && !stringStarted;
+		return !externalCommentStarted && !internalCommentStarted && !characterStarted && !stringStarted;
 	}
-	
+
 	private boolean enabledCharacter(char c) {
-		return Character.isWhitespace(c) || Character.isDigit(c) ||
-				Character.isLetter(c) || 
+		return Character.isWhitespace(c) || Character.isDigit(c) || Character.isLetter(c) ||
 				"*|#&@$^~?!:`.;,+-_%/\\\"\'()[]{}<=>".indexOf(c) > -1;
 	}
 }
