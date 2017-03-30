@@ -21,6 +21,8 @@ SearchEngine/bin
 SearchEngine/target
 simple_parser/bin
 tool_shed/bin
+ToolShedFramework/bin
+ToolShedFramework/target
 Units/bin
 Units/target
 WebComponents/bin
