@@ -2,8 +2,8 @@ package hu.csega.toolshed.logging;
 
 public class LoggerFactory {
 
-	private static Level defaultLevel;
-	
+	private static Level defaultLevel = Level.DEBUG;
+
 	public static Logger getDefaultImplementation(Class<?> loggedClass) {
 		return new ConsoleLogger(loggedClass.getSimpleName(), defaultLevel);
 	}
