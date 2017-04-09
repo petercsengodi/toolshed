@@ -174,15 +174,15 @@ public class EquationTest {
 		MutationStrategy randomMutationStrategy = new RandomMutationStrategy();
 
 		long cycles = 0;
-		Measurement m = new TimeMeasurement(25);
+		Measurement m = new TimeMeasurement(1);
 		System.out.print("[");
 
 		while(!m.finished()) {
+			population.mutateToNearOnes(10 * (SCALE / 10), bestFitMutationStrategy);
+			population.mutate(2 * SCALE, randomMutationStrategy);
 			population.createRandomGenes(3 * SCALE, Conversions.NUMBER_OF_BYTES);
 			population.initCrossOverStrategy(strategy);
 			population.crossOverSameLength(2 * SCALE, strategy);
-			population.mutate(2 * SCALE, randomMutationStrategy);
-			population.mutateToNearOnes(10 * (SCALE / 10), bestFitMutationStrategy);
 			population.keep(1000);
 
 			if(m.timeToLog())
