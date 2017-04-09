@@ -7,10 +7,12 @@ import hu.csega.genetic.framework.DistanceFromOptimum;
 import hu.csega.genetic.framework.Chromosome;
 import hu.csega.genetic.framework.Population;
 import hu.csega.genetic.framework.PopulationKey;
+import hu.csega.genetic.framework.mutation.BestsInFavorMutationStrategy;
+import hu.csega.genetic.framework.mutation.MutationStrategy;
 
 public class NetworkTest {
 
-	private static final Map<Double, Double> PATTERN = new TreeMap<Double, Double>();
+	private static final Map<Double, Double> PATTERN = new TreeMap<>();
 
 	static {
 		PATTERN.put(0.0, 3.0);
@@ -54,13 +56,15 @@ public class NetworkTest {
 				.adamAndEve(adamAndEve)
 				.build();
 
+		MutationStrategy mutationStrategy = new BestsInFavorMutationStrategy();
+
 		int ROUNDS = 1000;
 		int DIV = ROUNDS / 10;
 		System.out.print("[");
 
 		for(int rounds = 0; rounds < ROUNDS; rounds++) {
 			population.crossOverSameLength(2000);
-			population.mutate(10000);
+			population.mutate(10000, mutationStrategy);
 			population.keep(5000);
 
 			if((rounds + 1) % DIV == 0)

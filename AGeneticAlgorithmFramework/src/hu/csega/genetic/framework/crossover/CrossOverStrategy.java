@@ -1,6 +1,8 @@
-package hu.csega.genetic.framework;
+package hu.csega.genetic.framework.crossover;
 
 import java.util.Collection;
+
+import hu.csega.genetic.framework.Chromosome;
 
 public interface CrossOverStrategy {
 

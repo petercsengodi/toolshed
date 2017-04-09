@@ -3,6 +3,8 @@ package hu.csega.genetic.framework;
 import java.io.Serializable;
 import java.util.Random;
 
+import hu.csega.genetic.framework.crossover.ChromosomePair;
+
 public class Chromosome implements Serializable {
 
 	public static final Random RND = new Random(System.currentTimeMillis());
@@ -66,6 +68,20 @@ public class Chromosome implements Serializable {
 		return children;
 	}
 
+	public static Chromosome mutateFix(Chromosome chromosome, int index, byte add) {
+		byte oldValue = chromosome.genes[index];
+		if(oldValue > Byte.MIN_VALUE && add < 0 || oldValue < Byte.MAX_VALUE && add > 0) {
+			Chromosome result = new Chromosome(chromosome.genes);
+			if(add > 0)
+				result.genes[index]++;
+			else
+				result.genes[index]--;
+			return result;
+		}
+
+		return null;
+	}
+
 	public static Chromosome mutate(Chromosome chromosome, int maxMutatedBytes) {
 		int numberOfMutations;
 		if(maxMutatedBytes < 2)
@@ -78,7 +94,7 @@ public class Chromosome implements Serializable {
 		int length = chromosome.genes.length;
 		for(int i = 0; i < numberOfMutations; i++) {
 			int modify = RND.nextInt(length);
-			byte newValue = getRandomByte();;
+			byte newValue = getRandomByte();
 			result.genes[modify] = newValue;
 		}
 

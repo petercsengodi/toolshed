@@ -1,8 +1,10 @@
-package hu.csega.genetic.framework;
+package hu.csega.genetic.framework.crossover;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import hu.csega.genetic.framework.Chromosome;
 
 public class RandomCrossOverStrategy implements CrossOverStrategy {
 

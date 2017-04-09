@@ -6,6 +6,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import hu.csega.genetic.framework.crossover.ChromosomePair;
+import hu.csega.genetic.framework.crossover.CrossOverStrategy;
+import hu.csega.genetic.framework.crossover.RandomCrossOverStrategy;
+import hu.csega.genetic.framework.mutation.MutationStrategy;
+
 public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>>, Serializable {
 
 	public static class Builder {
@@ -49,31 +54,34 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 		}
 	}
 
-	public void mutate(int numberOfMutations) {
-		mutate(numberOfMutations, 1);
+	public void mutate(int numberOfMutations, MutationStrategy strategy) {
+		mutate(numberOfMutations, 1, strategy);
 	}
 
-	public void mutate(int numberOfMutations, int maxMutatedBytes) {
-		TreeMap<PopulationKey, Chromosome> result = new TreeMap<>();
-		result.putAll(chromosomes);
-
-		Iterator<Chromosome> it = chromosomes.values().iterator();
-		if(!it.hasNext())
-			throw new RuntimeException("No genoms to mutate!");
-
-		for(int i = 0; i < numberOfMutations; i++) {
-
-			if(!it.hasNext()) {
-				it = chromosomes.values().iterator();
-			}
-
-			Chromosome genomToMutate = it.next();
-			Chromosome mutated = Chromosome.mutate(genomToMutate, maxMutatedBytes);
+	public void mutate(int numberOfChromosomesToMutate, int maxMutatedBytes, MutationStrategy strategy) {
+		strategy.selectBatch(chromosomes, numberOfChromosomesToMutate);
+		for(Chromosome chromosomeToMutate : strategy) {
+			Chromosome mutated = Chromosome.mutate(chromosomeToMutate, maxMutatedBytes);
 			double distance = distanceStrategy.calculate(mutated);
-			result.put(new PopulationKey(distance, mutated.getGenes()), mutated);
+			chromosomes.put(new PopulationKey(distance, mutated.getGenes()), mutated);
 		}
+	}
 
-		chromosomes = result;
+	/** Results in (2*numberOfBytesInChromosome * numberOfChromosomesToMutate) new entities. */
+	public void mutateToNearOnes(int numberOfChromosomesToMutate, MutationStrategy strategy) {
+		strategy.selectBatch(chromosomes, numberOfChromosomesToMutate);
+		for(Chromosome chromosomeToMutate : strategy) {
+			int genesLength = chromosomeToMutate.getGenes().length;
+			for(byte k = -1; k < 2; k+= 2) { // -1 and +1
+				for(int j = 0; j < genesLength; j++) {
+					Chromosome mutated = Chromosome.mutateFix(chromosomeToMutate, j, k);
+					if(mutated != null) {
+						double distance = distanceStrategy.calculate(mutated);
+						chromosomes.put(new PopulationKey(distance, mutated.getGenes()), mutated);
+					}
+				}
+			}
+		}
 	}
 
 	// FIXME csega: this is sh*t
@@ -154,6 +162,7 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 		chromosomes = result;
 	}
 
+	@Override
 	public Iterator<Map.Entry<PopulationKey, Chromosome>> iterator() {
 		return chromosomes.entrySet().iterator();
 	}

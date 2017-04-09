@@ -1,11 +1,13 @@
 package hu.csega.genetic.text;
 
-import hu.csega.genetic.framework.BestsInFavorCrossOverStrategy;
 import hu.csega.genetic.framework.Chromosome;
-import hu.csega.genetic.framework.CrossOverStrategy;
 import hu.csega.genetic.framework.DistanceFromOptimum;
 import hu.csega.genetic.framework.Population;
 import hu.csega.genetic.framework.PopulationKey;
+import hu.csega.genetic.framework.crossover.BestsInFavorCrossOverStrategy;
+import hu.csega.genetic.framework.crossover.CrossOverStrategy;
+import hu.csega.genetic.framework.mutation.BestsInFavorMutationStrategy;
+import hu.csega.genetic.framework.mutation.MutationStrategy;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -184,6 +186,8 @@ public class TextLearningTest {
 	public static void main(String[] args) throws Exception {
 		Population population = loadPopulation();
 
+		MutationStrategy mutationStrategy = new BestsInFavorMutationStrategy();
+
 		System.out.println();
 		System.out.println("--- THERE WAS A POPULATION OF NEURAL NETWORKS... ---");
 		System.out.println();
@@ -196,7 +200,7 @@ public class TextLearningTest {
 			while(true) {
 				population.initCrossOverStrategy(CROSS_OVER);
 				population.crossOverSameLength(CROSS_OVER_COUNT, CROSS_OVER);
-				population.mutate(MUTATION_COUNT, MAX_MUTATED_BYTES);
+				population.mutate(MUTATION_COUNT, MAX_MUTATED_BYTES, mutationStrategy);
 				population.createRandomGenes(NEW_RANDOM_COUNT, NetworkForTextV2.LENGTH_PARAMETERS);
 				population.keep(KEEP_COUNT);
 
