@@ -6,6 +6,7 @@ import java.util.List;
 
 import hu.csega.genetic.framework.Chromosome;
 
+/** AFAIK this doesn't work right. */
 public class BestsInFavorCrossOverStrategy implements CrossOverStrategy {
 
 	@Override

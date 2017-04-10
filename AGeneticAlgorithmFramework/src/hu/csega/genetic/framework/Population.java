@@ -5,7 +5,9 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -91,16 +93,70 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 		builder.append("All rounds done: ").append(roundsCounted)
 		.append(" All time spent: ").append(allTimeSpent).append('\n');
 
-		Entry<PopulationKey, Chromosome> bestFitWithKey = this.iterator().next();
+		Iterator<Entry<PopulationKey, Chromosome>> it = this.iterator();
+
+		Entry<PopulationKey, Chromosome> bestFitWithKey = it.next();
 		builder.append("Best Fit Chromosome: ").append(bestFitWithKey).append('\n');
 		Chromosome bestFit = bestFitWithKey.getValue();
 		prototype.fillFromChromosome(bestFit);
-		builder.append("Best Fit Prototype: ").append(prototype);
+		builder.append("Best Fit Prototype: ").append(prototype).append('\n');
+
+		Entry<PopulationKey, Chromosome> leastFitWithKey = bestFitWithKey;
+		while(it.hasNext())
+			leastFitWithKey = it.next();
+
+		builder.append("Best Fit Chromosome: ").append(leastFitWithKey).append('\n');
+		Chromosome leastFit = bestFitWithKey.getValue();
+		prototype.fillFromChromosome(leastFit);
+		builder.append("Least Fit Prototype: ").append(prototype);
 
 		return builder.toString();
 	}
 
-	public void mergeIn(Population other) {
+	public void mergeIn(Population other, long scale, CrossOverStrategy crossOverStrategy) {
+		int count = 0;
+		List<Chromosome> list = new ArrayList<>();
+		Iterator<Chromosome> itThis = this.chromosomes.values().iterator();
+		while(itThis.hasNext() && count < scale) {
+			list.add(itThis.next());
+		}
+
+		ChromosomePair children;
+		double distance;
+
+		// We cross over the first #scale chromosomes from each of the populations
+		// (scale * scale operation)
+		for(Chromosome chromosomeThis : list) {
+
+			count = 0;
+			Iterator<Entry<PopulationKey, Chromosome>> itOther = other.chromosomes.entrySet().iterator();
+			if(itOther.hasNext() && count < scale) {
+				Entry<PopulationKey, Chromosome> next = itOther.next();
+				Chromosome chromosomeOther = next.getValue();
+
+				children = Chromosome.crossOverSameLength(chromosomeThis, chromosomeOther);
+
+				// TODO csega: if new chromosomes already exist in map, shouldn't re-calculate them
+
+				distance = distanceStrategy.calculate(children.chromosome1);
+				this.chromosomes.put(new PopulationKey(distance, children.chromosome1.getGenes()), children.chromosome1);
+
+				distance = distanceStrategy.calculate(children.chromosome2);
+				this.chromosomes.put(new PopulationKey(distance, children.chromosome2.getGenes()), children.chromosome2);
+
+				count++;
+			}
+
+		}
+
+		// We copy #scale chromosomes from "other" to "this"
+		int countOther = 0;
+		Iterator<Entry<PopulationKey, Chromosome>> itOther = other.chromosomes.entrySet().iterator();
+		if(itOther.hasNext() && countOther < scale) {
+			Entry<PopulationKey, Chromosome> next = itOther.next();
+			this.chromosomes.put(next.getKey(), next.getValue());
+		}
+
 		this.chromosomes.putAll(other.chromosomes);
 		this.allTimeSpent += other.allTimeSpent;
 		this.roundsCounted += other.roundsCounted;

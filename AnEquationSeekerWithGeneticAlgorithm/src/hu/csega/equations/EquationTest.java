@@ -6,15 +6,12 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
-
 import hu.csega.equations.tests.GenerateTestData;
 import hu.csega.equations.tests.TestData;
 import hu.csega.equations.util.Conversions;
 import hu.csega.genetic.framework.Chromosome;
 import hu.csega.genetic.framework.DistanceFromOptimum;
 import hu.csega.genetic.framework.Population;
-import hu.csega.genetic.framework.PopulationKey;
 import hu.csega.genetic.framework.crossover.CrossOverStrategy;
 import hu.csega.genetic.framework.crossover.RandomCrossOverStrategy;
 import hu.csega.genetic.framework.measurement.Measurement;
@@ -176,10 +173,10 @@ public class EquationTest {
 			sidePopulations[i] = createOrLoadPopulation(SIDE_FILES[i]);
 		}
 
-		Entry<PopulationKey, Chromosome> bestFit = population.iterator().next();
-		System.out.println("Initial value: " + DISTANCE.calculate(bestFit.getValue()));
+		System.out.println("Initial state\n: " + population.statistics(EQUATION));
+		System.out.println();
 
-		CrossOverStrategy strategy = new RandomCrossOverStrategy();
+		CrossOverStrategy crossOverStrategy = new RandomCrossOverStrategy();
 
 		int SCALE = 100; // 100
 
@@ -188,43 +185,45 @@ public class EquationTest {
 
 		long cycles = 0;
 		Measurement m = new TimeMeasurement(1);
-		System.out.print("[");
 
 		while(!m.finished()) {
 			population.startRound();
 			population.mutateToNearOnes(10 * (SCALE / 10), bestFitMutationStrategy);
 			population.mutate(2 * SCALE, randomMutationStrategy);
 			population.createRandomGenes(3 * SCALE, Conversions.NUMBER_OF_BYTES);
-			population.initCrossOverStrategy(strategy);
-			population.crossOverSameLength(2 * SCALE, strategy);
+			population.initCrossOverStrategy(crossOverStrategy);
+			population.crossOverSameLength(2 * SCALE, crossOverStrategy);
 			population.keep(300);
 			population.endRound();
 
-			for(Population sidePopulation : sidePopulations) {
+			for(int i = 0; i < SIDE_FILES.length; i++) {
+				Population sidePopulation = sidePopulations[i];
 				sidePopulation.startRound();
 				sidePopulation.mutateToNearOnes(10, bestFitMutationStrategy);
-				sidePopulation.mutate(20, randomMutationStrategy);
-				sidePopulation.createRandomGenes(20, Conversions.NUMBER_OF_BYTES);
-				sidePopulation.initCrossOverStrategy(strategy);
-				sidePopulation.crossOverSameLength(20, strategy);
+				sidePopulation.mutate(50, randomMutationStrategy);
+				sidePopulation.createRandomGenes(50, Conversions.NUMBER_OF_BYTES);
+				sidePopulation.initCrossOverStrategy(crossOverStrategy);
+				sidePopulation.crossOverSameLength(40, crossOverStrategy);
 				sidePopulation.keep(300);
 				sidePopulation.endRound();
 
 
-				if(sidePopulation.getRoundsCounted() >= 100) {
+				if(sidePopulation.getRoundsCounted() >= 10) {
 					System.out.println("Merging in:\n" + sidePopulation.statistics(EQUATION) + "\n\n");
-					population.mergeIn(sidePopulation);
-					sidePopulation = createBrandNewPopulation();
+					population.mergeIn(sidePopulation, 20, crossOverStrategy);
+					sidePopulations[i] = createBrandNewPopulation();
 				}
 			}
 
-			if(m.timeToLog())
-				System.out.print(".");
+			if(m.timeToLog()) {
+				long now = System.currentTimeMillis();
+				System.out.println("Still working. Duration: " + ((now - start) / 1000.0) + " sec. Cycles made: " + cycles);
+			}
 
 			cycles++;
 		}
 
-		System.out.println("]\n\n");
+		System.out.println("Final Statistics:\n");
 
 		population.writeIntoFile(POPULATION_FILE);
 		System.out.println("Main population (" + POPULATION_FILE + "):\n" + population.statistics(EQUATION) + "\n\n");
@@ -237,7 +236,7 @@ public class EquationTest {
 
 
 		long end = System.currentTimeMillis();
-		System.out.println("Duration: " + ((end - start) / 1000.0) + " sec. Cycles made: " + cycles);
+		System.out.println("FINISHED! Duration: " + ((end - start) / 1000.0) + " sec. Cycles made: " + cycles);
 	}
 
 }
