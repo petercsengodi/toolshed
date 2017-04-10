@@ -208,7 +208,7 @@ public class EquationTest {
 				sidePopulation.endRound();
 
 
-				if(sidePopulation.getRoundsCounted() >= 10) {
+				if(sidePopulation.getRoundsCounted() >= 77) {
 					System.out.println("Merging in:\n" + sidePopulation.statistics(EQUATION) + "\n\n");
 					population.mergeIn(sidePopulation, 20, crossOverStrategy);
 					sidePopulations[i] = createBrandNewPopulation();
