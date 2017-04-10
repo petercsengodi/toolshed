@@ -106,7 +106,7 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 			leastFitWithKey = it.next();
 
 		builder.append("Best Fit Chromosome: ").append(leastFitWithKey).append('\n');
-		Chromosome leastFit = bestFitWithKey.getValue();
+		Chromosome leastFit = leastFitWithKey.getValue();
 		prototype.fillFromChromosome(leastFit);
 		builder.append("Least Fit Prototype: ").append(prototype);
 
