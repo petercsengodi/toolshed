@@ -1,5 +1,6 @@
 package hu.csega.genetic.framework.store.v2;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -7,11 +8,16 @@ import java.util.TreeMap;
 import hu.csega.genetic.framework.Chromosome;
 import hu.csega.genetic.framework.PopulationKey;
 
-public class FittingGroupV2 implements Comparable<FittingGroupV2> {
+public class FittingGroupV2 implements Comparable<FittingGroupV2>, Serializable {
 
 	private Double bestFitDistance = Double.POSITIVE_INFINITY;
 
 	private TreeMap<PopulationKey, Chromosome> chromosomes = new TreeMap<>();
+
+	public void addChromosome(PopulationKey key, Chromosome chromosome) {
+		// TODO Auto-generated method stub
+
+	}
 
 	public void update() {
 		Iterator<Entry<PopulationKey, Chromosome>> it = chromosomes.entrySet().iterator();
@@ -31,5 +37,7 @@ public class FittingGroupV2 implements Comparable<FittingGroupV2> {
 	public int compareTo(FittingGroupV2 o) {
 		return Double.compare(bestFitDistance, o.bestFitDistance);
 	}
+
+	private static final long serialVersionUID = 1L;
 
 }

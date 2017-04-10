@@ -64,6 +64,17 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 		}
 	}
 
+	public void migrateData() {
+		// from V1 -> V2
+		if(chromosomes != null && !chromosomes.isEmpty()) {
+			for(Entry<PopulationKey, Chromosome> entry : chromosomes.entrySet()) {
+
+			}
+
+			// TODO chromosomes = null;
+		}
+	}
+
 	public void startRound() {
 		roundStartedAt = System.currentTimeMillis();
 	}

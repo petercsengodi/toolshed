@@ -184,7 +184,7 @@ public class EquationTest {
 		MutationStrategy randomMutationStrategy = new RandomMutationStrategy();
 
 		long cycles = 0;
-		Measurement m = new TimeMeasurement(5, 1);
+		Measurement m = new TimeMeasurement(120, 10);
 
 		while(!m.finished()) {
 			population.startRound();
