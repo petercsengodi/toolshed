@@ -210,7 +210,9 @@ public class EquationTest {
 				sidePopulation.keep(300);
 				sidePopulation.endRound();
 
+
 				if(sidePopulation.getRoundsCounted() >= 100) {
+					System.out.println("Merging in:\n" + sidePopulation.statistics(EQUATION) + "\n\n");
 					population.mergeIn(sidePopulation);
 					sidePopulation = createBrandNewPopulation();
 				}
