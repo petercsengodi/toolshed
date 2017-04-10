@@ -1,5 +1,9 @@
 package hu.csega.genetic.framework;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Map;
@@ -44,6 +48,62 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 		builder.population = new Population();
 		builder.population.distanceStrategy = distance;
 		return builder;
+	}
+
+	public static Population readFromFile(String filename) {
+		try {
+			FileInputStream fin = new FileInputStream(filename);
+			ObjectInputStream ois = new ObjectInputStream(fin);
+			Population population = (Population) ois.readObject();
+			ois.close();
+			return population;
+		} catch (Exception e) {
+			throw new RuntimeException("Error reading population file from: " + filename);
+		}
+	}
+
+	public void startRound() {
+		roundStartedAt = System.currentTimeMillis();
+	}
+
+	public void endRound() {
+		roundsCounted++;
+		allTimeSpent += (System.currentTimeMillis() - roundStartedAt);
+	}
+
+	public void writeIntoFile(String filename) {
+
+		try {
+			FileOutputStream fileOut = new FileOutputStream(filename);
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			out.writeObject(this);
+			out.close();
+			fileOut.close();
+		} catch(Exception ex) {
+			throw new RuntimeException("Error saving population to file: " + filename);
+		}
+
+	}
+
+	public String statistics(ChromosomeReceiver prototype) {
+		StringBuilder builder = new StringBuilder();
+
+		builder.append("All rounds done: ").append(roundsCounted)
+		.append(" All time spent: ").append(allTimeSpent).append('\n');
+
+		Entry<PopulationKey, Chromosome> bestFitWithKey = this.iterator().next();
+		builder.append("Best Fit Chromosome: ").append(bestFitWithKey).append('\n');
+		Chromosome bestFit = bestFitWithKey.getValue();
+		prototype.fillFromChromosome(bestFit);
+		builder.append("Best Fit Prototype: ").append(prototype);
+
+		return builder.toString();
+	}
+
+	public void mergeIn(Population other) {
+		this.chromosomes.putAll(other.chromosomes);
+		this.allTimeSpent += other.allTimeSpent;
+		this.roundsCounted += other.roundsCounted;
 	}
 
 	public void createRandomGenes(int numberOfRandomGenes, int length) {
@@ -166,6 +226,15 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 	public Iterator<Map.Entry<PopulationKey, Chromosome>> iterator() {
 		return chromosomes.entrySet().iterator();
 	}
+
+	public long getRoundsCounted() {
+		return roundsCounted;
+	}
+
+	private transient long roundStartedAt;
+
+	private long allTimeSpent;
+	private long roundsCounted;
 
 	private TreeMap<PopulationKey, Chromosome> chromosomes;
 	private DistanceFromOptimum distanceStrategy;

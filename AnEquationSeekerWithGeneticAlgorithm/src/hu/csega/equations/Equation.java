@@ -5,23 +5,30 @@ import hu.csega.equations.util.Executable;
 import hu.csega.equations.util.Operation;
 import hu.csega.equations.util.OperationWrapper;
 import hu.csega.genetic.framework.Chromosome;
+import hu.csega.genetic.framework.ChromosomeReceiver;
 
-public class Equation {
+public class Equation implements ChromosomeReceiver {
 
 	public Executable root;
+
+	@Override
+	public String printableMessage() {
+		return toString();
+	}
 
 	@Override
 	public String toString() {
 		return root.toString();
 	}
 
-	public double calculate(double[] variables) {
-		return root.execute(variables);
-	}
-
+	@Override
 	public void fillFromChromosome(Chromosome chromosome) {
 		byte[] genes = chromosome.getGenes();
 		root = build(genes, 0, genes.length - 1);
+	}
+
+	public double calculate(double[] variables) {
+		return root.execute(variables);
 	}
 
 	private Executable build(byte[] bytes, int startIndex, int endIndex) {

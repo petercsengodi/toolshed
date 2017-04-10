@@ -3,13 +3,9 @@ package hu.csega.equations;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import hu.csega.equations.tests.GenerateTestData;
@@ -30,6 +26,14 @@ import hu.csega.genetic.framework.mutation.RandomMutationStrategy;
 public class EquationTest {
 
 	public static final String POPULATION_FILE = "/tmp/population.dat";
+
+	public static final String[] SIDE_FILES = new String[] {
+			"/tmp/population_s001.dat",
+			"/tmp/population_s002.dat",
+			"/tmp/population_s003.dat"
+	};
+
+	private static final Equation EQUATION = new Equation();
 
 	public static final TestData[] TEST_DATA = loadTestDataExc();
 
@@ -127,44 +131,53 @@ public class EquationTest {
 		private static final long serialVersionUID = 1L;
 	};
 
-	public static void main(String[] args) throws Exception {
-		long start = System.currentTimeMillis();
+	private static Population createBrandNewPopulation() {
+		byte[] zeros = new byte[Conversions.NUMBER_OF_BYTES];
+		Chromosome adamAndEve = new Chromosome(zeros);
+
+		Population population = Population.builder(DISTANCE)
+				.adamAndEve(adamAndEve)
+				.build();
+
+		return population;
+	}
+
+	private static Population createOrLoadPopulation(String populationFile) {
 		Population population = null;
 
-		File file = new File(POPULATION_FILE);
+		File file = new File(populationFile);
 		if(file.exists()) {
 			try {
 
-				System.out.println("Trying to load file: " + POPULATION_FILE);
-
-				FileInputStream fin = new FileInputStream(file);
-				ObjectInputStream ois = new ObjectInputStream(fin);
-				population = (Population) ois.readObject();
-				ois.close();
-
+				System.out.println("Trying to load file: " + populationFile);
+				population = Population.readFromFile(populationFile);
 				System.out.println("File loaded.");
 
-				Entry<PopulationKey, Chromosome> bestFit = population.iterator().next();
-				System.out.println("Initial value: " + DISTANCE.calculate(bestFit.getValue()));
 			} catch(Exception ex) {
 				System.out.println("Error loading population.");
 				population = null;
-
 				ex.printStackTrace();
 			}
 		}
 
 		if(population == null) {
 			System.out.println("Creating new population.");
-
-			byte[] zeros = new byte[Conversions.NUMBER_OF_BYTES];
-			Chromosome adamAndEve = new Chromosome(zeros);
-			System.out.println("Initial value: " + DISTANCE.calculate(adamAndEve));
-
-			population = Population.builder(DISTANCE)
-					.adamAndEve(adamAndEve)
-					.build();
+			population = createBrandNewPopulation();
 		}
+
+		return population;
+	}
+
+	public static void main(String[] args) throws Exception {
+		long start = System.currentTimeMillis();
+		Population population = createOrLoadPopulation(POPULATION_FILE);
+		Population[] sidePopulations = new Population[SIDE_FILES.length];
+		for(int i = 0; i < SIDE_FILES.length; i++) {
+			sidePopulations[i] = createOrLoadPopulation(SIDE_FILES[i]);
+		}
+
+		Entry<PopulationKey, Chromosome> bestFit = population.iterator().next();
+		System.out.println("Initial value: " + DISTANCE.calculate(bestFit.getValue()));
 
 		CrossOverStrategy strategy = new RandomCrossOverStrategy();
 
@@ -178,12 +191,30 @@ public class EquationTest {
 		System.out.print("[");
 
 		while(!m.finished()) {
+			population.startRound();
 			population.mutateToNearOnes(10 * (SCALE / 10), bestFitMutationStrategy);
 			population.mutate(2 * SCALE, randomMutationStrategy);
 			population.createRandomGenes(3 * SCALE, Conversions.NUMBER_OF_BYTES);
 			population.initCrossOverStrategy(strategy);
 			population.crossOverSameLength(2 * SCALE, strategy);
-			population.keep(1000);
+			population.keep(300);
+			population.endRound();
+
+			for(Population sidePopulation : sidePopulations) {
+				sidePopulation.startRound();
+				sidePopulation.mutateToNearOnes(10, bestFitMutationStrategy);
+				sidePopulation.mutate(20, randomMutationStrategy);
+				sidePopulation.createRandomGenes(20, Conversions.NUMBER_OF_BYTES);
+				sidePopulation.initCrossOverStrategy(strategy);
+				sidePopulation.crossOverSameLength(20, strategy);
+				sidePopulation.keep(300);
+				sidePopulation.endRound();
+
+				if(sidePopulation.getRoundsCounted() >= 100) {
+					population.mergeIn(sidePopulation);
+					sidePopulation = createBrandNewPopulation();
+				}
+			}
 
 			if(m.timeToLog())
 				System.out.print(".");
@@ -191,30 +222,20 @@ public class EquationTest {
 			cycles++;
 		}
 
-		System.out.println("]");
+		System.out.println("]\n\n");
 
-		try {
-			FileOutputStream fileOut = new FileOutputStream(file);
-			ObjectOutputStream out = new ObjectOutputStream(fileOut);
-			out.writeObject(population);
-			out.close();
-			fileOut.close();
-		} catch(Exception ex) {
-			System.out.println("Error saving population.");
-			ex.printStackTrace();
+		population.writeIntoFile(POPULATION_FILE);
+		System.out.println("Main population (" + POPULATION_FILE + "):\n" + population.statistics(EQUATION) + "\n\n");
+
+		for(int i = 0; i < SIDE_FILES.length; i++) {
+			Population p = sidePopulations[i];
+			p.writeIntoFile(SIDE_FILES[i]);
+			System.out.println("Side population (" + SIDE_FILES[i] + "):\n" + p.statistics(EQUATION) + "\n\n");
 		}
 
-		population.keep(1);
-
-		for(Map.Entry<PopulationKey, Chromosome> chromosome : population) {
-			System.out.println("Final: " + chromosome);
-			EQUATION.fillFromChromosome(chromosome.getValue());
-			System.out.println("Equation: " + EQUATION);
-		}
 
 		long end = System.currentTimeMillis();
 		System.out.println("Duration: " + ((end - start) / 1000.0) + " sec. Cycles made: " + cycles);
 	}
 
-	private static final Equation EQUATION = new Equation();
 }
