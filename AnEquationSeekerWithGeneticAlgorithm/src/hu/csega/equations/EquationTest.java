@@ -173,7 +173,7 @@ public class EquationTest {
 			sidePopulations[i] = createOrLoadPopulation(SIDE_FILES[i]);
 		}
 
-		System.out.println("Initial state\n: " + population.statistics(EQUATION));
+		System.out.println("Initial state:\n" + population.statistics(EQUATION));
 		System.out.println();
 
 		CrossOverStrategy crossOverStrategy = new RandomCrossOverStrategy();
@@ -184,7 +184,7 @@ public class EquationTest {
 		MutationStrategy randomMutationStrategy = new RandomMutationStrategy();
 
 		long cycles = 0;
-		Measurement m = new TimeMeasurement(1);
+		Measurement m = new TimeMeasurement(30);
 
 		while(!m.finished()) {
 			population.startRound();
