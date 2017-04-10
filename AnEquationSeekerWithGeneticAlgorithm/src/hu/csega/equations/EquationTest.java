@@ -173,7 +173,7 @@ public class EquationTest {
 			sidePopulations[i] = createOrLoadPopulation(SIDE_FILES[i]);
 		}
 
-		System.out.println("Initial state:\n" + population.statistics(EQUATION));
+		System.out.println("\n\nInitial state:\n" + population.statistics(EQUATION));
 		System.out.println();
 
 		CrossOverStrategy crossOverStrategy = new RandomCrossOverStrategy();
@@ -184,7 +184,7 @@ public class EquationTest {
 		MutationStrategy randomMutationStrategy = new RandomMutationStrategy();
 
 		long cycles = 0;
-		Measurement m = new TimeMeasurement(30);
+		Measurement m = new TimeMeasurement(5, 1);
 
 		while(!m.finished()) {
 			population.startRound();
@@ -218,6 +218,16 @@ public class EquationTest {
 			if(m.timeToLog()) {
 				long now = System.currentTimeMillis();
 				System.out.println("Still working. Duration: " + ((now - start) / 1000.0) + " sec. Cycles made: " + cycles);
+			}
+
+			if(m.autoSave()) {
+				System.out.print("Auto-saving...");
+				population.writeIntoFile(POPULATION_FILE);
+				for(int i = 0; i < SIDE_FILES.length; i++) {
+					Population p = sidePopulations[i];
+					p.writeIntoFile(SIDE_FILES[i]);
+				}
+				System.out.println("Done!\n");
 			}
 
 			cycles++;

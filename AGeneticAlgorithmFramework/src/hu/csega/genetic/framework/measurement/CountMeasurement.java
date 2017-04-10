@@ -4,10 +4,12 @@ public class CountMeasurement implements Measurement {
 
 	private int current;
 	private int count;
+	private int autoSaveBlock;
 
-	public CountMeasurement(int count) {
+	public CountMeasurement(int count, int autoSave) {
 		this.count = count;
 		this.current = 0;
+		this.autoSaveBlock = autoSave;
 	}
 
 	@Override
@@ -21,4 +23,8 @@ public class CountMeasurement implements Measurement {
 		return ((count + 1) % div == 0);
 	}
 
+	@Override
+	public boolean autoSave() {
+		return ((count + 1) % autoSaveBlock == 0);
+	}
 }

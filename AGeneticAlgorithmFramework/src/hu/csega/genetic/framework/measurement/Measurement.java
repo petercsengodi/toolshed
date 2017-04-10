@@ -4,5 +4,6 @@ public interface Measurement {
 
 	boolean finished();
 	boolean timeToLog();
+	boolean autoSave();
 
 }
