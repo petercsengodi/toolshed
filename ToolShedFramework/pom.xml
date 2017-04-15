@@ -87,7 +87,12 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.5</version>
 		</dependency>
-
+		
+		<dependency>
+			<groupId>hu.csega.units</groupId>
+			<artifactId>Units</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 </project>

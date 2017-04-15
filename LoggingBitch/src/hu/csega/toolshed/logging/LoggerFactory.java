@@ -8,6 +8,10 @@ public class LoggerFactory {
 		return new ConsoleLogger(loggedClass.getSimpleName(), defaultLevel);
 	}
 
+	public static Logger createLogger(Class<?> loggedClass) {
+		return getDefaultImplementation(loggedClass);
+	}
+
 	public static void setDefaultLevel(Level level) {
 		defaultLevel = level;
 	}
