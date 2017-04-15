@@ -17,17 +17,12 @@ import hu.csega.toolshed.AbstractTool;
 
 public class FicbidtaStringDialog extends JDialog {
 
-	/**
-	 * Default serial version uid.
-	 */
-	private static final long serialVersionUID = 1L;
-	
 	private AbstractTool tool;
 	public JTextField field;
 	public FicbidtaPropertyRow row;
-	
+
 	public FicbidtaStringDialog(AbstractTool tool) {
-		super(tool.getWindow().getAwtWindow(), "String", 
+		super(tool.getWindow().getAwtWindow(), "String",
 				ModalityType.APPLICATION_MODAL);
 		this.tool = tool;
 
@@ -42,14 +37,14 @@ public class FicbidtaStringDialog extends JDialog {
 				}
 			}
 		});
-				
+
 		JPanel buttonPanel = new JPanel();
 		JButton okButton = new JButton("Ok");
 		JButton cancelButton = new JButton("Cancel");
 		buttonPanel.setLayout(new FlowLayout());
 		buttonPanel.add(okButton);
 		buttonPanel.add(cancelButton);
-		
+
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(save()) {
@@ -57,13 +52,13 @@ public class FicbidtaStringDialog extends JDialog {
 				}
 			}
 		});
-		
+
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				close();
 			}
 		});
-		
+
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add("North", field);
 		getContentPane().add("South", buttonPanel);
@@ -77,20 +72,22 @@ public class FicbidtaStringDialog extends JDialog {
 		field.setText(row.propertyValue);
 		setVisible(true);
 	}
-	
+
 	public boolean save() {
 		String text = field.getText();
 		row.propertyValue = text;
 		text = row.property.display(row.property.convertFromString(text, String.class), String.class);
 		row.propertyDisplayValue = text;
 		tool.getComponent(FicbidtaPropertyDialog.class).table.repaint();
-		
+
 		// successful
 		return true;
 	}
-	
+
 	public void close() {
 		row = null;
 		setVisible(false);
 	}
+
+	private static final long serialVersionUID = 1L;
 }

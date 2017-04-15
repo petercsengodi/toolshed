@@ -53,9 +53,5 @@ public class FicbidtaListDialog extends JDialog{
 		pack();
 	}
 
-	/**
-	 * Default serial version UID.
-	 */
 	private static final long serialVersionUID = 1L;
-
 }

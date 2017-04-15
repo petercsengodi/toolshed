@@ -6,19 +6,15 @@ import java.util.List;
 
 public class ArrayListMap<K, V> extends HashMap<K, ArrayList<V>> {
 
-	/**
-	 * Default serial version uid.
-	 */
-	private static final long serialVersionUID = 1L;
-	
 	public List<V> getOrCreate(K key) {
 		ArrayList<V> list = this.get(key);
 		if(list == null) {
-			list = new ArrayList<V>();
+			list = new ArrayList<>();
 			this.put(key, list);
 		}
-		
+
 		return list;
 	}
-	
+
+	private static final long serialVersionUID = 1L;
 }

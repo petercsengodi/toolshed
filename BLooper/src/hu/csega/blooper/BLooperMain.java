@@ -147,8 +147,5 @@ public class BLooperMain extends JFrame implements ActionListener, WindowListene
 	public static final String ERROR = "Error.";
 	public static final String TEMP_FILE = "RecordAudio.wav";
 
-	/**
-	 * Default serial version UID.
-	 */
 	private static final long serialVersionUID = 1L;
 }

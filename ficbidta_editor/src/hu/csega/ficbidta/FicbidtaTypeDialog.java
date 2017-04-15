@@ -25,18 +25,13 @@ import javax.swing.JPanel;
 
 public class FicbidtaTypeDialog extends JDialog{
 
-	/**
-	 * Default serial version uid.
-	 */
-	private static final long serialVersionUID = 1L;
-	
 	private AbstractTool tool;
 	private ModelObject object = null;
 	public JComboBox field;
 	public FicbidtaObjectTypes comboBoxModel;
-	
+
 	public FicbidtaTypeDialog(AbstractTool tool) {
-		super(tool.getWindow().getAwtWindow(), "Set Type", 
+		super(tool.getWindow().getAwtWindow(), "Set Type",
 			ModalityType.APPLICATION_MODAL);
 		this.tool = tool;
 
@@ -51,27 +46,27 @@ public class FicbidtaTypeDialog extends JDialog{
 				}
 			}
 		});
-		
+
 		JPanel buttonPanel = new JPanel();
 		JButton okButton = new JButton("Ok");
 		JButton cancelButton = new JButton("Cancel");
 		buttonPanel.setLayout(new FlowLayout());
 		buttonPanel.add(okButton);
 		buttonPanel.add(cancelButton);
-		
+
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				saveType();
 				close();
 			}
 		});
-		
+
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				close();
 			}
 		});
-		
+
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add("North", field);
 		getContentPane().add("South", buttonPanel);
@@ -79,12 +74,12 @@ public class FicbidtaTypeDialog extends JDialog{
 		setResizable(false);
 		pack();
 	}
-		
+
 	public void close() {
 		setVisible(false);
 		object = null;
 	}
-	
+
 	public void saveType() {
 		Object selectedType = comboBoxModel.getSelectedValue();
 		String newType = null;
@@ -94,42 +89,42 @@ public class FicbidtaTypeDialog extends JDialog{
 				newType = null;
 			}
 		}
-		
+
 		TreeMap<String, String> newProperties = new TreeMap<String, String>();
 		if(newType != null) {
 			// Saving initial values for properties
 			Class<?> typeClass;
-			
+
 			try {
 				typeClass = getClass().getClassLoader().loadClass(newType);
 			} catch(ClassNotFoundException ex) {
 				throw new RuntimeException(ex);
 			}
-			
+
 			Field[] allFields = typeClass.getFields();
 			for(Field field : allFields) {
 				FicbidtaProperty prop = field.getAnnotation(FicbidtaProperty.class);
 				if(prop == null) {
 					continue;
 				}
-				
+
 				String propertyName = prop.name();
 				newProperties.put(propertyName, "");
 			}
-			
+
 		}
-		
+
 		tool.getComponent(ModelNetwork.class).changeObjectType(object, newType, newProperties);
 		tool.getComponent(FicbidtaCanvas.class).repaint();
 	}
-	
+
 	public void open(ModelObject object) {
 		this.object = object;
 		String oldType = object.type;
 		if(oldType == null) {
 			oldType = "";
 		}
-		
+
 		FicbidtaAbstractObjectProvider objectProvider =
 				tool.getComponent(FicbidtaAbstractObjectProvider.class);
 		List<Class<?>> types = null;
@@ -138,9 +133,10 @@ public class FicbidtaTypeDialog extends JDialog{
 		} else if(object instanceof ModelConnection) {
 			types = objectProvider.connectionTypes();
 		}
-		
+
 		this.comboBoxModel.loadList(types, oldType);
 		this.setVisible(true);
 	}
 
+	private static final long serialVersionUID = 1L;
 }

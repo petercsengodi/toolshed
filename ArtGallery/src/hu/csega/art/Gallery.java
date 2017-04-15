@@ -151,9 +151,5 @@ public class Gallery extends JPanel {
 
 	private static final Dimension PREFERRED_SIZE = new Dimension(800, 600);
 
-	/**
-	 * Default serial version UID.
-	 */
 	private static final long serialVersionUID = 1L;
-
-} // end of class
+}
