@@ -1,12 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>hu.csega.toolshed.framework</groupId>
+	<parent>
+		<groupId>hu.csega.toolshed</groupId>
+		<artifactId>toolshed</artifactId>
+		<version>1.0.0</version>
+	</parent>
 	<artifactId>ToolShedFramework</artifactId>
-	<packaging>jar</packaging>
-	<version>1.0-SNAPSHOT</version>
-	<name>ToolShed Framework</name>
-	<url>http://maven.apache.org</url>
+	<name>ToolShedFramework</name>
+	<version>1.0.0</version>
 
 	<properties>
 		<jdk.version>1.7</jdk.version>
@@ -66,32 +68,15 @@
 	</build>
 
 	<dependencies>
-		<!-- https://mvnrepository.com/artifact/junit/junit -->
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
-		</dependency>
-
-	
-		<!-- https://mvnrepository.com/artifact/org.json/json -->
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20090211</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>3.5</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>hu.csega.units</groupId>
+			<groupId>hu.csega.toolshed</groupId>
 			<artifactId>Units</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>hu.csega.toolshed</groupId>
+			<artifactId>LoggingBitch</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
 

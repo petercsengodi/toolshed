@@ -1,7 +1,5 @@
 package hu.csega.toolshed.logging;
 
-import java.util.function.Function;
-
 public abstract class AbstractLogger implements Logger {
 
 	private final Level level;
@@ -95,10 +93,6 @@ public abstract class AbstractLogger implements Logger {
 	}
 
 	private static final String convert(Object object) {
-		return convert(object, (Object o) -> (o == null ? "null" : o.toString()));
-	}
-
-	private static final <T> T convert(Object object, Function<Object, T> method) {
-		return method.apply(object);
+		return (object == null ? "null" : object.toString());
 	}
 }

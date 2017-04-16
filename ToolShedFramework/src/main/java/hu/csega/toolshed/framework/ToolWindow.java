@@ -13,7 +13,8 @@ import hu.csega.units.Unit;
 @DefaultImplementation(ToolWindowImpl.class)
 public interface ToolWindow {
 
-	Container getContentPane();
+	void addComponent(Object component);
+
 	void setJMenuBar(JMenuBar menuBar);
 	Window getAwtWindow();
 	void showMessage(String message);

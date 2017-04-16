@@ -1,5 +1,6 @@
 package hu.csega.toolshed.framework.impl;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.Window;
@@ -17,6 +18,14 @@ public class ToolWindowImpl extends JFrame implements ToolWindow {
 	public ToolWindowImpl() {
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		addWindowListener(new ToolWindowAdapter(this));
+	}
+
+	@Override
+	public void addComponent(Object component) {
+		if(component instanceof Component) {
+			Component awtComponent = (Component)component;
+			getContentPane().add(awtComponent);
+		}
 	}
 
 	@Override
