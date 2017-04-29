@@ -2,6 +2,8 @@ package hu.csega.toolshed.framework.components;
 
 import org.json.JSONObject;
 
+import hu.csega.toolshed.framework.util.ProcessUtil;
+
 public class ToolShedErrorDataBuilder {
 
 	String componentName;
@@ -26,33 +28,34 @@ public class ToolShedErrorDataBuilder {
 		return this;
 	}
 
-	public ToolShedErrorDataBuilder componentName(String componentName) {
-		this.componentName = componentName;
+	public ToolShedErrorDataBuilder mnemonic(String mnemonic) {
+		this.mnemonic = mnemonic;
 		return this;
 	}
 
-	public ToolShedErrorDataBuilder componentName(String componentName) {
-		this.componentName = componentName;
+	public ToolShedErrorDataBuilder message(String message) {
+		this.message = message;
 		return this;
 	}
 
-	public ToolShedErrorDataBuilder componentName(String componentName) {
-		this.componentName = componentName;
+	public ToolShedErrorDataBuilder description(String description) {
+		this.description = description;
 		return this;
 	}
 
-	public ToolShedErrorDataBuilder componentName(String componentName) {
-		this.componentName = componentName;
+	public ToolShedErrorDataBuilder parameters(JSONObject parameters) {
+		this.parameters = parameters;
 		return this;
 	}
 
-	public ToolShedErrorDataBuilder componentName(String componentName) {
-		this.componentName = componentName;
+	public ToolShedErrorDataBuilder severity(ToolShedSeverity severity) {
+		this.severity = severity;
 		return this;
 	}
 
-	public ToolShedErrorDataBuilder componentName(String componentName) {
-		this.componentName = componentName;
-		return this;
+	private ToolShedErrorDataBuilder() {
+		this.uniqueIdentifier = ProcessUtil.generateUniqueId();
+		this.timestamp = System.currentTimeMillis();
+		this.severity = ToolShedSeverity.INFO;
 	}
 }
