@@ -51,12 +51,13 @@
 	</dependencies>
 
 	<modules>
-		<module>Units</module>
 		<module>LoggingBitch</module>
+		<module>Units</module>
 		<module>ToolShedFramework</module>
 		<module>AGeneticAlgorithmFramework</module>
 		<module>AnEquationSeekerWithGeneticAlgorithm</module>
 		<module>ParserPreProcessor</module>
 		<module>ParserLRAnalyzer</module>
+		<module>ParserExampleLanguage</module>
 	</modules>
 </project>

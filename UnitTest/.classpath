@@ -5,8 +5,8 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/Units"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/LoggingBitch"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/mofl"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ParserLRAnalyzer"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ParserPreProcessor"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ParserExampleLanguage"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
