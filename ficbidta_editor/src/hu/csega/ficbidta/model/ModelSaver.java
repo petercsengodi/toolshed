@@ -2,7 +2,7 @@ package hu.csega.ficbidta.model;
 
 import hu.csega.toolshed.AbstractTool;
 import hu.csega.toolshed.ToolComponent;
-import hu.csega.toolshed.simple.parser.SimpleParserImpl;
+import hu.csega.toolshed.parser.preprocessor.SimpleParserImpl;
 
 import java.io.File;
 import java.io.FileOutputStream;

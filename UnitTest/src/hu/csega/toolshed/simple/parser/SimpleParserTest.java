@@ -1,10 +1,12 @@
 package hu.csega.toolshed.simple.parser;
 
-import hu.csega.toolshed.simple.parser.helper.ExpressionWithPositions;
-import hu.csega.toolshed.simple.parser.helper.UnprocessedText;
-import hu.csega.toolshed.simple.parser.preprocessor.ConvertInputStreamIntoUnprocessedText;
-import hu.csega.toolshed.simple.parser.preprocessor.PreProcessorException;
-import hu.csega.toolshed.simple.parser.preprocessor.PrintExpressionsWithPositions;
+import hu.csega.toolshed.parser.preprocessor.SimpleParser;
+import hu.csega.toolshed.parser.preprocessor.SimpleParserImpl;
+import hu.csega.toolshed.parser.preprocessor.helper.ExpressionWithPositions;
+import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedText;
+import hu.csega.toolshed.parser.preprocessor.impl.ConvertInputStreamIntoUnprocessedText;
+import hu.csega.toolshed.parser.preprocessor.impl.PreProcessorException;
+import hu.csega.toolshed.parser.preprocessor.impl.PrintExpressionsWithPositions;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

@@ -8,14 +8,14 @@ import java.util.List;
 import hu.csega.ficbidta.FicbidtaCanvas;
 import hu.csega.toolshed.AbstractTool;
 import hu.csega.toolshed.ToolComponent;
-import hu.csega.toolshed.simple.parser.SimpleParser;
-import hu.csega.toolshed.simple.parser.SimpleParserImpl;
-import hu.csega.toolshed.simple.parser.SimpleParserUtil;
-import hu.csega.toolshed.simple.parser.helper.ExpressionWithPositions;
-import hu.csega.toolshed.simple.parser.helper.NumberExpression;
-import hu.csega.toolshed.simple.parser.helper.OperatorExpression;
-import hu.csega.toolshed.simple.parser.helper.UnprocessedText;
-import hu.csega.toolshed.simple.parser.preprocessor.PreProcessorException;
+import hu.csega.toolshed.parser.preprocessor.SimpleParser;
+import hu.csega.toolshed.parser.preprocessor.SimpleParserImpl;
+import hu.csega.toolshed.parser.preprocessor.SimpleParserUtil;
+import hu.csega.toolshed.parser.preprocessor.helper.ExpressionWithPositions;
+import hu.csega.toolshed.parser.preprocessor.helper.NumberExpression;
+import hu.csega.toolshed.parser.preprocessor.helper.OperatorExpression;
+import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedText;
+import hu.csega.toolshed.parser.preprocessor.impl.PreProcessorException;
 import hu.csega.units.UnitStore;
 
 public class ModelLoader extends ToolComponent {
