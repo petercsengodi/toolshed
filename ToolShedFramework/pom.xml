@@ -70,12 +70,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>hu.csega.toolshed</groupId>
-			<artifactId>Units</artifactId>
+			<artifactId>LoggingBitch</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>hu.csega.toolshed</groupId>
-			<artifactId>LoggingBitch</artifactId>
+			<artifactId>Units</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 	</dependencies>

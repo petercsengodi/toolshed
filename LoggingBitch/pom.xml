@@ -55,11 +55,6 @@
 	</build>
 
 	<dependencies>
-		<dependency>
-			<groupId>hu.csega.toolshed</groupId>
-			<artifactId>Units</artifactId>
-			<version>1.0.0</version>
-		</dependency>
 	</dependencies>
 
 </project>

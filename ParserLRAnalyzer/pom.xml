@@ -49,7 +49,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>hu.csega.toolshed</groupId>
-			<artifactId>ToolShedFramework</artifactId>
+			<artifactId>LoggingBitch</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
@@ -59,7 +59,7 @@
 		</dependency>
 		<dependency>
 			<groupId>hu.csega.toolshed</groupId>
-			<artifactId>LoggingBitch</artifactId>
+			<artifactId>ToolShedFramework</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
