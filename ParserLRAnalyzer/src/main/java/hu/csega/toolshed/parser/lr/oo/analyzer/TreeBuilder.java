@@ -16,8 +16,6 @@ import java.util.Stack;
 
 public class TreeBuilder {
 
-	private static final Logger logger = LoggerFactory.getDefaultImplementation(TreeBuilder.class);
-	
 	public ActionTable actionTable;
 	public JumpTable jumpTable;
 
@@ -33,16 +31,16 @@ public class TreeBuilder {
 	public Node build(List<Node> sentence) {
 		Node rootNode = new Node();
 		rootNode.atom = FormulaUtil.UNIVERSE;
-		
-		List<Formula> formulaList = new ArrayList<Formula>();
-		
+
+		List<Formula> formulaList = new ArrayList<>();
+
 		int position = 0;
 		int fromIndex, toIndex;
 		Atom symbol;
 		Node peekNode;
 
-		Stack<Node> content = new Stack<Node>();
-		Stack<Integer> jumpStack = new Stack<Integer>();
+		Stack<Node> content = new Stack<>();
+		Stack<Integer> jumpStack = new Stack<>();
 		jumpStack.push(0);
 
 		if (sentence.size() > 0) {
@@ -72,7 +70,7 @@ public class TreeBuilder {
 					while(content.size() > 0) {
 						rootNode.children.add(content.pop());
 					}
-					
+
 					return rootNode;
 
 				case ActionTable.SHIFT:
@@ -96,7 +94,7 @@ public class TreeBuilder {
 					Node tmpNode = new Node();
 					tmpNode.atom = rule.from;
 					tmpNode.formula = rule;
-					
+
 					formulaList.add(rule);
 
 					for (int i = 0; i < length; i++) {
@@ -127,16 +125,16 @@ public class TreeBuilder {
 
 		return rootNode;
 	}
-	
+
 	private List<Node> convertToNodes(List<Atom> atoms) {
-		List<Node> ret = new ArrayList<Node>();
-		
+		List<Node> ret = new ArrayList<>();
+
 		for(Atom atom : atoms) {
 			Node node = new Node();
 			node.atom = atom;
 			ret.add(node);
 		}
-		
+
 		return ret;
 	}
 
@@ -168,4 +166,5 @@ public class TreeBuilder {
 		}
 	}
 
+	private static final Logger logger = LoggerFactory.createLogger(TreeBuilder.class);
 }

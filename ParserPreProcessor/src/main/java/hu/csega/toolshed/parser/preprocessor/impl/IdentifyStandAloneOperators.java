@@ -13,10 +13,11 @@ import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedText;
 public class IdentifyStandAloneOperators extends PreProcessorStep {
 
 	@Override
-	public List<ExpressionWithPositions> process(List<ExpressionWithPositions> chunks, 
+	public List<ExpressionWithPositions> process(List<ExpressionWithPositions> chunks,
 			UnprocessedText text) throws PreProcessorException {
-		List<ExpressionWithPositions> ret = new ArrayList<ExpressionWithPositions>();
-		
+
+		List<ExpressionWithPositions> ret = new ArrayList<>();
+
 		// Strings may be only in one row
 		for(ExpressionWithPositions chunk : chunks) {
 			if(chunk.processable()) {
@@ -26,12 +27,12 @@ public class IdentifyStandAloneOperators extends PreProcessorStep {
 				Point startPosition = it.getPosition();
 				Point lastPosition = new Point(0, 0);
 				char c;
-				
+
 				while(it.hasNext()) {
 					lastPosition.x = it.getActualColumn();
 					lastPosition.y = it.getActualRow();
 					c = it.next();
-					
+
 					if(isStandAloneOperator(c)) {
 						standAloneOperatorsFound = true;
 						if(isAfter(lastPosition, startPosition)) {
@@ -43,7 +44,7 @@ public class IdentifyStandAloneOperators extends PreProcessorStep {
 						// do nothing
 					}
 				}
-				
+
 				if(standAloneOperatorsFound) {
 					lastPosition = it.getPosition();
 					if(isAfter(lastPosition, startPosition)) {
@@ -56,7 +57,7 @@ public class IdentifyStandAloneOperators extends PreProcessorStep {
 				ret.add(chunk);
 			}
 		}
-		
+
 		return ret;
 	}
 

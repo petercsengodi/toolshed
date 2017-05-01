@@ -5,23 +5,23 @@ public class RuleState implements Comparable<RuleState> {
 	public Rule rule;
 	public int position;
 	public String terminal;
-	
+
 	public RuleState(Rule rule) {
 		this(rule, 0, LRAnalyzerConstants.EPSILON);
 	}
-	
+
 	public RuleState(Rule rule, int position) {
 		this(rule, position, LRAnalyzerConstants.EPSILON);
 	}
-	
+
 	public RuleState(RuleState original) {
 		this(original.rule, original.position, original.terminal);
 	}
-	
+
 	public RuleState(RuleState original, String endTerminal) {
 		this(original.rule, original.position, endTerminal);
 	}
-	
+
 	public RuleState(Rule rule, int position, String endTerminal) {
 		this.rule = rule;
 		this.position = position;
@@ -35,7 +35,7 @@ public class RuleState implements Comparable<RuleState> {
 			return LRAnalyzerConstants.EPSILON;
 		}
 	}
-	
+
 	public String getRemaining() {
 		if(position < rule.to.length()) {
 			return rule.to.substring(position);
@@ -43,39 +43,39 @@ public class RuleState implements Comparable<RuleState> {
 			return LRAnalyzerConstants.EPSILON;
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		
+
 		if(rule.from.equals(LRAnalyzerConstants.UNIVERSE)) {
 			builder.append("<U>");
 		} else {
 			builder.append(rule.from);
 		}
-		
+
 		builder.append(" -> ");
 
 		for(int i = 0; i < rule.to.length(); i++) {
 			if(position == i) {
 				builder.append("°");
 			}
-			
+
 			builder.append(rule.to.charAt(i));
 		}
-		
+
 		if(position >= rule.to.length()) {
 			builder.append("°");
 		}
-		
+
 		builder.append(" | ");
-		
+
 		if(terminal.equals(LRAnalyzerConstants.EPSILON)) {
 			builder.append("<e>");
 		} else {
 			builder.append(terminal);
 		}
-		
+
 		return builder.toString();
 	}
 
@@ -123,9 +123,8 @@ public class RuleState implements Comparable<RuleState> {
 		if(c == 0) {
 			c = this.terminal.compareTo(rs.terminal);
 		}
-		
+
 		return c;
 	}
-	
-	
+
 }

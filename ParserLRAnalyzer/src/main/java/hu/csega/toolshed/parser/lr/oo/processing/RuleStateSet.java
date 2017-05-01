@@ -8,33 +8,28 @@ import hu.csega.toolshed.parser.lr.oo.formulas.FormulaUtil;
 
 public class RuleStateSet extends TreeSet<RuleState> implements Comparable<RuleStateSet>{
 
-	/**
-	 * Default serial version uid.
-	 */
-	private static final long serialVersionUID = 1L;
-	
 	public int id = -1;
 
 	public RuleStateSet() {
 	}
-	
+
 	public RuleStateSet(RuleStateSet original) {
 		super(original);
 	}
-	
+
 	public RuleStateSet getRuleStatesWithNextSymbol(Atom symbol) {
 		RuleStateSet ret = new RuleStateSet();
-		
+
 		for(RuleState ruleState : this) {
 			Atom nextSymbol = ruleState.getNextSymbol();
 			if(nextSymbol.equals(symbol)) {
 				ret.add(ruleState);
 			}
 		}
-		
+
 		return ret;
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -48,29 +43,29 @@ public class RuleStateSet extends TreeSet<RuleState> implements Comparable<RuleS
 		builder.append("\n");
 
 		if(isEmpty()) {
-			builder.append("< Empty rule state set >\n"); 
+			builder.append("< Empty rule state set >\n");
 		} else {
-		
+
 			for(RuleState ruleState : this) {
 				builder.append(ruleState);
-				builder.append("\n");		
+				builder.append("\n");
 			}
-			
+
 		}
-		
+
 		return builder.toString();
 	}
 
 	public Set<Atom> getPossibleNextSymbols() {
-		Set<Atom> ret = new TreeSet<Atom>();
-		
+		Set<Atom> ret = new TreeSet<>();
+
 		for(RuleState state : this) {
 			Atom nextSymbol = state.getNextSymbol();
 			if(!nextSymbol.equals(FormulaUtil.VACUUM)) {
 				ret.add(nextSymbol);
 			}
 		}
-		
+
 		return ret;
 	}
 
@@ -88,6 +83,6 @@ public class RuleStateSet extends TreeSet<RuleState> implements Comparable<RuleS
 	public int hashCode() {
 		return super.hashCode();
 	}
-	
-	
+
+	private static final long serialVersionUID = 1L;
 }

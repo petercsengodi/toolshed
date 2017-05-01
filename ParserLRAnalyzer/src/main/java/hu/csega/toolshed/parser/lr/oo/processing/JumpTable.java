@@ -10,7 +10,7 @@ public class JumpTable {
 	public static class JumpTableKey implements Comparable<JumpTableKey> {
 		public int fromIndex;
 		public Atom symbol;
-		
+
 		public JumpTableKey(int fromIndex, Atom symbol) {
 			this.fromIndex = fromIndex;
 			this.symbol = symbol;
@@ -51,13 +51,11 @@ public class JumpTable {
 			if(c != 0) {
 				return c;
 			}
-			
+
 			return this.symbol.compareTo(o.symbol);
 		}
-		
-		
 	};
-	
+
 	public static class JumpTableValue {
 		public int toIndex;
 
@@ -86,21 +84,19 @@ public class JumpTable {
 				return false;
 			return true;
 		}
-		
-		
 	}
-	
-	public Map<JumpTableKey, JumpTableValue> map = new TreeMap<JumpTableKey, JumpTableValue>();
+
+	public Map<JumpTableKey, JumpTableValue> map = new TreeMap<>();
 
 	public void put(int fromIndex, Atom symbol, int toIndex) {
 		map.put(new JumpTableKey(fromIndex, symbol), new JumpTableValue(toIndex));
 	}
-	
+
 	public int get(int fromIndex, Atom symbol) {
 		JumpTableValue v = map.get(new JumpTableKey(fromIndex, symbol));
 		return (v != null ? v.toIndex : -1);
 	}
-	
+
 	@Override
     public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -110,11 +106,11 @@ public class JumpTable {
         	builder.append(entry.getKey().fromIndex);
         	builder.append("] + ");
         	builder.append(entry.getKey().symbol);
-        	builder.append(" => ["); 
+        	builder.append(" => [");
         	builder.append(entry.getValue().toIndex);
         	builder.append("]\n");
         }
-        
+
         return builder.toString();
     }
 

@@ -13,26 +13,27 @@ import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedText;
 public class IdentifyOperatorSequences extends PreProcessorStep {
 
 	@Override
-	public List<ExpressionWithPositions> process(List<ExpressionWithPositions> chunks, 
+	public List<ExpressionWithPositions> process(List<ExpressionWithPositions> chunks,
 			UnprocessedText text) throws PreProcessorException {
-		List<ExpressionWithPositions> ret = new ArrayList<ExpressionWithPositions>();
-		
+
+		List<ExpressionWithPositions> ret = new ArrayList<>();
+
 		// Strings may be only in one row
 		for(ExpressionWithPositions chunk : chunks) {
 			if(chunk.processable()) {
 				CodeIterator it = chunk.iterator(text);
 				boolean operatorsFound = false;
 				boolean sequenceStarted = false;
-				
+
 				Point startPosition = it.getPosition();
 				Point lastPosition = new Point(0, 0);
 				char c;
-				
+
 				while(it.hasNext()) {
 					lastPosition.x = it.getActualColumn();
 					lastPosition.y = it.getActualRow();
 					c = it.next();
-					
+
 					if(!sequenceStarted && isRemainingOperator(c)) {
 						operatorsFound = true;
 						sequenceStarted = true;
@@ -50,7 +51,7 @@ public class IdentifyOperatorSequences extends PreProcessorStep {
 						// do nothing
 					}
 				}
-				
+
 				if(operatorsFound) {
 					if(sequenceStarted) {
 						lastPosition = it.getPosition();
@@ -70,7 +71,7 @@ public class IdentifyOperatorSequences extends PreProcessorStep {
 				ret.add(chunk);
 			}
 		}
-		
+
 		return ret;
 	}
 

@@ -4,11 +4,6 @@ import java.awt.Point;
 
 public class PreProcessorException extends Exception {
 
-	/**
-	 * Default serial version uid.
-	 */
-	private static final long serialVersionUID = 1L;
-
 	private int row;
 	private int column;
 
@@ -49,4 +44,6 @@ public class PreProcessorException extends Exception {
 		this.column = position.x;
 		this.row = position.y;
 	}
+
+	private static final long serialVersionUID = 1L;
 }

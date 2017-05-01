@@ -13,26 +13,27 @@ import hu.csega.toolshed.parser.preprocessor.helper.WhitespaceExpression;
 public class IdentifyWhitespaceSequences extends PreProcessorStep {
 
 	@Override
-	public List<ExpressionWithPositions> process(List<ExpressionWithPositions> chunks, 
+	public List<ExpressionWithPositions> process(List<ExpressionWithPositions> chunks,
 			UnprocessedText text) throws PreProcessorException {
-		List<ExpressionWithPositions> ret = new ArrayList<ExpressionWithPositions>();
-		
+
+		List<ExpressionWithPositions> ret = new ArrayList<>();
+
 		// Strings may be only in one row
 		for(ExpressionWithPositions chunk : chunks) {
 			if(chunk.processable()) {
 				CodeIterator it = chunk.iterator(text);
 				boolean whitespacesFound = false;
 				boolean sequenceStarted = false;
-				
+
 				Point startPosition = it.getPosition();
 				Point lastPosition = new Point(0, 0);
 				char c;
-				
+
 				while(it.hasNext()) {
 					lastPosition.x = it.getActualColumn();
 					lastPosition.y = it.getActualRow();
 					c = it.next();
-					
+
 					if(!sequenceStarted && Character.isWhitespace(c)) {
 						whitespacesFound = true;
 						sequenceStarted = true;
@@ -50,7 +51,7 @@ public class IdentifyWhitespaceSequences extends PreProcessorStep {
 						// do nothing
 					}
 				}
-				
+
 				if(whitespacesFound) {
 					if(sequenceStarted) {
 						lastPosition = it.getPosition();
@@ -70,7 +71,7 @@ public class IdentifyWhitespaceSequences extends PreProcessorStep {
 				ret.add(chunk);
 			}
 		}
-		
+
 		return ret;
 	}
 

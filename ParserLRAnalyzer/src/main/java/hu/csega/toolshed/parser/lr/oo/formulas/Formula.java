@@ -1,28 +1,25 @@
 package hu.csega.toolshed.parser.lr.oo.formulas;
 
-/**
- * A rule. 
- */
 public class Formula implements Comparable<Formula> {
 
 	public Atom from;
 	public Molecule to;
-	
+
 	public Formula() {
 		this.from = FormulaUtil.UNIVERSE;
 		this.to = FormulaUtil.VACUUM_MOLECULE;
  	}
-	
+
 	public Formula(Atom from, Molecule to) {
 		this.from = from;
 		this.to = to;
 	}
-	
+
 	public Formula(Atom from, Atom... toAtom) {
 		this.from = from;
 		this.to = new Molecule(toAtom);
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -69,9 +66,9 @@ public class Formula implements Comparable<Formula> {
 		if(c != 0 ) {
 			return c;
 		}
-		
+
 		c = this.to.compareTo(other.to);
 		return c;
 	}
-	
+
 }

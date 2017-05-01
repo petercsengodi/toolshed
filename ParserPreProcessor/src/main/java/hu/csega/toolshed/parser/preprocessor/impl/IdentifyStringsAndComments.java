@@ -13,6 +13,7 @@ import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedChunkWithPosition
 import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedText;
 
 public class IdentifyStringsAndComments extends PreProcessorStep {
+
 	private boolean stringStarted = false;
 	private boolean characterStarted = false;
 	private boolean internalCommentStarted = false;
@@ -25,7 +26,7 @@ public class IdentifyStringsAndComments extends PreProcessorStep {
 	@Override
 	public List<ExpressionWithPositions> process(List<ExpressionWithPositions> chunks, UnprocessedText text) throws PreProcessorException {
 
-		List<ExpressionWithPositions> ret = new ArrayList<ExpressionWithPositions>();
+		List<ExpressionWithPositions> ret = new ArrayList<>();
 
 		// Strings may be only in one row
 		for(ExpressionWithPositions chunk : chunks) {

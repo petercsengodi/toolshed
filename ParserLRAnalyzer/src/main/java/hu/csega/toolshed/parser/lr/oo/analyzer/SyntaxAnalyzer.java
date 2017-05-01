@@ -16,8 +16,6 @@ import java.util.Stack;
 
 public class SyntaxAnalyzer {
 
-	private static final Logger logger = LoggerFactory.getDefaultImplementation(SyntaxAnalyzer.class);
-	
 	public ActionTable actionTable;
 	public JumpTable jumpTable;
 
@@ -31,13 +29,13 @@ public class SyntaxAnalyzer {
 	}
 
 	public List<Formula> analyze(List<Atom> sentence) {
-		List<Formula> ret = new ArrayList<Formula>();
+		List<Formula> ret = new ArrayList<>();
 		int position = 0;
 		int fromIndex, toIndex;
 		Atom symbol;
 
-		Stack<Atom> content = new Stack<Atom>();
-		Stack<Integer> jumpStack = new Stack<Integer>();
+		Stack<Atom> content = new Stack<>();
+		Stack<Integer> jumpStack = new Stack<>();
 		jumpStack.push(0);
 
 		if (sentence.size() > 0) {
@@ -136,4 +134,5 @@ public class SyntaxAnalyzer {
 		}
 	}
 
+	private static final Logger logger = LoggerFactory.createLogger(SyntaxAnalyzer.class);
 }

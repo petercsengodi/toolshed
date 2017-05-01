@@ -5,33 +5,28 @@ import java.util.TreeSet;
 
 public class RuleStateSet extends TreeSet<RuleState> implements Comparable<RuleStateSet>{
 
-	/**
-	 * Default serial version uid.
-	 */
-	private static final long serialVersionUID = 1L;
-	
 	public int id = -1;
 
 	public RuleStateSet() {
 	}
-	
+
 	public RuleStateSet(RuleStateSet original) {
 		super(original);
 	}
-	
+
 	public RuleStateSet getRuleStatesWithNextSymbol(String symbol) {
 		RuleStateSet ret = new RuleStateSet();
-		
+
 		for(RuleState ruleState : this) {
 			String s = ruleState.getNextSymbol();
 			if(s.equals(symbol)) {
 				ret.add(ruleState);
 			}
 		}
-		
+
 		return ret;
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -45,29 +40,29 @@ public class RuleStateSet extends TreeSet<RuleState> implements Comparable<RuleS
 		builder.append("\n");
 
 		if(isEmpty()) {
-			builder.append("< Empty rule state set >\n"); 
+			builder.append("< Empty rule state set >\n");
 		} else {
-		
+
 			for(RuleState ruleState : this) {
 				builder.append(ruleState);
-				builder.append("\n");		
+				builder.append("\n");
 			}
-			
+
 		}
-		
+
 		return builder.toString();
 	}
 
 	public Set<String> getPossibleNextSymbols() {
-		Set<String> ret = new TreeSet<String>();
-		
+		Set<String> ret = new TreeSet<>();
+
 		for(RuleState state : this) {
 			String s = state.getNextSymbol();
 			if(!s.equals(LRAnalyzerConstants.EPSILON)) {
 				ret.add(s);
 			}
 		}
-		
+
 		return ret;
 	}
 
@@ -85,6 +80,6 @@ public class RuleStateSet extends TreeSet<RuleState> implements Comparable<RuleS
 	public int hashCode() {
 		return super.hashCode();
 	}
-	
-	
+
+	private static final long serialVersionUID = 1L;
 }

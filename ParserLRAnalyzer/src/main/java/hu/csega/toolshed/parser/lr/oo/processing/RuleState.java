@@ -11,23 +11,23 @@ public class RuleState implements Comparable<RuleState> {
 	public Formula rule;
 	public int position;
 	public Terminal terminal;
-	
+
 	public RuleState(Formula rule) {
 		this(rule, 0, FormulaUtil.VACUUM);
 	}
-	
+
 	public RuleState(Formula rule, int position) {
 		this(rule, position, FormulaUtil.VACUUM);
 	}
-	
+
 	public RuleState(RuleState original) {
 		this(original.rule, original.position, original.terminal);
 	}
-	
+
 	public RuleState(RuleState original, Terminal terminal) {
 		this(original.rule, original.position, terminal);
 	}
-	
+
 	public RuleState(Formula rule, int position, Terminal terminal) {
 		this.rule = rule;
 		this.position = position;
@@ -41,7 +41,7 @@ public class RuleState implements Comparable<RuleState> {
 			return FormulaUtil.VACUUM;
 		}
 	}
-	
+
 	public Molecule getRemaining() {
 		if(position < rule.to.size()) {
 			return new Molecule(rule.to.subList(position, rule.to.size()));
@@ -49,7 +49,7 @@ public class RuleState implements Comparable<RuleState> {
 			return FormulaUtil.EMPTY_MOLECULE;
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -60,14 +60,14 @@ public class RuleState implements Comparable<RuleState> {
 			if(position == i) {
 				builder.append(FormulaUtil.POSITION_MARKER);
 			}
-			
+
 			builder.append(rule.to.get(i));
 		}
-		
+
 		if(position >= rule.to.size()) {
 			builder.append(FormulaUtil.POSITION_MARKER);
 		}
-		
+
 		builder.append(FormulaUtil.ATOM_SEPARATOR);
 		builder.append(terminal);
 		return builder.toString();
@@ -117,9 +117,8 @@ public class RuleState implements Comparable<RuleState> {
 		if(c == 0) {
 			c = this.terminal.compareTo(rs.terminal);
 		}
-		
+
 		return c;
 	}
-	
-	
+
 }

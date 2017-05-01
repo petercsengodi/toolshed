@@ -4,11 +4,6 @@ import java.util.ArrayList;
 
 public class Groups extends ArrayList<RuleStateSet> {
 
-	/**
-	 * Default serial version uid.
-	 */
-	private static final long serialVersionUID = 1L;
-
 	private int lastIdentifier = -1;
 
 	@Override
@@ -18,4 +13,5 @@ public class Groups extends ArrayList<RuleStateSet> {
 		return super.add(e);
 	}
 
+	private static final long serialVersionUID = 1L;
 }
