@@ -6,8 +6,8 @@
 		<artifactId>toolshed</artifactId>
 		<version>1.0.0</version>
 	</parent>
-	<artifactId>SimpleParser</artifactId>
-	<name>SimpleParser</name>
+	<artifactId>ParserPreProcessor</artifactId>
+	<name>ParserPreProcessor</name>
 	<version>1.0.0</version>
 
 	<properties>
@@ -16,7 +16,7 @@
 	</properties>
 
 	<build>
-		<finalName>SimpleParser</finalName>
+		<finalName>ParserPreProcessor</finalName>
 		<plugins>
 		
 			<!-- Eclipse project -->

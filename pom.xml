@@ -56,5 +56,7 @@
 		<module>ToolShedFramework</module>
 		<module>AGeneticAlgorithmFramework</module>
 		<module>AnEquationSeekerWithGeneticAlgorithm</module>
+		<module>ParserPreProcessor</module>
+		<module>ParserLRAnalyzer</module>
 	</modules>
 </project>

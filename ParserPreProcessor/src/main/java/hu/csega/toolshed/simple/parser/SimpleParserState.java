@@ -1,6 +1,7 @@
 package hu.csega.toolshed.simple.parser;
 
 public enum SimpleParserState {
+
 	INIT,
 	UNPROCESSED,
 	STRINGS_AND_COMMENTS_IDENTIFIED,

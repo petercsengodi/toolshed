@@ -3,8 +3,8 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/LoggingBitch"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/LoseR1"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/SimpleParser"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Units"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ParserLRAnalyzer"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ParserPreProcessor"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
