@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import hu.csega.toolshed.logging.Logger;
+import hu.csega.toolshed.logging.LoggerFactory;
 import hu.csega.toolshed.parser.lr.impl.ActionTable;
 import hu.csega.toolshed.parser.lr.impl.Groups;
 import hu.csega.toolshed.parser.lr.impl.JumpTable;
@@ -16,12 +18,11 @@ import hu.csega.toolshed.parser.lr.impl.RuleState;
 import hu.csega.toolshed.parser.lr.impl.RuleStateSet;
 import hu.csega.toolshed.parser.lr.impl.SyntaxAnalyzer;
 
-
 public class TestLoseR1_002 {
 
 	public static void main(String[] args) {
-		System.out.println("Starting application...");
-		
+		logger.info("Starting application...");
+
 		Rule base = new Rule(LRAnalyzerConstants.UNIVERSE, "E");
 		RuleSet rules = RuleSet.create(
 				base,
@@ -29,7 +30,7 @@ public class TestLoseR1_002 {
 				// the algorithm
 				// can't handle rules like this
 				// new Rule("E", ""),
-				
+
 				new Rule("E", "E+T"),
 				new Rule("E", "T"),
 				new Rule("T", "T*F"),
@@ -37,62 +38,62 @@ public class TestLoseR1_002 {
 				new Rule("F", "(E)"),
 				new Rule("F", "a")
 				);
-		
-		System.out.println("Rule set:");
-		System.out.println(rules);
 
-		System.out.println("Initial rule state set:");
+		logger.info("Rule set:\n" + rules);
+
 		RuleState baseState = new RuleState(base);
 		RuleStateSet tempSet = new RuleStateSet();
 		tempSet.add(baseState);
 		RuleStateSet baseSet = LRAnalyzerUtil.extendRuleStateSet(tempSet, rules);
-		System.out.println(baseSet.toString());
-		
+
+		logger.info("Initial rule state set:\n" + baseSet);
+
 		JumpTable jumpTable = new JumpTable();
-		
+
 		Groups groups = new Groups();
 		groups.add(baseSet);
-		TreeSet<RuleStateSet> toProcess = new TreeSet<RuleStateSet>();
+		TreeSet<RuleStateSet> toProcess = new TreeSet<>();
 		toProcess.add(baseSet);
-		
+
 		while(!toProcess.isEmpty()) {
 			RuleStateSet setToProcess = toProcess.first();
 			toProcess.remove(setToProcess);
-			
+
 			Set<String> possibleNextSymbols = setToProcess.getPossibleNextSymbols();
 			for(String nextSymbol : possibleNextSymbols) {
-				System.out.println("Building: [" + setToProcess.id + "] + " + nextSymbol + ": ");
-				
+				logger.info("Building: [" + setToProcess.id + "] + " + nextSymbol + ": ");
+
 				RuleStateSet founders = LRAnalyzerUtil.generateFounderRuleStates(setToProcess, nextSymbol);
 				RuleStateSet newStateSet = LRAnalyzerUtil.extendRuleStateSet(founders, rules);
-				
+
 				if(!newStateSet.isEmpty()) {
 					int index = groups.indexOf(newStateSet);
 					if(index == -1) {
 						groups.add(newStateSet);
 						toProcess.add(newStateSet);
-						System.out.println("=> Not found, yet => " + newStateSet.id);
+						logger.info("=> Not found, yet => " + newStateSet.id);
 					} else {
 						newStateSet = groups.get(index);
-						System.out.println("=> Found => " + newStateSet.id);
+						logger.info("=> Found => " + newStateSet.id);
 					}
 				}
-				
+
 				jumpTable.put(setToProcess.id, nextSymbol, newStateSet.id);
-				System.out.println(newStateSet);
+				logger.info(newStateSet);
 			}
 		}
-		
-		System.out.println(jumpTable.toString());
-		
+
+		logger.info(jumpTable);
+
 		ActionTable actionTable = LRAnalyzerUtil.generateActionTable(groups, rules);
-		System.out.println(actionTable.toString());
-		
+		logger.info(actionTable);
+
 		SyntaxAnalyzer analyzer = new SyntaxAnalyzer(actionTable, jumpTable);
 		List<Rule> ruleSequence = analyzer.analyze("a+a*a");
 		Collections.reverse(ruleSequence);
-		
+
 		LRAnalyzerUtil.generateWithRules(ruleSequence);
 	}
 
+	private static final Logger logger = LoggerFactory.createLogger(TestLoseR1_002.class);
 }

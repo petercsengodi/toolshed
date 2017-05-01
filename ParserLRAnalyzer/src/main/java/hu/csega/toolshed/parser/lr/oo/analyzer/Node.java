@@ -10,7 +10,7 @@ public class Node {
 
 	Atom atom;
 	Formula formula;
-	List<Node> children = new ArrayList<Node>();
+	List<Node> children = new ArrayList<>();
 	Object data;
 	String title;
 

@@ -23,10 +23,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-
 public class TestLoseR1oo_001 {
-
-	private static final Logger logger = LoggerFactory.getDefaultImplementation(TestLoseR1oo_001.class);
 
 	public static abstract class AbstractSymbol implements Atom {
 
@@ -71,7 +68,7 @@ public class TestLoseR1oo_001 {
 	}
 
 	public static void main(String[] args) {
-		logger.debug("Starting application...");
+		logger.info("Starting application...");
 
 		TestNonTerminal E = new TestNonTerminal('E');
 		TestNonTerminal T = new TestNonTerminal('T');
@@ -99,15 +96,14 @@ public class TestLoseR1oo_001 {
 				new Formula(F, LETTER)
 				);
 
-		logger.debug("Rule set:");
-		logger.debug(rules.toString());
+		logger.info("Rule set:\n" + rules);
 
-		logger.debug("Initial rule state set:");
 		RuleState baseState = new RuleState(base);
 		RuleStateSet tempSet = new RuleStateSet();
 		tempSet.add(baseState);
 		RuleStateSet baseSet = ProcessingUtil.extendRuleStateSet(tempSet, rules);
-		logger.debug(baseSet.toString());
+
+		logger.info("Initial rule state set:\n" + baseSet);
 
 		JumpTable jumpTable = new JumpTable();
 
@@ -122,7 +118,7 @@ public class TestLoseR1oo_001 {
 
 			Set<Atom> possibleNextSymbols = setToProcess.getPossibleNextSymbols();
 			for(Atom nextSymbol : possibleNextSymbols) {
-				logger.debug("Building: [" + setToProcess.id + "] + " + nextSymbol + ": ");
+				logger.info("Building: [" + setToProcess.id + "] + " + nextSymbol + ": ");
 
 				RuleStateSet founders = ProcessingUtil.generateFounderRuleStates(setToProcess, nextSymbol);
 				RuleStateSet newStateSet = ProcessingUtil.extendRuleStateSet(founders, rules);
@@ -132,22 +128,22 @@ public class TestLoseR1oo_001 {
 					if(index == -1) {
 						groups.add(newStateSet);
 						toProcess.add(newStateSet);
-						logger.debug("=> Not found, yet => " + newStateSet.id);
+						logger.info("=> Not found, yet => " + newStateSet.id);
 					} else {
 						newStateSet = groups.get(index);
-						logger.debug("=> Found => " + newStateSet.id);
+						logger.info("=> Found => " + newStateSet.id);
 					}
 				}
 
 				jumpTable.put(setToProcess.id, nextSymbol, newStateSet.id);
-				logger.debug(newStateSet.toString());
+				logger.info(newStateSet.toString());
 			}
 		}
 
-		logger.debug(jumpTable.toString());
+		logger.info(jumpTable);
 
 		ActionTable actionTable = ProcessingUtil.generateActionTable(groups, rules);
-		logger.debug(actionTable.toString());
+		logger.info(actionTable);
 
 		SyntaxAnalyzer analyzer = new SyntaxAnalyzer(actionTable, jumpTable);
 		List<Formula> ruleSequence = analyzer.analyze(LETTER, ADD, LETTER, MULTIPLY, LETTER);
@@ -165,10 +161,10 @@ public class TestLoseR1oo_001 {
 	}
 
 	public static void log(Node rootNode) {
-		if(logger.debugShown()) {
+		if(logger.infoShown()) {
 			StringBuilder builder = new StringBuilder();
 			log(rootNode, builder);
-			logger.debug(builder.toString());
+			logger.info(builder);
 		}
 	}
 
@@ -193,4 +189,5 @@ public class TestLoseR1oo_001 {
 		}
 	}
 
+	private static final Logger logger = LoggerFactory.createLogger(TestLoseR1oo_001.class);
 }
