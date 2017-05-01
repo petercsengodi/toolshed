@@ -1,8 +1,8 @@
 package hu.csega.toolshed.mofl.converters;
 
-import hu.csega.toolshed.loser1oo.analyzer.Node;
-import hu.csega.toolshed.loser1oo.formulas.Atom;
 import hu.csega.toolshed.mofl.formulas.FormulaFactory;
+import hu.csega.toolshed.parser.lr.oo.analyzer.Node;
+import hu.csega.toolshed.parser.lr.oo.formulas.Atom;
 import hu.csega.toolshed.parser.preprocessor.helper.CharacterConstantExpression;
 import hu.csega.toolshed.parser.preprocessor.helper.CommentExpression;
 import hu.csega.toolshed.parser.preprocessor.helper.ExpressionWithPositions;

@@ -1,6 +1,6 @@
 package hu.csega.toolshed.mofl.formulas;
 
-import hu.csega.toolshed.loser1oo.formulas.Atom;
+import hu.csega.toolshed.parser.lr.oo.formulas.Atom;
 
 public abstract class AbstractSymbol implements Atom, Comparable<Atom> {
 	

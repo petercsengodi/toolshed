@@ -1,10 +1,10 @@
 package hu.csega.toolshed.mofl;
 
-import hu.csega.toolshed.loser1.LoseR1;
-import hu.csega.toolshed.loser1oo.analyzer.Node;
-import hu.csega.toolshed.loser1oo.formulas.FormulaBook;
 import hu.csega.toolshed.mofl.converters.SimpleParserConverter;
 import hu.csega.toolshed.mofl.formulas.FormulaFactory;
+import hu.csega.toolshed.parser.lr.LRAnalyzer;
+import hu.csega.toolshed.parser.lr.oo.analyzer.Node;
+import hu.csega.toolshed.parser.lr.oo.formulas.FormulaBook;
 import hu.csega.toolshed.parser.preprocessor.PreProcessor;
 import hu.csega.toolshed.parser.preprocessor.helper.ExpressionWithPositions;
 import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedText;
@@ -22,7 +22,7 @@ public class MoflParserImpl extends AbstractUnit implements MoflParser {
 	}
 
 	@Unit
-	public void setLoseR1(LoseR1 loseR1) {
+	public void setLoseR1(LRAnalyzer loseR1) {
 		this.loseR1 = loseR1;
 	}
 	
@@ -40,5 +40,5 @@ public class MoflParserImpl extends AbstractUnit implements MoflParser {
 	}
 	
 	private PreProcessor simpleParser;
-	private LoseR1 loseR1;
+	private LRAnalyzer loseR1;
 }

@@ -1,13 +1,13 @@
 package hu.csega.toolshed.mofl.formulas;
 
-import hu.csega.toolshed.loser1oo.formulas.Formula;
-import hu.csega.toolshed.loser1oo.formulas.FormulaBook;
-import hu.csega.toolshed.loser1oo.formulas.FormulaUtil;
-import hu.csega.toolshed.loser1oo.formulas.NonTerminal;
-import hu.csega.toolshed.loser1oo.formulas.Terminal;
-
 import java.util.Set;
 import java.util.TreeSet;
+
+import hu.csega.toolshed.parser.lr.oo.formulas.Formula;
+import hu.csega.toolshed.parser.lr.oo.formulas.FormulaBook;
+import hu.csega.toolshed.parser.lr.oo.formulas.FormulaUtil;
+import hu.csega.toolshed.parser.lr.oo.formulas.NonTerminal;
+import hu.csega.toolshed.parser.lr.oo.formulas.Terminal;
 
 public class FormulaFactory {
 
