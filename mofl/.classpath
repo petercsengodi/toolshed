@@ -4,7 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/LoggingBitch"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/LoseR1"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/simple_parser"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SimpleParser"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Units"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
