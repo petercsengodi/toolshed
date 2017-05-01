@@ -8,9 +8,9 @@ import java.util.List;
 import hu.csega.ficbidta.FicbidtaCanvas;
 import hu.csega.toolshed.AbstractTool;
 import hu.csega.toolshed.ToolComponent;
-import hu.csega.toolshed.parser.preprocessor.SimpleParser;
-import hu.csega.toolshed.parser.preprocessor.SimpleParserImpl;
-import hu.csega.toolshed.parser.preprocessor.SimpleParserUtil;
+import hu.csega.toolshed.parser.preprocessor.PreProcessor;
+import hu.csega.toolshed.parser.preprocessor.PreProcessorImpl;
+import hu.csega.toolshed.parser.preprocessor.PreProcessorUtil;
 import hu.csega.toolshed.parser.preprocessor.helper.ExpressionWithPositions;
 import hu.csega.toolshed.parser.preprocessor.helper.NumberExpression;
 import hu.csega.toolshed.parser.preprocessor.helper.OperatorExpression;
@@ -25,13 +25,13 @@ public class ModelLoader extends ToolComponent {
 	}
 
 	public void loadModelFromString(String text) {
-		UnprocessedText content = SimpleParserUtil.loadString(text);
+		UnprocessedText content = PreProcessorUtil.loadString(text);
 		loadModelFromUnprocessedText(content);
 	}
 
 	public void loadModelFromFile(File file) {
 		try {
-			UnprocessedText content = SimpleParserUtil.loadFile(file);
+			UnprocessedText content = PreProcessorUtil.loadFile(file);
 			loadModelFromUnprocessedText(content);
 		} catch (IOException e) {
 			ModelNetwork model = getComponent(ModelNetwork.class);
@@ -51,7 +51,7 @@ public class ModelLoader extends ToolComponent {
 			model.clear();
 			getComponent(FicbidtaCanvas.class).resetMarkings();
 
-			SimpleParser parser = UnitStore.instance(SimpleParser.class);
+			PreProcessor parser = UnitStore.instance(PreProcessor.class);
 			List<ExpressionWithPositions> expressions = parser.parseText(text);
 			ExpressionWithPositions tmp;
 			ModelObject lastObject = null;
@@ -99,18 +99,18 @@ public class ModelLoader extends ToolComponent {
 
 				// Load model object name
 				if(type.equals("name")) {
-					lastObject.name = SimpleParserImpl.readStringFromEscaped(it.next().getContent(text));
+					lastObject.name = PreProcessorImpl.readStringFromEscaped(it.next().getContent(text));
 				}
 
 				// Load model object type
 				if(type.equals("type")) {
-					lastObject.type = SimpleParserImpl.readStringFromEscaped(it.next().getContent(text));
+					lastObject.type = PreProcessorImpl.readStringFromEscaped(it.next().getContent(text));
 				}
 
 				// Load model object type
 				if(type.equals("property")) {
-					String propertyName = SimpleParserImpl.readStringFromEscaped(it.next().getContent(text));
-					String propertyValue = SimpleParserImpl.readStringFromEscaped(it.next().getContent(text));
+					String propertyName = PreProcessorImpl.readStringFromEscaped(it.next().getContent(text));
+					String propertyValue = PreProcessorImpl.readStringFromEscaped(it.next().getContent(text));
 					lastObject.properties.put(propertyName, propertyValue);
 				}
 			}

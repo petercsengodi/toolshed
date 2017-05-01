@@ -5,7 +5,7 @@ import hu.csega.toolshed.loser1oo.analyzer.Node;
 import hu.csega.toolshed.loser1oo.formulas.FormulaBook;
 import hu.csega.toolshed.mofl.converters.SimpleParserConverter;
 import hu.csega.toolshed.mofl.formulas.FormulaFactory;
-import hu.csega.toolshed.parser.preprocessor.SimpleParser;
+import hu.csega.toolshed.parser.preprocessor.PreProcessor;
 import hu.csega.toolshed.parser.preprocessor.helper.ExpressionWithPositions;
 import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedText;
 import hu.csega.toolshed.parser.preprocessor.impl.PreProcessorException;
@@ -17,7 +17,7 @@ import java.util.List;
 public class MoflParserImpl extends AbstractUnit implements MoflParser {
 
 	@Unit
-	public void setSimpleParser(SimpleParser simpleParser) {
+	public void setSimpleParser(PreProcessor simpleParser) {
 		this.simpleParser = simpleParser;
 	}
 
@@ -39,6 +39,6 @@ public class MoflParserImpl extends AbstractUnit implements MoflParser {
 		return rootNode;
 	}
 	
-	private SimpleParser simpleParser;
+	private PreProcessor simpleParser;
 	private LoseR1 loseR1;
 }

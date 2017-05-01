@@ -1,7 +1,7 @@
 package hu.csega.toolshed.simple.parser;
 
-import hu.csega.toolshed.parser.preprocessor.SimpleParser;
-import hu.csega.toolshed.parser.preprocessor.SimpleParserImpl;
+import hu.csega.toolshed.parser.preprocessor.PreProcessor;
+import hu.csega.toolshed.parser.preprocessor.PreProcessorImpl;
 import hu.csega.toolshed.parser.preprocessor.helper.ExpressionWithPositions;
 import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedText;
 import hu.csega.toolshed.parser.preprocessor.impl.ConvertInputStreamIntoUnprocessedText;
@@ -31,7 +31,7 @@ public class SimpleParserTest {
 		UnprocessedText text = ConvertInputStreamIntoUnprocessedText.read(stream);
 		stream.close();
 		
-		SimpleParser parser = new SimpleParserImpl();
+		PreProcessor parser = new PreProcessorImpl();
 
 		try {
 			List<ExpressionWithPositions> parsedText = parser.parseText(text);

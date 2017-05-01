@@ -1,6 +1,6 @@
 package hu.csega.toolshed.parser.preprocessor;
 
-public enum SimpleParserState {
+public enum PreProcessorState {
 
 	INIT,
 	UNPROCESSED,

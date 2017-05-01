@@ -9,8 +9,8 @@ import hu.csega.units.Unit;
 import java.util.List;
 
 @Unit
-@DefaultImplementation(SimpleParserImpl.class)
-public interface SimpleParser {
+@DefaultImplementation(PreProcessorImpl.class)
+public interface PreProcessor {
 
 	List<ExpressionWithPositions> parseText(UnprocessedText text) throws PreProcessorException;
 

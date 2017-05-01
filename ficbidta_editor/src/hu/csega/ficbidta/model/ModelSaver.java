@@ -2,7 +2,7 @@ package hu.csega.ficbidta.model;
 
 import hu.csega.toolshed.AbstractTool;
 import hu.csega.toolshed.ToolComponent;
-import hu.csega.toolshed.parser.preprocessor.SimpleParserImpl;
+import hu.csega.toolshed.parser.preprocessor.PreProcessorImpl;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -46,20 +46,20 @@ public class ModelSaver extends ToolComponent {
 			writer.write("\n");
 
 			writer.write("name ");
-			writer.write(SimpleParserImpl.writeStringEscaped(node.name));
+			writer.write(PreProcessorImpl.writeStringEscaped(node.name));
 			writer.write("\n");
 
 			writer.write("type ");
-			writer.write(SimpleParserImpl.writeStringEscaped(node.type));
+			writer.write(PreProcessorImpl.writeStringEscaped(node.type));
 			writer.write("\n");
 
 			for(Map.Entry<String, String> entry : node.properties.entrySet()) {
 				String propertyName = entry.getKey();
 				String propertyValue = entry.getValue();
 				writer.write("property ");
-				writer.write(SimpleParserImpl.writeStringEscaped(propertyName));
+				writer.write(PreProcessorImpl.writeStringEscaped(propertyName));
 				writer.write(" ");
-				writer.write(SimpleParserImpl.writeStringEscaped(propertyValue));
+				writer.write(PreProcessorImpl.writeStringEscaped(propertyValue));
 				writer.write("\n");
 			}
 
@@ -78,20 +78,20 @@ public class ModelSaver extends ToolComponent {
 			writer.write("\n");
 
 			writer.write("name ");
-			writer.write(SimpleParserImpl.writeStringEscaped(connection.name));
+			writer.write(PreProcessorImpl.writeStringEscaped(connection.name));
 			writer.write("\n");
 
 			writer.write("type ");
-			writer.write(SimpleParserImpl.writeStringEscaped(connection.type));
+			writer.write(PreProcessorImpl.writeStringEscaped(connection.type));
 			writer.write("\n");
 
 			for(Map.Entry<String, String> entry : connection.properties.entrySet()) {
 				String propertyName = entry.getKey();
 				String propertyValue = entry.getValue();
 				writer.write("property ");
-				writer.write(SimpleParserImpl.writeStringEscaped(propertyName));
+				writer.write(PreProcessorImpl.writeStringEscaped(propertyName));
 				writer.write(" ");
-				writer.write(SimpleParserImpl.writeStringEscaped(propertyValue));
+				writer.write(PreProcessorImpl.writeStringEscaped(propertyValue));
 				writer.write("\n");
 			}
 

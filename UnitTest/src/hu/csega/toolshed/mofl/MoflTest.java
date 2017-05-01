@@ -5,7 +5,7 @@ import hu.csega.toolshed.logging.Logger;
 import hu.csega.toolshed.logging.LoggerFactory;
 import hu.csega.toolshed.loser1oo.analyzer.Node;
 import hu.csega.toolshed.loser1oo.analyzer.TreeBuilderFactory;
-import hu.csega.toolshed.parser.preprocessor.SimpleParserUtil;
+import hu.csega.toolshed.parser.preprocessor.PreProcessorUtil;
 import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedText;
 import hu.csega.units.UnitStore;
 
@@ -21,7 +21,7 @@ public class MoflTest {
 	public void test() throws Exception {
 		LoggerFactory.setDefaultLevel(Level.DEBUG);
 		logger = LoggerFactory.getDefaultImplementation(TreeBuilderFactory.class);
-		UnprocessedText text = SimpleParserUtil.loadString(TEST_STRING);
+		UnprocessedText text = PreProcessorUtil.loadString(TEST_STRING);
 		
 		MoflParser parser = UnitStore.instance(MoflParser.class);
 		Node rootNode = parser.parse(text);

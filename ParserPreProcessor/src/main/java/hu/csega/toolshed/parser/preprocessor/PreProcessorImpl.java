@@ -16,49 +16,49 @@ import hu.csega.units.AbstractUnitWithState;
 import java.util.Arrays;
 import java.util.List;
 
-public class SimpleParserImpl extends AbstractUnitWithState<SimpleParserImpl, SimpleParserState> implements SimpleParser {
+public class PreProcessorImpl extends AbstractUnitWithState<PreProcessorImpl, PreProcessorState> implements PreProcessor {
 
 	public List<ExpressionWithPositions> parseText(UnprocessedText text) throws PreProcessorException {
-		naturalStoppingPoint(SimpleParserState.INIT);
+		naturalStoppingPoint(PreProcessorState.INIT);
 		
 		List<ExpressionWithPositions> chunks = Arrays.asList((ExpressionWithPositions) new UnprocessedChunkWithPositions(text));
 
-		naturalStoppingPoint(SimpleParserState.UNPROCESSED);
+		naturalStoppingPoint(PreProcessorState.UNPROCESSED);
 		
 		IdentifyStringsAndComments identifyStringsAndComments = new IdentifyStringsAndComments();
 		chunks = identifyStringsAndComments.process(chunks, text);
 
-		naturalStoppingPoint(SimpleParserState.STRINGS_AND_COMMENTS_IDENTIFIED);
+		naturalStoppingPoint(PreProcessorState.STRINGS_AND_COMMENTS_IDENTIFIED);
 		
 		IdentifyWhitespaceSequences identifyWhitespaceSequences = new IdentifyWhitespaceSequences();
 		chunks = identifyWhitespaceSequences.process(chunks, text);
 
-		naturalStoppingPoint(SimpleParserState.WHITESPACES_IDENTIFIED);
+		naturalStoppingPoint(PreProcessorState.WHITESPACES_IDENTIFIED);
 		
 		IdentifyStandAloneOperators identifyStandAloneOperators = new IdentifyStandAloneOperators();
 		chunks = identifyStandAloneOperators.process(chunks, text);
 
-		naturalStoppingPoint(SimpleParserState.STANDALONE_OPERATORS_IDENTIFIED);
+		naturalStoppingPoint(PreProcessorState.STANDALONE_OPERATORS_IDENTIFIED);
 		
 		IdentifyOperatorSequences identifyOperatorSequences = new IdentifyOperatorSequences();
 		chunks = identifyOperatorSequences.process(chunks, text);
 
-		naturalStoppingPoint(SimpleParserState.OPERATOR_SEQUENCES_IDENTIFIED);
+		naturalStoppingPoint(PreProcessorState.OPERATOR_SEQUENCES_IDENTIFIED);
 		
 		TransformUnprocessedExpressions transformUnprocessedExpressions = new TransformUnprocessedExpressions();
 		chunks = transformUnprocessedExpressions.process(chunks, text);
 
-		naturalStoppingPoint(SimpleParserState.UNPROCESSED_EXPRESSIONS_TRANSFORMED);
+		naturalStoppingPoint(PreProcessorState.UNPROCESSED_EXPRESSIONS_TRANSFORMED);
 		
 		DropIgnorableExpressions dropIgnorableExpressions = new DropIgnorableExpressions();
 		chunks = dropIgnorableExpressions.process(chunks, text);
 
-		naturalStoppingPoint(SimpleParserState.IGNORABLE_EXPRESSIONS_DROPPED);
+		naturalStoppingPoint(PreProcessorState.IGNORABLE_EXPRESSIONS_DROPPED);
 		
 		ValidateExpressions validateExpressions = new ValidateExpressions();
 		chunks = validateExpressions.process(chunks, text);
 
-		naturalStoppingPoint(SimpleParserState.VALIDATED);
+		naturalStoppingPoint(PreProcessorState.VALIDATED);
 		
 		return chunks;
 	}

@@ -10,7 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class SimpleParserUtil {
+public class PreProcessorUtil {
 
 	public static UnprocessedText loadFile(File file) throws PreProcessorException, IOException {
 		if(!file.exists() || file.isDirectory()) {
