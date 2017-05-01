@@ -4,8 +4,7 @@ import java.awt.Point;
 
 public class OperatorExpression extends ExpressionWithPositions {
 
-	public OperatorExpression(int startColumn, int startRow, int endColumn,
-			int endRow) {
+	public OperatorExpression(int startColumn, int startRow, int endColumn, int endRow) {
 		super(startColumn, startRow, endColumn, endRow);
 	}
 

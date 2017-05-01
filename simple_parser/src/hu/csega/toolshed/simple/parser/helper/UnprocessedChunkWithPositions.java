@@ -4,9 +4,7 @@ import java.awt.Point;
 
 public class UnprocessedChunkWithPositions extends ExpressionWithPositions {
 
-
-	public UnprocessedChunkWithPositions(int startColumn, int startRow,
-			int endColumn, int endRow) {
+	public UnprocessedChunkWithPositions(int startColumn, int startRow, int endColumn, int endRow) {
 		super(startColumn, startRow, endColumn, endRow);
 	}
 
@@ -17,8 +15,9 @@ public class UnprocessedChunkWithPositions extends ExpressionWithPositions {
 	public UnprocessedChunkWithPositions(UnprocessedText text) {
 		super(text.getStartRow(), text.getStartColumn(), text.getEndRow(), text.getEndColumn());
 	}
-	
+
+	@Override
 	public boolean processable() {
 		return true;
-	}	
+	}
 }

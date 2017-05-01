@@ -9,18 +9,18 @@ public class CodeIterator implements Iterator<Character> {
 	private int actualColumn;
 	private ExpressionWithPositions expression;
 	private UnprocessedText text;
-	
+
 	CodeIterator(ExpressionWithPositions expression, UnprocessedText text) {
 		this.expression = expression;
 		this.text = text;
 		this.actualColumn = expression.getStartColumn();
 		this.actualRow = expression.getStartRow();
 	}
-	
+
 	public boolean hasNext() {
-		return (actualRow < expression.getEndRow()) || 
+		return (actualRow < expression.getEndRow()) ||
 				(actualRow == expression.getEndRow() &&
-				actualColumn < expression.getEndColumn()); 
+				actualColumn < expression.getEndColumn());
 	}
 
 	public Character next() {
@@ -37,7 +37,7 @@ public class CodeIterator implements Iterator<Character> {
 	}
 
 	public void remove() {
-		throw new UnsupportedOperationException();
+		throw new UnsupportedOperationException("remove");
 	}
 
 	public Point getPosition() {
@@ -51,6 +51,4 @@ public class CodeIterator implements Iterator<Character> {
 	public int getActualColumn() {
 		return actualColumn;
 	}
-	
-	
 }

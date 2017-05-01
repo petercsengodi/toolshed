@@ -15,8 +15,8 @@ public class ConvertInputStreamIntoUnprocessedText {
 	public static UnprocessedText read(InputStream stream) {
 		List<String> content = new ArrayList<String>();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+
 		String line;
-		
 		try {
 			while((line = reader.readLine()) != null) {
 				content.add(line);
@@ -24,14 +24,14 @@ public class ConvertInputStreamIntoUnprocessedText {
 		} catch(IOException ex) {
 			throw new RuntimeException();
 		}
-		
+
 		UnprocessedText text = new UnprocessedText(content);
 		return text;
 	}
-	
-	public static UnprocessedText read(String text) {		
+
+	public static UnprocessedText read(String text) {
 		UnprocessedText ret = new UnprocessedText(Arrays.asList(text));
 		return ret;
 	}
-	
+
 }

@@ -8,9 +8,8 @@ public class ExpressionWithPositions {
 	private int startColumn;
 	private int endRow;
 	private int endColumn;
-	
-	public ExpressionWithPositions(int startColumn, int startRow, int endColumn,
-			int endRow) {
+
+	public ExpressionWithPositions(int startColumn, int startRow, int endColumn, int endRow) {
 		this.startRow = startRow;
 		this.startColumn = startColumn;
 		this.endRow = endRow;
@@ -55,34 +54,35 @@ public class ExpressionWithPositions {
 	public void setEndColumn(int endColumn) {
 		this.endColumn = endColumn;
 	}
-	
+
 	public Point getStartPosition() {
 		return new Point(startColumn, startRow);
 	}
-	
+
 	public Point getEndPosition() {
 		return new Point(endColumn, endRow);
 	}
-	
+
 	public CodeIterator iterator(UnprocessedText text) {
 		return new CodeIterator(this, text);
 	}
-	
+
 	public boolean processable() {
 		return false;
 	}
-	
+
 	public boolean ignoreable() {
 		return false;
 	}
-	
+
 	public String getContent(UnprocessedText text) {
 		StringBuilder builder = new StringBuilder();
+
 		CodeIterator it = iterator(text);
 		while(it.hasNext()) {
 			builder.append(it.next());
 		}
-		
+
 		return builder.toString();
 	}
 }

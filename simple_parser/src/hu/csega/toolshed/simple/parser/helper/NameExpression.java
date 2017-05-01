@@ -4,8 +4,7 @@ import java.awt.Point;
 
 public class NameExpression extends ExpressionWithPositions {
 
-	public NameExpression(int startColumn, int startRow, int endColumn,
-			int endRow) {
+	public NameExpression(int startColumn, int startRow, int endColumn, int endRow) {
 		super(startColumn, startRow, endColumn, endRow);
 	}
 

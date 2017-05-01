@@ -4,8 +4,7 @@ import java.awt.Point;
 
 public class StringExpression extends ExpressionWithPositions {
 
-	public StringExpression(int startColumn, int startRow, int endColumn,
-			int endRow) {
+	public StringExpression(int startColumn, int startRow, int endColumn, int endRow) {
 		super(startColumn, startRow, endColumn, endRow);
 	}
 

@@ -4,8 +4,7 @@ import java.awt.Point;
 
 public class CharacterConstantExpression extends ExpressionWithPositions {
 
-	public CharacterConstantExpression(int startColumn, int startRow, int endColumn,
-			int endRow) {
+	public CharacterConstantExpression(int startColumn, int startRow, int endColumn, int endRow) {
 		super(startColumn, startRow, endColumn, endRow);
 	}
 

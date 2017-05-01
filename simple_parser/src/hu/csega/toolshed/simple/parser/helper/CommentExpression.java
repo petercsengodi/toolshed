@@ -4,8 +4,7 @@ import java.awt.Point;
 
 public class CommentExpression extends ExpressionWithPositions {
 
-	public CommentExpression(int startColumn, int startRow, int endColumn,
-			int endRow) {
+	public CommentExpression(int startColumn, int startRow, int endColumn, int endRow) {
 		super(startColumn, startRow, endColumn, endRow);
 	}
 

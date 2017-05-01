@@ -4,8 +4,7 @@ import java.awt.Point;
 
 public class NumberExpression extends ExpressionWithPositions {
 
-	public NumberExpression(int startColumn, int startRow, int endColumn,
-			int endRow) {
+	public NumberExpression(int startColumn, int startRow, int endColumn, int endRow) {
 		super(startColumn, startRow, endColumn, endRow);
 	}
 
