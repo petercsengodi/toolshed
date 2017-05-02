@@ -2,7 +2,7 @@ package hu.csega.genetic.text;
 
 import hu.csega.genetic.framework.Chromosome;
 
-public class PerformanceTest {
+public class TestPerformance {
 
 	public static final int ROUNDS = 1000000;
 

@@ -1,4 +1,4 @@
-package hu.csega.genetic.test;
+package hu.csega.genetic.framework;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -10,7 +10,7 @@ import hu.csega.genetic.framework.PopulationKey;
 import hu.csega.genetic.framework.mutation.BestsInFavorMutationStrategy;
 import hu.csega.genetic.framework.mutation.MutationStrategy;
 
-public class GeneticVariateLengthTest {
+public class TestVariatingGeneLength {
 
 	private static final Map<Double, Double> PATTERN = new TreeMap<>();
 

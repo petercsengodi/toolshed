@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 // TODO: make best genes in favor
-public class TextLearningTest {
+public class TestTextLearning {
 
 	public static final String JAVA_FILE = "java.txt";
 	public static final String ENGLISH_FILE = "english.txt";
@@ -50,7 +50,7 @@ public class TextLearningTest {
 
 	private static final String readWholeFile(String fileName) {
 		try {
-			URL resource = TextLearningTest.class.getResource(fileName);
+			URL resource = TestTextLearning.class.getResource(fileName);
 			File file = new File(resource.toURI());
 			byte[] array = new byte[(int)file.length()];
 
