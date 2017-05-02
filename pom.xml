@@ -56,6 +56,7 @@
 		<module>ToolShedFramework</module>
 		<module>AGeneticAlgorithmFramework</module>
 		<module>AnEquationSeekerWithGeneticAlgorithm</module>
+		<module>AnImageDegrader</module>
 		<module>ParserPreProcessor</module>
 		<module>ParserLRAnalyzer</module>
 		<module>ParserExampleLanguage</module>
