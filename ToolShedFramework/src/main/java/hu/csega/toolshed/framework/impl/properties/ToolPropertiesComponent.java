@@ -1,5 +1,6 @@
 package hu.csega.toolshed.framework.impl.properties;
 
+import java.awt.Dimension;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -37,7 +38,12 @@ public class ToolPropertiesComponent extends JPanel {
 	private void setupComponents() {
 		tableModel = new ToolPropertyTableModel(this);
 		table = new JTable(tableModel);
+
 		scrollPane = new JScrollPane(table);
+		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane.setPreferredSize(this.getPreferredSize());
+
 		this.add(scrollPane);
 	}
 
@@ -114,6 +120,36 @@ public class ToolPropertiesComponent extends JPanel {
 		} catch (Exception ex) {
 			throw new RuntimeException("Value of field \"" + field + "\" could not be get.", ex);
 		}
+	}
+
+	@Override
+	public void setSize(Dimension d) {
+		super.setSize(d);
+		scrollPane.setSize(d);
+	}
+
+	@Override
+	public void setSize(int width, int height) {
+		super.setSize(width, height);
+		scrollPane.setSize(width, height);
+	}
+
+	@Override
+	public void setMaximumSize(Dimension maximumSize) {
+		super.setMaximumSize(maximumSize);
+		scrollPane.setMaximumSize(maximumSize);
+	}
+
+	@Override
+	public void setMinimumSize(Dimension minimumSize) {
+		super.setMinimumSize(minimumSize);
+		scrollPane.setMinimumSize(minimumSize);
+	}
+
+	@Override
+	public void setPreferredSize(Dimension preferredSize) {
+		super.setPreferredSize(preferredSize);
+		scrollPane.setPreferredSize(preferredSize);
 	}
 
 	private static final long serialVersionUID = 1L;

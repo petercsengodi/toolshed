@@ -1,5 +1,7 @@
 package hu.csega.toolshed.framework.impl.properties;
 
+import java.awt.Dimension;
+
 import javax.swing.JFrame;
 
 public class TestToolPropertiesComponent {
@@ -11,6 +13,7 @@ public class TestToolPropertiesComponent {
 		backingBean.setAuthor("csega");
 
 		ToolPropertiesComponent properties = new ToolPropertiesComponent(backingBean);
+		properties.setPreferredSize(new Dimension(200, 200));
 		frame.getContentPane().add(properties);
 
 		frame.pack();
