@@ -1,5 +1,6 @@
 package hu.csega.toolshed.framework.impl.properties;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -13,8 +14,13 @@ import javax.swing.JTable;
 import javax.swing.table.TableModel;
 
 import hu.csega.toolshed.framework.ToolProperty;
+import hu.csega.toolshed.framework.impl.properties.converters.ToolPropertyConvertColor;
+import hu.csega.toolshed.framework.impl.properties.converters.ToolPropertyConvertString;
 
 public class ToolPropertiesComponent extends JPanel {
+
+	private static final Map<Class<?>, ToolPropertyConverter> CONVERSION_MAP = new HashMap<>();
+	private static final ToolPropertyConverter DEFAULT_CONVERTER = new ToolPropertyConvertString();
 
 	Object backingBean;
 	Class<?> backingBeanClass;
@@ -71,7 +77,7 @@ public class ToolPropertiesComponent extends JPanel {
 		}
 	}
 
-	void setValue(String field, Object value) {
+	void setValue(String field, String value) {
 		if(backingBean == null)
 			return;
 
@@ -83,13 +89,16 @@ public class ToolPropertiesComponent extends JPanel {
 		try {
 			String setterName = "set" + Character.toUpperCase(field.charAt(0)) + field.substring(1);
 			Method method = backingBeanClass.getMethod(setterName, type);
-			method.invoke(backingBean, value);
+
+			ToolPropertyConverter converter = converterOf(type);
+			Object convertedValue = converter.convertFromString(value);
+			method.invoke(backingBean, convertedValue);
 		} catch (Exception ex) {
 			throw new RuntimeException("Field \"" + field + "\" could not be set.", ex);
 		}
 	}
 
-	Object getValue(String field) {
+	String getValue(String field) {
 		if(backingBean == null)
 			return null;
 
@@ -115,11 +124,22 @@ public class ToolPropertiesComponent extends JPanel {
 				method = backingBeanClass.getMethod(getterName);
 			}
 
-
-			return method.invoke(backingBean);
+			Object value = method.invoke(backingBean);
+			ToolPropertyConverter converter = converterOf(type);
+			String ret = converter.convertToString(value);
+			return ret;
 		} catch (Exception ex) {
 			throw new RuntimeException("Value of field \"" + field + "\" could not be get.", ex);
 		}
+	}
+
+	private ToolPropertyConverter converterOf(Class<?> type) {
+		ToolPropertyConverter converter = CONVERSION_MAP.get(type);
+		if(converter == null) {
+			converter = DEFAULT_CONVERTER;
+		}
+
+		return converter;
 	}
 
 	@Override
@@ -150,6 +170,11 @@ public class ToolPropertiesComponent extends JPanel {
 	public void setPreferredSize(Dimension preferredSize) {
 		super.setPreferredSize(preferredSize);
 		scrollPane.setPreferredSize(preferredSize);
+	}
+
+	static {
+		CONVERSION_MAP.put(String.class, new ToolPropertyConvertString());
+		CONVERSION_MAP.put(Color.class, new ToolPropertyConvertColor());
 	}
 
 	private static final long serialVersionUID = 1L;

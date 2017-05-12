@@ -1,5 +1,7 @@
 package hu.csega.toolshed.framework.impl.properties;
 
+import java.awt.Color;
+
 import hu.csega.toolshed.framework.ToolProperty;
 
 public class ExampleToolBackingBean {
@@ -16,40 +18,43 @@ public class ExampleToolBackingBean {
 	@ToolProperty("Year")
 	private String year;
 
-	@ToolProperty("Prop 0001")
+	@ToolProperty("X Color")
+	private Color color;
+
+	@ToolProperty("Z Prop 0001")
 	private String prop0001;
 
-	@ToolProperty("Prop 0002")
+	@ToolProperty("Z Prop 0002")
 	private String prop0002;
 
-	@ToolProperty("Prop 0003")
+	@ToolProperty("Z Prop 0003")
 	private String prop0003;
 
-	@ToolProperty("Prop 0004")
+	@ToolProperty("Z Prop 0004")
 	private String prop0004;
 
-	@ToolProperty("Prop 0005")
+	@ToolProperty("Z Prop 0005")
 	private String prop0005;
 
-	@ToolProperty("Prop 0006")
+	@ToolProperty("Z Prop 0006")
 	private String prop0006;
 
-	@ToolProperty("Prop 0007")
+	@ToolProperty("Z Prop 0007")
 	private String prop0007;
 
-	@ToolProperty("Prop 0008")
+	@ToolProperty("Z Prop 0008")
 	private String prop0008;
 
-	@ToolProperty("Prop 0009")
+	@ToolProperty("Z Prop 0009")
 	private String prop0009;
 
-	@ToolProperty("Prop 0010")
+	@ToolProperty("Z Prop 0010")
 	private String prop0010;
 
-	@ToolProperty("Prop 0011")
+	@ToolProperty("Z Prop 0011")
 	private String prop0011;
 
-	@ToolProperty("Prop 0012")
+	@ToolProperty("Z Prop 0012")
 	private String prop0012;
 
 	public String getTitle() {
@@ -180,5 +185,11 @@ public class ExampleToolBackingBean {
 		this.prop0012 = prop0012;
 	}
 
+	public Color getColor() {
+		return color;
+	}
 
+	public void setColor(Color color) {
+		this.color = color;
+	}
 }

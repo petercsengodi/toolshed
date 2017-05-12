@@ -84,5 +84,4 @@ public class ToolPropertyTableModel implements TableModel {
 	@Override
 	public void removeTableModelListener(TableModelListener l) {
 	}
-
 }
