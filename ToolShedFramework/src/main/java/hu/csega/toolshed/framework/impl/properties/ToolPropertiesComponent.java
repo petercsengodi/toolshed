@@ -14,7 +14,9 @@ import javax.swing.JTable;
 import javax.swing.table.TableModel;
 
 import hu.csega.toolshed.framework.ToolProperty;
+import hu.csega.toolshed.framework.impl.properties.converters.ToolPropertyConvertBoolean;
 import hu.csega.toolshed.framework.impl.properties.converters.ToolPropertyConvertColor;
+import hu.csega.toolshed.framework.impl.properties.converters.ToolPropertyConvertNumber;
 import hu.csega.toolshed.framework.impl.properties.converters.ToolPropertyConvertString;
 
 public class ToolPropertiesComponent extends JPanel {
@@ -175,6 +177,20 @@ public class ToolPropertiesComponent extends JPanel {
 	static {
 		CONVERSION_MAP.put(String.class, new ToolPropertyConvertString());
 		CONVERSION_MAP.put(Color.class, new ToolPropertyConvertColor());
+		CONVERSION_MAP.put(Boolean.class, new ToolPropertyConvertBoolean(false));
+		CONVERSION_MAP.put(boolean.class, new ToolPropertyConvertBoolean(true));
+		CONVERSION_MAP.put(Integer.class, new ToolPropertyConvertNumber(Integer.class, false));
+		CONVERSION_MAP.put(int.class, new ToolPropertyConvertNumber(Integer.class, true));
+		CONVERSION_MAP.put(Long.class, new ToolPropertyConvertNumber(Long.class, false));
+		CONVERSION_MAP.put(long.class, new ToolPropertyConvertNumber(Long.class, true));
+		CONVERSION_MAP.put(Short.class, new ToolPropertyConvertNumber(Short.class, false));
+		CONVERSION_MAP.put(short.class, new ToolPropertyConvertNumber(Short.class, true));
+		CONVERSION_MAP.put(Byte.class, new ToolPropertyConvertNumber(Byte.class, false));
+		CONVERSION_MAP.put(byte.class, new ToolPropertyConvertNumber(Byte.class, true));
+		CONVERSION_MAP.put(Double.class, new ToolPropertyConvertNumber(Double.class, false));
+		CONVERSION_MAP.put(double.class, new ToolPropertyConvertNumber(Double.class, true));
+		CONVERSION_MAP.put(Float.class, new ToolPropertyConvertNumber(Float.class, false));
+		CONVERSION_MAP.put(float.class, new ToolPropertyConvertNumber(Float.class, true));
 	}
 
 	private static final long serialVersionUID = 1L;

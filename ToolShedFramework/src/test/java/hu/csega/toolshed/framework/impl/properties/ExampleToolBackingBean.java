@@ -21,6 +21,24 @@ public class ExampleToolBackingBean {
 	@ToolProperty("X Color")
 	private Color color;
 
+	@ToolProperty("X Float")
+	private Float bigFloat;
+
+	@ToolProperty("X float")
+	private float smallFloat;
+
+	@ToolProperty("X Integer")
+	private Integer bigInteger;
+
+	@ToolProperty("X int")
+	private int smallInteger;
+
+	@ToolProperty("X Boolean")
+	private Boolean bigBoolean;
+
+	@ToolProperty("X boolean")
+	private boolean smallBoolean;
+
 	@ToolProperty("Z Prop 0001")
 	private String prop0001;
 
@@ -192,4 +210,53 @@ public class ExampleToolBackingBean {
 	public void setColor(Color color) {
 		this.color = color;
 	}
+
+	public Float getBigFloat() {
+		return bigFloat;
+	}
+
+	public void setBigFloat(Float bigFloat) {
+		this.bigFloat = bigFloat;
+	}
+
+	public float getSmallFloat() {
+		return smallFloat;
+	}
+
+	public void setSmallFloat(float smallFloat) {
+		this.smallFloat = smallFloat;
+	}
+
+	public Integer getBigInteger() {
+		return bigInteger;
+	}
+
+	public void setBigInteger(Integer bigInteger) {
+		this.bigInteger = bigInteger;
+	}
+
+	public int getSmallInteger() {
+		return smallInteger;
+	}
+
+	public void setSmallInteger(int smallInteger) {
+		this.smallInteger = smallInteger;
+	}
+
+	public Boolean getBigBoolean() {
+		return bigBoolean;
+	}
+
+	public void setBigBoolean(Boolean bigBoolean) {
+		this.bigBoolean = bigBoolean;
+	}
+
+	public boolean isSmallBoolean() {
+		return smallBoolean;
+	}
+
+	public void setSmallBoolean(boolean smallBoolean) {
+		this.smallBoolean = smallBoolean;
+	}
+
 }
