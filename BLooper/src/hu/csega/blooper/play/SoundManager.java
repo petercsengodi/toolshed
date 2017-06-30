@@ -72,7 +72,9 @@ public class SoundManager {
 			} else {
 				Clip clip = (Clip) AudioSystem.getLine((DataLine.Info) infos.elementAt(x));
 				clip.open((AudioFormat) afs.elementAt(x), (byte[]) audios.elementAt(x), 0, ((Integer) sizes.elementAt(x)).intValue());
-				clip.start();
+
+				// TODO: thread pools
+				new PlayClipThread(clip).start();
 			}
 		} catch(LineUnavailableException ex) {
 			throw new RuntimeException(ex);
