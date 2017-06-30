@@ -23,7 +23,7 @@ public class SoundManager {
 		audios = new Vector();
 	}
 
-	public int addClip(String s) {
+	public Clip addClip(String s) {
 		try {
 			// URL url = getClass().getResource(s);
 			// // InputStream inputstream = url.openStream();
@@ -40,7 +40,11 @@ public class SoundManager {
 			infos.add(info);
 			audios.add(audio);
 
-			return num++;
+			Clip clip = (Clip) AudioSystem.getLine((DataLine.Info) infos.elementAt(num));
+			clip.open((AudioFormat) afs.elementAt(num), (byte[]) audios.elementAt(num), 0, ((Integer) sizes.elementAt(num)).intValue());
+			num++;
+
+			return clip;
 
 		} catch(RuntimeException ex) {
 			throw ex;
@@ -65,19 +69,7 @@ public class SoundManager {
 		}
 	}
 
-	public void playSound(int x) {
-		try {
-			if (x > num) {
-				System.out.println("playSound: sample nr[" + x + "] is not available");
-			} else {
-				Clip clip = (Clip) AudioSystem.getLine((DataLine.Info) infos.elementAt(x));
-				clip.open((AudioFormat) afs.elementAt(x), (byte[]) audios.elementAt(x), 0, ((Integer) sizes.elementAt(x)).intValue());
-
-				// TODO: thread pools
-				new PlayClipThread(clip).start();
-			}
-		} catch(LineUnavailableException ex) {
-			throw new RuntimeException(ex);
-		}
+	public void playSound(Clip clip) {
+		clip.start();
 	}
 }

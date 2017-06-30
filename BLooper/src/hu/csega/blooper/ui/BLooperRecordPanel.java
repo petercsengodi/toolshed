@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
 import java.io.File;
 
+import javax.sound.sampled.Clip;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -30,7 +31,7 @@ public class BLooperRecordPanel extends JPanel implements ActionListener {
 	private JButton replay;
 	private JLabel status;
 
-	private int playIndex = -1;
+	private Clip clip = null;
 	private boolean playerStarted = false;
 	private boolean recorderStarted = false;
 	private JavaSoundRecorder recorder;
@@ -72,7 +73,10 @@ public class BLooperRecordPanel extends JPanel implements ActionListener {
 
 		if(source == record) {
 			if(!recorderStarted && recorder.start()) {
-				playIndex = -1;
+				if(clip != null) {
+					clip.close();
+					clip = null;
+				}
 				recorderStarted = true;
 				setStatus(RECORDING);
 			}
@@ -101,17 +105,20 @@ public class BLooperRecordPanel extends JPanel implements ActionListener {
 	}
 
 	public void play() {
-		if(file.exists()) {
+		if(file.exists() && clip == null) {
 			// player.init();
 			// if(!playerStarted && player.start()) {
 			// 	playerStarted = true;
 			// 	setStatus(PLAYING);
 			// }
 
-			if(playIndex < 0) {
-				playIndex = soundManager.addClip(filename);
-			}
-			soundManager.playSound(playIndex);
+			clip = soundManager.addClip(filename);
+		}
+
+		if(clip != null) {
+			clip.stop();
+			clip.setFramePosition(0);
+			clip.start();
 		}
 	}
 
