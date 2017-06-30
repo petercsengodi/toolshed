@@ -39,10 +39,12 @@ public class BLooperMain extends JFrame implements ActionListener, WindowListene
 		for(int i = 1; i <= NUMBER_OF_LOOPER_PANELS; i++) {
 			BLooperRecordPanel panel = new BLooperRecordPanel(i, soundManager);
 			contentPane.add(panel);
+			panel.addKeyListener(this);
 			map.put(panel.getKeyChar(), panel);
 		}
 
 		addWindowListener(this);
+		addKeyListener(this);
 		pack();
 	}
 
@@ -91,7 +93,6 @@ public class BLooperMain extends JFrame implements ActionListener, WindowListene
 	@Override
 	public void keyPressed(KeyEvent e) {
 		char c = e.getKeyChar();
-		System.out.println(c);
 		BLooperRecordPanel panel = map.get(c);
 		if(panel != null)
 			panel.play();

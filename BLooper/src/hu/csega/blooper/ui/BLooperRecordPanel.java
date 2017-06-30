@@ -1,9 +1,12 @@
 package hu.csega.blooper.ui;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyListener;
+import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -20,6 +23,7 @@ public class BLooperRecordPanel extends JPanel implements ActionListener {
 
 	private char keyChar;
 	private String filename;
+	private File file;
 
 	private JButton record;
 	private JButton stop;
@@ -35,6 +39,7 @@ public class BLooperRecordPanel extends JPanel implements ActionListener {
 	public BLooperRecordPanel(int index, SoundManager soundManager) {
 		this.keyChar = (char) ( '0' + index);
 		this.filename = "loops/loop-" + index + ".wav";
+		this.file = new File(this.filename);
 		this.recorder = new JavaSoundRecorder(this, this.filename);
 		this.soundManager = soundManager;
 
@@ -96,15 +101,25 @@ public class BLooperRecordPanel extends JPanel implements ActionListener {
 	}
 
 	public void play() {
-		//			player.init();
-		//			if(!playerStarted && player.start()) {
-		//				playerStarted = true;
-		//				setStatus(PLAYING);
-		//			}
-		if(playIndex < 0) {
-			playIndex = soundManager.addClip(filename);
+		if(file.exists()) {
+			// player.init();
+			// if(!playerStarted && player.start()) {
+			// 	playerStarted = true;
+			// 	setStatus(PLAYING);
+			// }
+
+			if(playIndex < 0) {
+				playIndex = soundManager.addClip(filename);
+			}
+			soundManager.playSound(playIndex);
 		}
-		soundManager.playSound(playIndex);
+	}
+
+	@Override
+	public synchronized void addKeyListener(KeyListener l) {
+		super.addKeyListener(l);
+		for(Component c : this.getComponents())
+			c.addKeyListener(l);
 	}
 
 	private static final long serialVersionUID = 1L;
