@@ -1,21 +1,21 @@
 package hu.csega.blooper;
 
 import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-
 import hu.csega.blooper.play.SoundManager;
-import hu.csega.blooper.record.JavaSoundRecorder;
+import hu.csega.blooper.ui.BLooperRecordPanel;
 
-public class BLooperMain extends JFrame implements ActionListener, WindowListener {
+public class BLooperMain extends JFrame implements ActionListener, WindowListener, KeyListener {
 
 	public static void main(String[] args) {
 		BLooperMain main = new BLooperMain();
@@ -23,79 +23,35 @@ public class BLooperMain extends JFrame implements ActionListener, WindowListene
 		main.init();
 	}
 
+	private static final int NUMBER_OF_LOOPER_PANELS = 5;
+
+	private SoundManager soundManager;
+	private Map<Character, BLooperRecordPanel> map = new HashMap<>();
+
 	public BLooperMain() {
 		super("(B)Looper");
-		this.recorder = new JavaSoundRecorder(this);
 		// this.player = new JavaSoundPlayer(this);
-		this.manager = new SoundManager();
+		this.soundManager = new SoundManager( );
 
 		Container contentPane = getContentPane();
-		contentPane.setLayout(new FlowLayout());
+		contentPane.setLayout(new GridLayout(NUMBER_OF_LOOPER_PANELS, 1));
 
-		record = new JButton("record");
-		record.addActionListener(this);
-		contentPane.add(record);
-
-		stop = new JButton("stop");
-		stop.addActionListener(this);
-		contentPane.add(stop);
-
-		replay = new JButton("replay");
-		replay.addActionListener(this);
-		contentPane.add(replay);
-
-		status = new JLabel(NOTHING);
-		status.setPreferredSize(new Dimension(150, 50));
-		contentPane.add(status);
+		for(int i = 1; i <= NUMBER_OF_LOOPER_PANELS; i++) {
+			BLooperRecordPanel panel = new BLooperRecordPanel(i, soundManager);
+			contentPane.add(panel);
+			map.put(panel.getKeyChar(), panel);
+		}
 
 		addWindowListener(this);
 		pack();
 	}
 
 	public void init() {
-//		player.init();
-	}
-
-	public void setStatus(String msg) {
-		status.setText(msg);
+		//		player.init();
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		Object source = e.getSource();
-
-		if(source == record) {
-			if(!recorderStarted && recorder.start()) {
-				playIndex = -1;
-				recorderStarted = true;
-				setStatus(RECORDING);
-			}
-		}
-
-		if(source == stop) {
-			if(recorderStarted) {
-				recorder.finish();
-				recorderStarted = false;
-			}
-
-			if(playerStarted) {
-				playerStarted = false;
-			}
-
-			setStatus(NOTHING);
-		}
-
-		if(source == replay) {
-//			player.init();
-//			if(!playerStarted && player.start()) {
-//				playerStarted = true;
-//				setStatus(PLAYING);
-//			}
-			if(playIndex < 0) {
-				playIndex = manager.addClip(TEMP_FILE);
-			}
-			manager.playSound(playIndex);
-		}
 	}
 
 	@Override
@@ -128,24 +84,24 @@ public class BLooperMain extends JFrame implements ActionListener, WindowListene
 	public void windowOpened(WindowEvent e) {
 	}
 
-	private JButton record;
-	private JButton stop;
-	private JButton replay;
-	private JLabel status;
+	@Override
+	public void keyTyped(KeyEvent e) {
+	}
 
-	private JavaSoundRecorder recorder;
-//	private JavaSoundPlayer player;
-	private SoundManager manager;
-	private int playIndex = -1;
-	private boolean recorderStarted = false;
-	private boolean playerStarted = false;
+	@Override
+	public void keyPressed(KeyEvent e) {
+		char c = e.getKeyChar();
+		System.out.println(c);
+		BLooperRecordPanel panel = map.get(c);
+		if(panel != null)
+			panel.play();
+	}
 
-	private static final String NOTHING = "Nothing.";
-	private static final String RECORDING = "Recording.";
-	private static final String PLAYING = "Playing.";
+	@Override
+	public void keyReleased(KeyEvent e) {
+	}
 
 	public static final String ERROR = "Error.";
-	public static final String TEMP_FILE = "RecordAudio.wav";
 
 	private static final long serialVersionUID = 1L;
 }
