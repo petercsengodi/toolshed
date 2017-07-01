@@ -37,6 +37,7 @@ public class BLooperRecordPanel extends JPanel implements ActionListener {
 	private JLabel status;
 	private JTextField loopStart;
 	private JTextField loopEnd;
+	private JButton resetLoop;
 
 	private Clip clip = null;
 	private boolean playerStarted = false;
@@ -67,13 +68,13 @@ public class BLooperRecordPanel extends JPanel implements ActionListener {
 		replay.addActionListener(this);
 		this.add(replay);
 
-		loop = new JCheckBox("Loop");
-		loop.setSelected(true);
-		this.add(loop);
-
 		status = new JLabel(NOT_LOADED);
 		status.setPreferredSize(new Dimension(90, 50));
 		this.add(status);
+
+		loop = new JCheckBox("Loop");
+		loop.setSelected(true);
+		this.add(loop);
 
 		JLabel startFrame = new JLabel("Start frame:");
 		startFrame.setPreferredSize(new Dimension(90, 50));
@@ -90,6 +91,10 @@ public class BLooperRecordPanel extends JPanel implements ActionListener {
 		loopEnd = new JTextField();
 		loopEnd.setPreferredSize(new Dimension(90, 25));
 		this.add(loopEnd);
+
+		resetLoop = new JButton("Reset Loop");
+		resetLoop.addActionListener(this);
+		this.add(resetLoop);
 
 		reload();
 	}
@@ -127,6 +132,13 @@ public class BLooperRecordPanel extends JPanel implements ActionListener {
 		if(source == replay) {
 			play();
 		}
+
+		if(source == resetLoop) {
+			if(clip != null) {
+				loopStart.setText("0");
+				loopEnd.setText(String.valueOf(clip.getFrameLength() - 1));
+			}
+		}
 	}
 
 	public char getKeyChar() {
@@ -157,6 +169,8 @@ public class BLooperRecordPanel extends JPanel implements ActionListener {
 
 		if(clip != null) {
 			clip.stop();
+			clip.flush();
+			clip.drain();
 			int start = Integer.parseInt(loopStart.getText());
 			clip.setFramePosition(start);
 			clip.start();
