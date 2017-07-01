@@ -14,6 +14,7 @@ import hu.csega.blooper.ui.BLooperRecordPanel;
 /**
  * @author stackoverflow, peter
  */
+@Deprecated
 public class JavaSoundPlayer {
 
 	private BLooperRecordPanel looper;

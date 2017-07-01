@@ -13,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import hu.csega.blooper.play.SoundManager;
 import hu.csega.blooper.record.JavaSoundRecorder;
@@ -34,6 +35,8 @@ public class BLooperRecordPanel extends JPanel implements ActionListener {
 	private JButton replay;
 	private JCheckBox loop;
 	private JLabel status;
+	private JTextField loopStart;
+	private JTextField loopEnd;
 
 	private Clip clip = null;
 	private boolean playerStarted = false;
@@ -69,8 +72,24 @@ public class BLooperRecordPanel extends JPanel implements ActionListener {
 		this.add(loop);
 
 		status = new JLabel(NOT_LOADED);
-		status.setPreferredSize(new Dimension(150, 50));
+		status.setPreferredSize(new Dimension(90, 50));
 		this.add(status);
+
+		JLabel startFrame = new JLabel("Start frame:");
+		startFrame.setPreferredSize(new Dimension(90, 50));
+		this.add(startFrame);
+
+		loopStart = new JTextField();
+		loopStart.setPreferredSize(new Dimension(90, 25));
+		this.add(loopStart);
+
+		JLabel endFrame = new JLabel("End frame:");
+		endFrame.setPreferredSize(new Dimension(90, 50));
+		this.add(endFrame);
+
+		loopEnd = new JTextField();
+		loopEnd.setPreferredSize(new Dimension(90, 25));
+		this.add(loopEnd);
 
 		reload();
 	}
@@ -121,8 +140,10 @@ public class BLooperRecordPanel extends JPanel implements ActionListener {
 
 		if(clip != null) {
 			clip.stop();
-			clip.setFramePosition(0);
-			// clip.start();
+			int start = Integer.parseInt(loopStart.getText());
+			int end = Integer.parseInt(loopEnd.getText());
+			clip.setFramePosition(start);
+			clip.setLoopPoints(start, end);
 			clip.loop(Clip.LOOP_CONTINUOUSLY);
 			playerStarted = true;
 			setStatus(PLAYING);
@@ -136,7 +157,8 @@ public class BLooperRecordPanel extends JPanel implements ActionListener {
 
 		if(clip != null) {
 			clip.stop();
-			clip.setFramePosition(0);
+			int start = Integer.parseInt(loopStart.getText());
+			clip.setFramePosition(start);
 			clip.start();
 			playerStarted = false;
 		}
@@ -145,14 +167,21 @@ public class BLooperRecordPanel extends JPanel implements ActionListener {
 	@Override
 	public synchronized void addKeyListener(KeyListener l) {
 		super.addKeyListener(l);
-		for(Component c : this.getComponents())
-			c.addKeyListener(l);
+		for(Component c : this.getComponents()) {
+			if(c instanceof JButton || c instanceof JLabel || c instanceof JCheckBox) {
+				c.addKeyListener(l);
+			}
+		}
 	}
 
 	public void reload() {
-		if(file.exists())
+		if(file.exists()) {
 			clip = soundManager.addClip(filename);
-		System.out.println("Loaded looper file: " + filename);
+			loopStart.setText(String.valueOf(0));
+			loopEnd.setText(String.valueOf(clip.getFrameLength() - 1));
+			System.out.println("Loaded looper file: " + filename);
+		}
+
 		recorderStarted = false;
 		setStatus(NOTHING);
 	}
@@ -218,6 +247,36 @@ public class BLooperRecordPanel extends JPanel implements ActionListener {
 
 	public int getRecordingIndex() {
 		return recordingIndex;
+	}
+
+	public boolean hasClip() {
+		return clip != null;
+	}
+
+	public String getLoop() {
+		return String.valueOf(loop.isSelected());
+	}
+
+	public void setLoop(Object loop) {
+		this.loop.setSelected("true".equals(loop));
+	}
+
+	public String getLoopStart() {
+		return loopStart.getText();
+	}
+
+	public void setLoopStart(Object loopStart) {
+		String tmp = (loopStart == null ? "" : loopStart.toString());
+		this.loopStart.setText(tmp);
+	}
+
+	public String getLoopEnd() {
+		return loopEnd.getText();
+	}
+
+	public void setLoopEnd(Object loopEnd) {
+		String tmp = (loopEnd == null ? "" : loopEnd.toString());
+		this.loopEnd.setText(tmp);
 	}
 
 	private static final long serialVersionUID = 1L;

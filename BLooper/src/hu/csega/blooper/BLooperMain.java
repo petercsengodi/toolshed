@@ -8,8 +8,12 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.swing.JFrame;
 import hu.csega.blooper.play.SoundManager;
@@ -23,10 +27,13 @@ public class BLooperMain extends JFrame implements ActionListener, WindowListene
 		main.init();
 	}
 
-	private static final int NUMBER_OF_LOOPER_PANELS = 5;
+	private static final int NUMBER_OF_LOOPER_PANELS = 9; // min: 1 max: 9
+	private static final String PROPERTIES_FILE = "loops/properties.ini";
 
 	private SoundManager soundManager;
+	private BLooperRecordPanel[] panels;
 	private Map<Character, BLooperRecordPanel> map = new HashMap<>();
+	private Properties panelProperties = new Properties();
 
 	private boolean holdingControl = false;
 
@@ -38,11 +45,25 @@ public class BLooperMain extends JFrame implements ActionListener, WindowListene
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new GridLayout(NUMBER_OF_LOOPER_PANELS, 1));
 
-		for(int i = 1; i <= NUMBER_OF_LOOPER_PANELS; i++) {
-			BLooperRecordPanel panel = new BLooperRecordPanel(i, soundManager);
+		try (FileInputStream in = new FileInputStream(PROPERTIES_FILE)) {
+			this.panelProperties.load(in);
+		} catch(IOException ex) {
+			ex.printStackTrace();
+		}
+
+		panels = new BLooperRecordPanel[NUMBER_OF_LOOPER_PANELS];
+		for(int i = 0; i < NUMBER_OF_LOOPER_PANELS; i++) {
+			BLooperRecordPanel panel = new BLooperRecordPanel(i+1, soundManager);
+			panels[i] = panel;
 			contentPane.add(panel);
 			panel.addKeyListener(this);
 			map.put(panel.getKeyChar(), panel);
+
+			if(panel.hasClip()) {
+				panel.setLoopStart(panelProperties.get("start-" + i));
+				panel.setLoopEnd(panelProperties.get("end-" + i));
+				panel.setLoop(panelProperties.get("loop-" + i));
+			}
 		}
 
 		addWindowListener(this);
@@ -68,6 +89,19 @@ public class BLooperMain extends JFrame implements ActionListener, WindowListene
 
 	@Override
 	public void windowClosing(WindowEvent e) {
+		for(int i = 0; i < NUMBER_OF_LOOPER_PANELS; i++) {
+			BLooperRecordPanel panel = panels[i];
+			panelProperties.put("start-" + i, panel.getLoopStart());
+			panelProperties.put("end-" + i, panel.getLoopEnd());
+			panelProperties.put("loop-" + i, panel.getLoop());
+		}
+
+		try (FileOutputStream out = new FileOutputStream(PROPERTIES_FILE)) {
+			panelProperties.store(out, "Properties for panels");
+		} catch(IOException ex) {
+			ex.printStackTrace();
+		}
+
 		// player.close();
 		System.exit(0);
 	}
