@@ -2,7 +2,6 @@ package hu.csega.blooper.record;
 
 import javax.sound.sampled.*;
 
-import hu.csega.blooper.BLooperMain;
 import hu.csega.blooper.ui.BLooperRecordPanel;
 
 import java.io.*;
@@ -34,7 +33,7 @@ public class JavaSoundRecorder {
 		// float sampleRate = 16000;
 		// float sampleRate = 64000;
 		float sampleRate = 190000;
-		int sampleSizeInBits = 8;
+		int sampleSizeInBits = 32; // 8
 		int channels = 2;
 		boolean signed = true;
 		boolean bigEndian = true;
@@ -66,20 +65,30 @@ public class JavaSoundRecorder {
 
 			System.out.println("Start capturing...");
 
-			AudioInputStream ais = new AudioInputStream(line);
+			final AudioInputStream ais = new AudioInputStream(line);
 
 			System.out.println("Start recording...");
+			looper.setStatus(BLooperRecordPanel.RECORDING);
 
-			// start recording
-			AudioSystem.write(ais, fileType, wavFile);
+
+			new Thread() {
+				@Override
+				public void run() {
+					try {
+						// start recording
+						AudioSystem.write(ais, fileType, wavFile);
+					} catch (IOException ex) {
+						ex.printStackTrace();
+						looper.setStatus(BLooperRecordPanel.ERROR);
+					}
+
+				}
+			}.start();
 
 			return true;
 		} catch (LineUnavailableException ex) {
 			ex.printStackTrace();
 			looper.setStatus(ERROR_LINE_BUSY);
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-			looper.setStatus(BLooperMain.ERROR);
 		}
 
 		return false;
@@ -91,10 +100,26 @@ public class JavaSoundRecorder {
 	public  void finish() {
 		line.stop();
 		line.close();
-		System.out.println("Finished");
+		looper.setStatus(BLooperRecordPanel.NOTHING);
+
+		new Thread() {
+			@Override
+			public void run() {
+
+				try {
+					Thread.sleep(2000);
+					looper.reload();
+				} catch(InterruptedException ex) {
+					// ...
+				}
+			}
+		}.start();
+
 	}
 
 	public void timeout(final long millis) {
+
+		final int recordingIndex = looper.getRecordingIndex();
 
 		// creates a new thread that waits for a specified
 		// of time before stopping
@@ -107,7 +132,10 @@ public class JavaSoundRecorder {
 					ex.printStackTrace();
 				}
 
-				finish();
+				if(recordingIndex == looper.getRecordingIndex()) {
+					looper.finishRecording();
+					System.out.println("Recording finished by stop timer.");
+				}
 			}
 		});
 

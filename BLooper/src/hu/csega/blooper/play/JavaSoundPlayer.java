@@ -9,7 +9,6 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
-import hu.csega.blooper.BLooperMain;
 import hu.csega.blooper.ui.BLooperRecordPanel;
 
 /**
@@ -58,10 +57,10 @@ public class JavaSoundPlayer {
 			sourceLine.open(audioFormat);
 		} catch (LineUnavailableException e) {
 			e.printStackTrace();
-			looper.setStatus(BLooperMain.ERROR);
+			looper.setStatus(BLooperRecordPanel.ERROR);
 		} catch (Exception e) {
 			e.printStackTrace();
-			looper.setStatus(BLooperMain.ERROR);
+			looper.setStatus(BLooperRecordPanel.ERROR);
 		}
 
 		sourceLine.start();
@@ -89,7 +88,7 @@ public class JavaSoundPlayer {
 
 		} catch (Exception e){
 			e.printStackTrace();
-			looper.setStatus(BLooperMain.ERROR);
+			looper.setStatus(BLooperRecordPanel.ERROR);
 			return false;
 		}
 

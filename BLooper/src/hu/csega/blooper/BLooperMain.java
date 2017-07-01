@@ -28,6 +28,8 @@ public class BLooperMain extends JFrame implements ActionListener, WindowListene
 	private SoundManager soundManager;
 	private Map<Character, BLooperRecordPanel> map = new HashMap<>();
 
+	private boolean holdingControl = false;
+
 	public BLooperMain() {
 		super("(B)Looper");
 		// this.player = new JavaSoundPlayer(this);
@@ -92,17 +94,27 @@ public class BLooperMain extends JFrame implements ActionListener, WindowListene
 
 	@Override
 	public void keyPressed(KeyEvent e) {
+		if(e.getKeyCode() == KeyEvent.VK_CONTROL) {
+			holdingControl = true;
+		}
+
 		char c = e.getKeyChar();
 		BLooperRecordPanel panel = map.get(c);
-		if(panel != null)
-			panel.play();
+		if(panel != null) {
+			if(holdingControl) {
+				panel.recordOrStop();
+			} else {
+				panel.playOrStop();
+			}
+		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
+		if(e.getKeyCode() == KeyEvent.VK_CONTROL) {
+			holdingControl = false;
+		}
 	}
-
-	public static final String ERROR = "Error.";
 
 	private static final long serialVersionUID = 1L;
 }
