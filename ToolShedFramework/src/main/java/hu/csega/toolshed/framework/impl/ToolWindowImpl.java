@@ -14,6 +14,7 @@ import hu.csega.toolshed.framework.ToolWindow;
 public class ToolWindowImpl extends JFrame implements ToolWindow {
 
 	private ITool tool;
+	private boolean fullScreen;
 
 	public ToolWindowImpl() {
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -26,6 +27,11 @@ public class ToolWindowImpl extends JFrame implements ToolWindow {
 			Component awtComponent = (Component)component;
 			getContentPane().add(awtComponent);
 		}
+	}
+
+	@Override
+	public void setFullScreen(boolean fullScreen) {
+		this.fullScreen = fullScreen;
 	}
 
 	@Override
@@ -49,9 +55,13 @@ public class ToolWindowImpl extends JFrame implements ToolWindow {
 	public void start() {
 		pack();
 
-		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-		this.setLocation(dim.width/2-this.getSize().width/2,
-				dim.height/2-this.getSize().height/2);
+		if(fullScreen) {
+			this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		} else {
+			Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+			this.setLocation(dim.width/2-this.getSize().width/2,
+					dim.height/2-this.getSize().height/2);
+		}
 
 		// setResizable(false);
 		setVisible(true);

@@ -1,6 +1,5 @@
 package hu.csega.toolshed.framework;
 
-import java.awt.Container;
 import java.awt.Window;
 
 import javax.swing.JMenuBar;
@@ -14,6 +13,7 @@ import hu.csega.units.Unit;
 public interface ToolWindow {
 
 	void addComponent(Object component);
+	void setFullScreen(boolean fullScreen);
 
 	void setJMenuBar(JMenuBar menuBar);
 	Window getAwtWindow();
