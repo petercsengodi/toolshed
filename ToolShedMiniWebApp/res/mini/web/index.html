@@ -1,0 +1,37 @@
+<html>
+	<head>
+		<title>ToolShedMiniWebApp</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<link rel="stylesheet" type="text/css" href="miniweb.css" />
+		<script type="text/javascript" src="jquery.js"></script>
+		<script type="text/javascript" src="miniweb.js"></script>
+	</head>
+	<body>
+		<h1>ToolShedMiniWebApp</h1>
+	
+		<div id="check">No response from test call, yet.</div>
+	
+		<script type="text/javascript">
+		
+			var testPayload = {
+	                "testParamName": "test-param",
+	                "testParamValue": "0001"
+	            };
+		
+	        $.ajax({
+	            type: "POST", 
+	            url: '/test',
+	            contentType: 'application/json; charset=utf-8',
+	            dataType: "json",
+	            data: JSON.stringify(testPayload),
+				success: function(data) {
+	                document.getElementById("check").innerHTML = "Test call returned: " + JSON.stringify(data);
+	            }, 
+	            error: function(error) {
+	            	document.getElementById("check").innerHTML = "Test call error: " + JSON.stringify(error);
+	            }
+	        });
+
+		</script> 
+	</body>
+</html>

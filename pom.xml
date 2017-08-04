@@ -54,6 +54,7 @@
 		<module>LoggingBitch</module>
 		<module>Units</module>
 		<module>ToolShedFramework</module>
+		<module>ToolShedMiniWebApp</module>
 		<module>AGeneticAlgorithmFramework</module>
 		<module>AnEquationSeekerWithGeneticAlgorithm</module>
 		<module>AnImageDegrader</module>
