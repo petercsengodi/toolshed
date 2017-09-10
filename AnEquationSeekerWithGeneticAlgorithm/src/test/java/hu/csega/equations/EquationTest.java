@@ -38,7 +38,7 @@ public class EquationTest {
 		try {
 			return loadTestData();
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			throw new RuntimeException("Generate test data with GenerateTestData.class first!", ex);
 		}
 	}
 

@@ -36,9 +36,9 @@ public class ImageDegraderTestFrame extends JFrame {
 		logger.info("Loading original image.");
 		frame.original = service.loadImage(TEST_IMAGE);
 
-		logger.info("Degrading with simple algorithm.");
-		frame.degradedBySimpleAlgorithm = service.degradeBySimpleAlgorithm(frame.original);
-
+//		logger.info("Degrading with simple algorithm.");
+//		frame.degradedBySimpleAlgorithm = service.degradeBySimpleAlgorithm(frame.original);
+//
 		ImageGeneticAlgorithmContainer container = service.createGeneticAlgorithmContainer();
 
 		logger.info("Loading result of first cycle.");
