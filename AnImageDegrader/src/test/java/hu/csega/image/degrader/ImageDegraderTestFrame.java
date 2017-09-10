@@ -7,6 +7,7 @@ import java.io.File;
 
 import javax.swing.JFrame;
 
+import hu.csega.image.common.ImageEffectService;
 import hu.csega.toolshed.logging.Logger;
 import hu.csega.toolshed.logging.LoggerFactory;
 import hu.csega.units.UnitStore;

@@ -1,4 +1,4 @@
-package hu.csega.image.degrader;
+package hu.csega.image.common;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -9,7 +9,15 @@ import java.io.File;
 
 import javax.imageio.ImageIO;
 
+import hu.csega.image.degrader.ImageGeneticAlgorithmContainer;
+import hu.csega.image.degrader.ImageGeneticAlgorithmContainerImpl;
+
 public class ImageEffectServiceImpl implements ImageEffectService {
+
+	@Override
+	public BufferedImage createNewImage(int width, int height) {
+		return new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+	}
 
 	@Override
 	public Image loadImage(String fileName) {
@@ -18,12 +26,11 @@ public class ImageEffectServiceImpl implements ImageEffectService {
 		} catch(Exception ex) {
 			throw new RuntimeException("Error while loading file: " + fileName, ex);
 		}
-
 	}
 
 	@Override
 	public BufferedImage loadBufferedImage(String fileName, int width, int height, Color clearColor) {
-		BufferedImage ret = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		BufferedImage ret = createNewImage(width, height);
 		Image img = loadImage(fileName);
 		Graphics g = ret.getGraphics();
 		g.setColor(clearColor);

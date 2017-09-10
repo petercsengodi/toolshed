@@ -5,7 +5,6 @@ import java.awt.image.BufferedImage;
 
 import hu.csega.genetic.framework.Chromosome;
 import hu.csega.genetic.framework.DistanceFromOptimum;
-import hu.csega.image.degrader.ImageEffectService;
 import hu.csega.image.triangles.MultipleTriangles;
 
 public class ImageDistanceFromOptimum implements DistanceFromOptimum {
@@ -30,7 +29,7 @@ public class ImageDistanceFromOptimum implements DistanceFromOptimum {
 		this.rgb = new int[this.capacity];
 		this.tmp = new int[this.capacity];
 
-		this.tmpImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		this.tmpImage = service.createNewImage(this.width, this.height);
 
 		this.triangles = triangles;
 
