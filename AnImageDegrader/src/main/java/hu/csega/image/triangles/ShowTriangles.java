@@ -144,7 +144,7 @@ public class ShowTriangles extends JFrame implements ActionListener, Runnable {
 			population.createRandomGenes(3 * SCALE, triangles.sizeInBytes());
 			population.initCrossOverStrategy(crossOverStrategy);
 			population.crossOverSameLength(2 * SCALE, crossOverStrategy);
-			population.keep(300);
+			population.keep(5000);
 			population.endRound();
 			cycles++;
 
