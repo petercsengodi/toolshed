@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Stack;
 import java.util.TreeMap;
 
 import hu.csega.genetic.framework.crossover.ChromosomePair;
@@ -19,22 +20,29 @@ import hu.csega.genetic.framework.mutation.MutationStrategy;
 
 public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>>, Serializable {
 
+	public static Builder builder(Chromosome chromosome, DistanceFromOptimum distanceStrategy) {
+		Population population = new Population();
+		population.distanceStrategy = distanceStrategy;
+
+		if(population.chromosomes == null)
+			population.chromosomes = new TreeMap<>();
+
+		double distance = population.distanceStrategy.calculate(chromosome);
+		population.chromosomes.put(new PopulationKey(distance, chromosome.getGenes()), chromosome);
+		population.geneLength = chromosome.getGenes().length;
+
+		Builder builder = new Builder();
+		builder.population = population;
+		return builder;
+	}
+
 	public static class Builder {
 
-		public Builder adamAndEve(Chromosome chromosome) {
+		public Builder randomGenes(int numberOfRandomGenes) {
 			if(population.chromosomes == null)
 				population.chromosomes = new TreeMap<>();
 
-			double distance = population.distanceStrategy.calculate(chromosome);
-			population.chromosomes.put(new PopulationKey(distance, chromosome.getGenes()), chromosome);
-			return this;
-		}
-
-		public Builder randomGenes(int numberOfRandomGenes, int length) {
-			if(population.chromosomes == null)
-				population.chromosomes = new TreeMap<>();
-
-			population.createRandomGenes(numberOfRandomGenes, length);
+			population.createRandomGenes(numberOfRandomGenes);
 			return this;
 		}
 
@@ -42,14 +50,10 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 			return population;
 		}
 
-		private Population population;
-	}
+		private Builder() {
+		}
 
-	public static Builder builder(DistanceFromOptimum distance) {
-		Builder builder = new Builder();
-		builder.population = new Population();
-		builder.population.distanceStrategy = distance;
-		return builder;
+		private Population population;
 	}
 
 	public static Population readFromFile(String filename) {
@@ -73,6 +77,10 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 
 			// TODO chromosomes = null;
 		}
+	}
+
+	public void setDistanceStrategy(DistanceFromOptimum distanceStrategy) {
+		this.distanceStrategy = distanceStrategy;
 	}
 
 	public void startRound() {
@@ -116,10 +124,22 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 		while(it.hasNext())
 			leastFitWithKey = it.next();
 
-		builder.append("Best Fit Chromosome: ").append(leastFitWithKey).append('\n');
+		builder.append("Least Fit Chromosome: ").append(leastFitWithKey).append('\n');
 		Chromosome leastFit = leastFitWithKey.getValue();
 		prototype.fillFromChromosome(leastFit);
-		builder.append("Least Fit Prototype: ").append(prototype);
+		builder.append("Least Fit Prototype: ").append(prototype).append('\n');
+
+		builder.append("Number of discarded chromosomes: ")
+			.append(discardedChromosomes == null ? 0 : discardedChromosomes.size())
+			.append('\n');
+
+		builder.append("Maximum of discarded chromosomes: ").append(discardedChromosomesMaxLength).append('\n');
+
+		builder.append("Number of discarded chromosome pairs: ")
+		.append(discardedChromosomePairs == null ? 0 : discardedChromosomePairs.size())
+		.append('\n');
+
+		builder.append("Maximum of discarded chromosome pairs: ").append(discardedChromosomePairsMaxLength).append('\n');
 
 		return builder.toString();
 	}
@@ -145,7 +165,7 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 				Entry<PopulationKey, Chromosome> next = itOther.next();
 				Chromosome chromosomeOther = next.getValue();
 
-				children = Chromosome.crossOverSameLength(chromosomeThis, chromosomeOther);
+				children = Chromosome.crossOver(this, chromosomeThis, chromosomeOther);
 
 				// TODO csega: if new chromosomes already exist in map, shouldn't re-calculate them
 
@@ -155,6 +175,7 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 				distance = distanceStrategy.calculate(children.chromosome2);
 				this.chromosomes.put(new PopulationKey(distance, children.chromosome2.getGenes()), children.chromosome2);
 
+				discardChromosomePair(children);
 				count++;
 			}
 
@@ -173,9 +194,11 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 		this.roundsCounted += other.roundsCounted;
 	}
 
-	public void createRandomGenes(int numberOfRandomGenes, int length) {
+	public void createRandomGenes(int numberOfRandomGenes) {
 		for(int i = 0; i < numberOfRandomGenes; i++) {
-			Chromosome chromosome = Chromosome.createRandomGene(length);
+			Chromosome chromosome = createNewChromosome();
+			chromosome.randomizeGenes();
+
 			double distance = distanceStrategy.calculate(chromosome);
 			chromosomes.put(new PopulationKey(distance, chromosome.getGenes()), chromosome);
 		}
@@ -198,9 +221,8 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 	public void mutateToNearOnes(int numberOfChromosomesToMutate, MutationStrategy strategy) {
 		strategy.selectBatch(chromosomes, numberOfChromosomesToMutate);
 		for(Chromosome chromosomeToMutate : strategy) {
-			int genesLength = chromosomeToMutate.getGenes().length;
 			for(byte k = -1; k < 2; k+= 2) { // -1 and +1
-				for(int j = 0; j < genesLength; j++) {
+				for(int j = 0; j < geneLength; j++) {
 					Chromosome mutated = Chromosome.mutateFix(chromosomeToMutate, j, k);
 					if(mutated != null) {
 						double distance = distanceStrategy.calculate(mutated);
@@ -217,25 +239,26 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 	}
 
 	public void crossOverSameLength(int numberOfCrossOvers) {
-		crossOverSameLength(numberOfCrossOvers, new RandomCrossOverStrategy());
+		crossOver(numberOfCrossOvers, RANDOM);
 	}
 
-	public void crossOverSameLength(int numberOfCrossOvers, CrossOverStrategy crossOverStrategy) {
+	public void crossOver(int numberOfCrossOvers, CrossOverStrategy crossOverStrategy) {
 		TreeMap<PopulationKey, Chromosome> result = new TreeMap<>();
 		result.putAll(chromosomes);
 
+		ChromosomePair parents;
 		ChromosomePair children;
 		double distance;
 
 		for(int i = 0; i < numberOfCrossOvers; i++) {
-			ChromosomePair pair = crossOverStrategy.select();
+			parents = crossOverStrategy.select(this);
 
-			if(pair == null) {
+			if(parents == null) {
 				System.out.println("Algorithm could select only " + i + " pairs, exiting loop.");
 				break;
 			}
 
-			children = Chromosome.crossOverSameLength(pair.chromosome1, pair.chromosome2);
+			children = Chromosome.crossOver(this, parents.chromosome1, parents.chromosome2);
 
 			// TODO csega: if new chromosomes already exist in map, shouldn't re-calculate them
 
@@ -244,46 +267,31 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 
 			distance = distanceStrategy.calculate(children.chromosome2);
 			result.put(new PopulationKey(distance, children.chromosome2.getGenes()), children.chromosome2);
+
+			discardChromosomePair(parents);
+			discardChromosomePair(children);
 		}
 
 		chromosomes = result;
 	}
 
 	public void crossOverVariateLength(int numberOfCrossOvers) {
-		crossOverSameLength(numberOfCrossOvers, new RandomCrossOverStrategy());
-	}
-
-	public void crossOverVariateLength(int numberOfCrossOvers, CrossOverStrategy crossOverStrategy) {
-		TreeMap<PopulationKey, Chromosome> result = new TreeMap<>();
-		result.putAll(chromosomes);
-
-		ChromosomePair children;
-		double distance;
-
-		for(int i = 0; i < numberOfCrossOvers; i++) {
-			ChromosomePair pair = crossOverStrategy.select();
-
-			if(pair == null) {
-				System.out.println("Algorithm could select only " + i + " pairs, exiting loop.");
-				break;
-			}
-
-			children = Chromosome.crossOverVariateLength(pair.chromosome1, pair.chromosome2);
-			distance = distanceStrategy.calculate(children.chromosome1);
-			result.put(new PopulationKey(distance, children.chromosome1.getGenes()), children.chromosome1);
-			distance = distanceStrategy.calculate(children.chromosome2);
-			result.put(new PopulationKey(distance, children.chromosome2.getGenes()), children.chromosome2);
-		}
-
-		chromosomes = result;
+		crossOver(numberOfCrossOvers, new RandomCrossOverStrategy());
 	}
 
 	public void keep(int numberOfGenomsToKeep) {
+		// TODO spare treemap objects?
 		TreeMap<PopulationKey, Chromosome> result = new TreeMap<>();
+
 		Iterator<Map.Entry<PopulationKey, Chromosome>> it = chromosomes.entrySet().iterator();
 		while(it.hasNext() && numberOfGenomsToKeep-- > 0) {
 			Entry<PopulationKey, Chromosome> e = it.next();
 			result.put(e.getKey(), e.getValue());
+		}
+
+		while(it.hasNext()) {
+			Entry<PopulationKey, Chromosome> e = it.next();
+			discardChromosome(e.getValue());
 		}
 
 		chromosomes = result;
@@ -298,6 +306,44 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 		return roundsCounted;
 	}
 
+	public Chromosome createNewChromosome() {
+		if(discardedChromosomes == null || discardedChromosomes.isEmpty())
+			return new Chromosome(geneLength);
+		else
+			return discardedChromosomes.pop();
+	}
+
+	public ChromosomePair createNewChromosomePair(Chromosome c1, Chromosome c2) {
+		ChromosomePair pair;
+
+		if(discardedChromosomePairs == null || discardedChromosomePairs.isEmpty())
+			pair = new ChromosomePair();
+		else
+			pair = discardedChromosomePairs.pop();
+
+		pair.chromosome1 = c1;
+		pair.chromosome2 = c2;
+		return pair;
+	}
+
+	public void discardChromosome(Chromosome chromosome) {
+		if(discardedChromosomes == null)
+			discardedChromosomes = new Stack<>();
+
+		discardedChromosomes.push(chromosome);
+		if(discardedChromosomes.size() > discardedChromosomesMaxLength)
+			discardedChromosomesMaxLength = discardedChromosomes.size();
+	}
+
+	public void discardChromosomePair(ChromosomePair pair) {
+		if(discardedChromosomePairs == null)
+			discardedChromosomePairs = new Stack<>();
+
+		discardedChromosomePairs.push(pair);
+		if(discardedChromosomePairs.size() > discardedChromosomePairsMaxLength)
+			discardedChromosomePairsMaxLength = discardedChromosomePairs.size();
+	}
+
 	private transient long roundStartedAt;
 
 	private long allTimeSpent;
@@ -305,6 +351,15 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 
 	private TreeMap<PopulationKey, Chromosome> chromosomes;
 	private DistanceFromOptimum distanceStrategy;
+	private int geneLength;
+
+	private int discardedChromosomesMaxLength;
+	private int discardedChromosomePairsMaxLength;
+
+	private transient Stack<Chromosome> discardedChromosomes;
+	private transient Stack<ChromosomePair> discardedChromosomePairs;
+
+	private static final RandomCrossOverStrategy RANDOM = new RandomCrossOverStrategy();
 
 	private static final long serialVersionUID = 1L;
 }

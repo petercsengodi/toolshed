@@ -55,9 +55,7 @@ public class TestGeneticFramework {
 		Chromosome adamAndEve = new Chromosome(5);
 		System.out.println("Initial value: " + DISTANCE.calculate(adamAndEve));
 
-		Population population = Population.builder(DISTANCE)
-				.adamAndEve(adamAndEve)
-				.build();
+		Population population = Population.builder(adamAndEve, DISTANCE).build();
 
 		MutationStrategy mutationStrategy = new BestsInFavorMutationStrategy();
 

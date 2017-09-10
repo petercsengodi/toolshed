@@ -141,9 +141,9 @@ public class ShowTriangles extends JFrame implements ActionListener, Runnable {
 			population.startRound();
 			population.mutateToNearOnes(10 * (SCALE / 10), bestFitMutationStrategy);
 			population.mutate(2 * SCALE, randomMutationStrategy);
-			population.createRandomGenes(3 * SCALE, triangles.sizeInBytes());
+			population.createRandomGenes(3 * SCALE);
 			population.initCrossOverStrategy(crossOverStrategy);
-			population.crossOverSameLength(2 * SCALE, crossOverStrategy);
+			population.crossOver(2 * SCALE, crossOverStrategy);
 			population.keep(300);
 			population.endRound();
 			cycles++;
@@ -159,6 +159,10 @@ public class ShowTriangles extends JFrame implements ActionListener, Runnable {
 
 		logger.info("Done cycles: " + cycles);
 		updateCanvas();
+
+		logger.info("Auto-saving...");
+		population.writeIntoFile(GenerateTriangles.POPULATION_FILE);
+		logger.info(population.statistics(triangles));
 	}
 
 	private void updateCanvas() {
@@ -169,6 +173,7 @@ public class ShowTriangles extends JFrame implements ActionListener, Runnable {
 		Chromosome chromosome = firstElement.getValue();
 		triangles.fillFromChromosome(chromosome);
 		updateResult(triangles, GenerateTriangles.clearColor);
+
 		canvas.repaint();
 	}
 

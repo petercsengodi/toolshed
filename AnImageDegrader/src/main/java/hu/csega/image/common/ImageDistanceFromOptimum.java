@@ -9,18 +9,18 @@ import hu.csega.image.triangles.MultipleTriangles;
 
 public class ImageDistanceFromOptimum implements DistanceFromOptimum {
 
-	public final int width;
-	public final int height;
-	public final int[] rgb;
+	public transient final int width;
+	public transient final int height;
+	public transient final int[] rgb;
 
-	private final int capacity;
-	private final int[] tmp;
+	private transient final int capacity;
+	private transient final int[] tmp;
 
-	private final Color clearColor = Color.black;
-	private final BufferedImage tmpImage;
-	private final MultipleTriangles triangles;
+	private transient final Color clearColor = Color.black;
+	private transient final BufferedImage tmpImage;
+	private transient final MultipleTriangles triangles;
 
-	private final ImageEffectService service;
+	private transient final ImageEffectService service;
 
 	public ImageDistanceFromOptimum(BufferedImage reference, ImageEffectService service, MultipleTriangles triangles) {
 		this.width = reference.getWidth();

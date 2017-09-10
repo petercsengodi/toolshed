@@ -199,9 +199,9 @@ public class TestTextLearning {
 
 			while(true) {
 				population.initCrossOverStrategy(CROSS_OVER);
-				population.crossOverSameLength(CROSS_OVER_COUNT, CROSS_OVER);
+				population.crossOver(CROSS_OVER_COUNT, CROSS_OVER);
 				population.mutate(MUTATION_COUNT, MAX_MUTATED_BYTES, mutationStrategy);
-				population.createRandomGenes(NEW_RANDOM_COUNT, NetworkForTextV2.LENGTH_PARAMETERS);
+				population.createRandomGenes(NEW_RANDOM_COUNT);
 				population.keep(KEEP_COUNT);
 
 				counter++;
@@ -309,9 +309,8 @@ public class TestTextLearning {
 
 		System.out.println("Creating new population.");
 		Chromosome adamAndEve = new Chromosome(NetworkForTextV2.LENGTH_PARAMETERS);
-		return Population.builder(DISTANCE)
-				.adamAndEve(adamAndEve)
-				.randomGenes(KEEP_COUNT - 1, NetworkForTextV2.LENGTH_PARAMETERS)
+		return Population.builder(adamAndEve, DISTANCE)
+				.randomGenes(KEEP_COUNT - 1)
 				.build();
 	}
 

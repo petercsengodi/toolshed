@@ -132,10 +132,7 @@ public class EquationTest {
 		byte[] zeros = new byte[Conversions.NUMBER_OF_BYTES];
 		Chromosome adamAndEve = new Chromosome(zeros);
 
-		Population population = Population.builder(DISTANCE)
-				.adamAndEve(adamAndEve)
-				.build();
-
+		Population population = Population.builder(adamAndEve, DISTANCE).build();
 		return population;
 	}
 
@@ -190,9 +187,9 @@ public class EquationTest {
 			population.startRound();
 			population.mutateToNearOnes(10 * (SCALE / 10), bestFitMutationStrategy);
 			population.mutate(2 * SCALE, randomMutationStrategy);
-			population.createRandomGenes(3 * SCALE, Conversions.NUMBER_OF_BYTES);
+			population.createRandomGenes(3 * SCALE);
 			population.initCrossOverStrategy(crossOverStrategy);
-			population.crossOverSameLength(2 * SCALE, crossOverStrategy);
+			population.crossOver(2 * SCALE, crossOverStrategy);
 			population.keep(300);
 			population.endRound();
 
@@ -201,9 +198,9 @@ public class EquationTest {
 				sidePopulation.startRound();
 				sidePopulation.mutateToNearOnes(10, bestFitMutationStrategy);
 				sidePopulation.mutate(50, randomMutationStrategy);
-				sidePopulation.createRandomGenes(50, Conversions.NUMBER_OF_BYTES);
+				sidePopulation.createRandomGenes(50);
 				sidePopulation.initCrossOverStrategy(crossOverStrategy);
-				sidePopulation.crossOverSameLength(40, crossOverStrategy);
+				sidePopulation.crossOver(40, crossOverStrategy);
 				sidePopulation.keep(300);
 				sidePopulation.endRound();
 

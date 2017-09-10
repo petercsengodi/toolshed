@@ -3,6 +3,7 @@ package hu.csega.genetic.framework.crossover;
 import java.util.Collection;
 
 import hu.csega.genetic.framework.Chromosome;
+import hu.csega.genetic.framework.Population;
 
 public interface CrossOverStrategy {
 
@@ -11,6 +12,6 @@ public interface CrossOverStrategy {
 	/**
 	 * @return null, if this current strategy is out of choices for now.
 	 */
-	ChromosomePair select();
+	ChromosomePair select(Population population);
 
 }
