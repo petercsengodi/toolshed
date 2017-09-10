@@ -287,6 +287,7 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 
 		Chromosome chromosomeToMutate, mutated;
 		double distance;
+		int counter = 0;
 
 		for(Map.Entry<PopulationKey, Chromosome> chromosomeWithKey : strategy) {
 			chromosomeToMutate = chromosomeWithKey.getValue();
@@ -300,6 +301,10 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 					}
 				}
 			}
+
+			counter++;
+			if(counter >= numberOfChromosomesToMutate)
+				break;
 		}
 	}
 
