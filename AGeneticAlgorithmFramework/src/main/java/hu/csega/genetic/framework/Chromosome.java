@@ -18,6 +18,10 @@ public class Chromosome implements Serializable {
 		System.arraycopy(genes, 0, this.genes, 0, genes.length);
 	}
 
+	public void fromOtherChromosome(Chromosome other) {
+		System.arraycopy(other.genes, 0, this.genes, 0, other.genes.length);
+	}
+
 	public void randomizeGenes() {
 		int length = genes.length;
 		for(int i = 0; i < length; i++)
@@ -40,10 +44,10 @@ public class Chromosome implements Serializable {
 		return children;
 	}
 
-	public static Chromosome mutateFix(Chromosome chromosome, int index, byte add) {
+	public static Chromosome mutateFix(Population population, Chromosome chromosome, int index, byte add) {
 		byte oldValue = chromosome.genes[index];
 		if(oldValue > Byte.MIN_VALUE && add < 0 || oldValue < Byte.MAX_VALUE && add > 0) {
-			Chromosome result = new Chromosome(chromosome.genes);
+			Chromosome result = population.copyChromosome(chromosome);
 			if(add > 0)
 				result.genes[index]++;
 			else
@@ -54,14 +58,14 @@ public class Chromosome implements Serializable {
 		return null;
 	}
 
-	public static Chromosome mutate(Chromosome chromosome, int maxMutatedBytes) {
+	public static Chromosome mutate(Population population, Chromosome chromosome, int maxMutatedBytes) {
 		int numberOfMutations;
 		if(maxMutatedBytes < 2)
 			numberOfMutations = 1;
 		else
 			numberOfMutations = RND.nextInt(maxMutatedBytes - 1) + 1;
 
-		Chromosome result = new Chromosome(chromosome.genes);
+		Chromosome result = population.copyChromosome(chromosome);
 
 		int length = chromosome.genes.length;
 		for(int i = 0; i < numberOfMutations; i++) {
@@ -79,6 +83,14 @@ public class Chromosome implements Serializable {
 
 	public static double getRandomDouble() {
 		return RND.nextDouble();
+	}
+
+	public static byte getRandomAddOrRemove() {
+		return RND.nextBoolean() ? (byte)1 : (byte)-1;
+	}
+
+	public int getRandomPosition() {
+		return RND.nextInt(genes.length);
 	}
 
 	@Override

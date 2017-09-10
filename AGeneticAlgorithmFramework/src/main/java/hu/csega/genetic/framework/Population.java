@@ -93,6 +93,8 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 	}
 
 	public void writeIntoFile(String filename) {
+		if(filename == null || filename.isEmpty())
+			return;
 
 		try {
 			FileOutputStream fileOut = new FileOutputStream(filename);
@@ -117,8 +119,11 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 		Entry<PopulationKey, Chromosome> bestFitWithKey = it.next();
 		builder.append("Best Fit Chromosome: ").append(bestFitWithKey).append('\n');
 		Chromosome bestFit = bestFitWithKey.getValue();
-		prototype.fillFromChromosome(bestFit);
-		builder.append("Best Fit Prototype: ").append(prototype).append('\n');
+
+		if(prototype != null) {
+			prototype.fillFromChromosome(bestFit);
+			builder.append("Best Fit Prototype: ").append(prototype).append('\n');
+		}
 
 		Entry<PopulationKey, Chromosome> leastFitWithKey = bestFitWithKey;
 		while(it.hasNext())
@@ -126,8 +131,11 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 
 		builder.append("Least Fit Chromosome: ").append(leastFitWithKey).append('\n');
 		Chromosome leastFit = leastFitWithKey.getValue();
-		prototype.fillFromChromosome(leastFit);
-		builder.append("Least Fit Prototype: ").append(prototype).append('\n');
+
+		if(prototype != null) {
+			prototype.fillFromChromosome(leastFit);
+			builder.append("Least Fit Prototype: ").append(prototype).append('\n');
+		}
 
 		builder.append("Number of discarded chromosomes: ")
 			.append(discardedChromosomes == null ? 0 : discardedChromosomes.size())
@@ -210,24 +218,133 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 
 	public void mutate(int numberOfChromosomesToMutate, int maxMutatedBytes, MutationStrategy strategy) {
 		strategy.selectBatch(chromosomes, numberOfChromosomesToMutate);
-		for(Chromosome chromosomeToMutate : strategy) {
-			Chromosome mutated = Chromosome.mutate(chromosomeToMutate, maxMutatedBytes);
-			double distance = distanceStrategy.calculate(mutated);
+
+		Chromosome chromosomeToMutate;
+		double distance;
+
+		for(Map.Entry<PopulationKey, Chromosome> chromosomeWithKey : strategy) {
+			chromosomeToMutate = chromosomeWithKey.getValue();
+			Chromosome mutated = Chromosome.mutate(this, chromosomeToMutate, maxMutatedBytes);
+			distance = distanceStrategy.calculate(mutated);
 			chromosomes.put(new PopulationKey(distance, mutated.getGenes()), mutated);
+		}
+	}
+
+	public void mutateContinuously(int numberOfChromosomesToMutate, MutationStrategy strategy, int maxNumberOfMutations) {
+		mutateContinuously(numberOfChromosomesToMutate, strategy, maxNumberOfMutations, -1);
+	}
+
+	/**
+	 * Main idea: if we manage to reduce the distance with a mutation, do that mutation
+	 * a plenty more times in this cycle.
+	 */
+	public void mutateContinuously(int numberOfChromosomesToMutate, MutationStrategy strategy, int maxNumberOfMutations, int fixPosition) {
+		strategy.selectBatch(chromosomes, numberOfChromosomesToMutate);
+
+		Chromosome startingChromosome, lastChromosome, mutated;
+		double distance, lastDistance;
+		boolean keepGoing;
+		int counter = 0;
+
+		adios:
+		for(Map.Entry<PopulationKey, Chromosome> chromosomeWithKey : strategy) {
+			startingChromosome = chromosomeWithKey.getValue();
+			distance = -1.0; // temporary value
+
+			int position = (fixPosition < 0 ? startingChromosome.getRandomPosition() : fixPosition);
+			for(byte k = -1; k < 2; k+= 2) { // -1 and +1
+				lastChromosome = startingChromosome;
+				lastDistance = chromosomeWithKey.getKey().getDistance();
+
+				do {
+					keepGoing = false;
+
+					mutated = Chromosome.mutateFix(this, lastChromosome, position, k);
+					counter++;
+
+					if(mutated != null) {
+						distance = distanceStrategy.calculate(mutated);
+
+						if(distance < lastDistance) {
+							chromosomes.put(new PopulationKey(distance, mutated.getGenes()), mutated);
+							lastChromosome = mutated;
+							lastDistance = distance;
+							keepGoing = true;
+						}
+					}
+
+					if(counter >= maxNumberOfMutations)
+						break adios; // !!!!
+
+				} while(keepGoing);
+			}
 		}
 	}
 
 	/** Results in (2*numberOfBytesInChromosome * numberOfChromosomesToMutate) new entities. */
 	public void mutateToNearOnes(int numberOfChromosomesToMutate, MutationStrategy strategy) {
 		strategy.selectBatch(chromosomes, numberOfChromosomesToMutate);
-		for(Chromosome chromosomeToMutate : strategy) {
+
+		Chromosome chromosomeToMutate, mutated;
+		double distance;
+
+		for(Map.Entry<PopulationKey, Chromosome> chromosomeWithKey : strategy) {
+			chromosomeToMutate = chromosomeWithKey.getValue();
+
 			for(byte k = -1; k < 2; k+= 2) { // -1 and +1
 				for(int j = 0; j < geneLength; j++) {
-					Chromosome mutated = Chromosome.mutateFix(chromosomeToMutate, j, k);
+					mutated = Chromosome.mutateFix(this, chromosomeToMutate, j, k);
 					if(mutated != null) {
-						double distance = distanceStrategy.calculate(mutated);
+						distance = distanceStrategy.calculate(mutated);
 						chromosomes.put(new PopulationKey(distance, mutated.getGenes()), mutated);
 					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Main idea: if we manage to reduce the distance with a mutation, do that mutation
+	 * a plenty more times in this cycle.
+	 */
+	public void mutateContinuouslyToNearOnes(int numberOfChromosomesToMutate, MutationStrategy strategy, int maxNumberOfMutations) {
+		strategy.selectBatch(chromosomes, numberOfChromosomesToMutate);
+
+		Chromosome startingChromosome, lastChromosome, mutated;
+		double distance, lastDistance;
+		boolean keepGoing;
+		int counter = 0;
+
+		adios:
+		for(Map.Entry<PopulationKey, Chromosome> chromosomeWithKey : strategy) {
+			startingChromosome = chromosomeWithKey.getValue();
+
+			for(int j = 0; j < geneLength; j++) {
+				for(byte k = -1; k < 2; k+= 2) { // -1 and +1
+					lastChromosome = startingChromosome;
+					lastDistance = chromosomeWithKey.getKey().getDistance();
+
+					do {
+						keepGoing = false;
+
+						mutated = Chromosome.mutateFix(this, lastChromosome, j, k);
+						counter++;
+
+						if(mutated != null) {
+							distance = distanceStrategy.calculate(mutated);
+
+							if(distance < lastDistance) {
+								chromosomes.put(new PopulationKey(distance, mutated.getGenes()), mutated);
+								lastChromosome = mutated;
+								lastDistance = distance;
+								keepGoing = true;
+							}
+						}
+
+						if(counter >= maxNumberOfMutations)
+							break adios; // !!!!
+
+					} while(keepGoing);
 				}
 			}
 		}
@@ -313,6 +430,12 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 			return discardedChromosomes.pop();
 	}
 
+	public Chromosome copyChromosome(Chromosome chromosome) {
+		Chromosome ret = createNewChromosome();
+		ret.fromOtherChromosome(chromosome);
+		return ret;
+	}
+
 	public ChromosomePair createNewChromosomePair(Chromosome c1, Chromosome c2) {
 		ChromosomePair pair;
 
@@ -342,6 +465,14 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 		discardedChromosomePairs.push(pair);
 		if(discardedChromosomePairs.size() > discardedChromosomePairsMaxLength)
 			discardedChromosomePairsMaxLength = discardedChromosomePairs.size();
+	}
+
+	public Chromosome bestFit() {
+		return chromosomes.firstEntry().getValue();
+	}
+
+	public int geneLength() {
+		return geneLength;
 	}
 
 	private transient long roundStartedAt;

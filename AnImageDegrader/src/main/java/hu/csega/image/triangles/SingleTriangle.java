@@ -24,9 +24,9 @@ public class SingleTriangle {
 		y[1] = helper.readBits(10);
 		x[2] = helper.readBits(10);
 		y[2] = helper.readBits(10);
-		r = helper.readBits(8); // to get a value between 0 - 255
-		g = helper.readBits(8); // to get a value between 0 - 255
-		b = helper.readBits(8); // to get a value between 0 - 255
+		r = helper.readBits(8);
+		g = helper.readBits(8);
+		b = helper.readBits(8);
 	}
 
 }

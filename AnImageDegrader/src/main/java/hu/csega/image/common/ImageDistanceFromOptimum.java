@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 import hu.csega.genetic.framework.Chromosome;
+import hu.csega.genetic.framework.ChromosomeReceiver;
 import hu.csega.genetic.framework.DistanceFromOptimum;
 import hu.csega.image.triangles.MultipleTriangles;
 
@@ -18,11 +19,11 @@ public class ImageDistanceFromOptimum implements DistanceFromOptimum {
 
 	private transient final Color clearColor = Color.black;
 	private transient final BufferedImage tmpImage;
-	private transient final MultipleTriangles triangles;
+	private transient final ImageChromosomeReceiver receiver;
 
 	private transient final ImageEffectService service;
 
-	public ImageDistanceFromOptimum(BufferedImage reference, ImageEffectService service, MultipleTriangles triangles) {
+	public ImageDistanceFromOptimum(BufferedImage reference, ImageEffectService service, ImageChromosomeReceiver receiver) {
 		this.width = reference.getWidth();
 		this.height = reference.getHeight();
 		this.capacity = this.width * this.height * 3;
@@ -31,7 +32,7 @@ public class ImageDistanceFromOptimum implements DistanceFromOptimum {
 
 		this.tmpImage = service.createNewImage(this.width, this.height);
 
-		this.triangles = triangles;
+		this.receiver = receiver;
 
 		this.service = service;
 		this.service.imageToRGBArray(reference, this.rgb);
@@ -39,17 +40,16 @@ public class ImageDistanceFromOptimum implements DistanceFromOptimum {
 
 	@Override
 	public double calculate(Chromosome chromosome) {
-		triangles.fillFromChromosome(chromosome);
-		triangles.draw(tmpImage, clearColor);
+		receiver.fillFromChromosome(chromosome);
+		receiver.draw(tmpImage, clearColor);
 		service.imageToRGBArray(tmpImage, tmp);
 
-		double sum = 0.0, size = (double)capacity;
+		long sum = 0;
 		for(int i = 0; i < capacity; i++) {
 			sum += Math.abs(rgb[i] - tmp[i]);
 		}
 
-		double avg = sum / size;
-		return avg;
+		return sum;
 	}
 
 	private static final long serialVersionUID = 1L;
