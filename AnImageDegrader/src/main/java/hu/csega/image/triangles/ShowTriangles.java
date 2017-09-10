@@ -139,7 +139,7 @@ public class ShowTriangles extends JFrame implements ActionListener, Runnable {
 
 		while(!m.finished()) {
 			population.startRound();
-			population.mutateToNearOnes(10 * (SCALE / 10), bestFitMutationStrategy);
+			population.mutateToNearOnes(3, bestFitMutationStrategy);
 			population.mutate(2 * SCALE, randomMutationStrategy);
 			population.createRandomGenes(3 * SCALE);
 			population.initCrossOverStrategy(crossOverStrategy);
