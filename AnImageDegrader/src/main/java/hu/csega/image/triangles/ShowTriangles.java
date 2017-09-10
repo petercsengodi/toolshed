@@ -152,13 +152,12 @@ public class ShowTriangles extends JFrame implements ActionListener, Runnable {
 				logger.info("Breaking loop.");
 				break;
 			} else if(m.timeToLog()) {
-				logger.info("Working.");
+				logger.info("Working. (" + cycles + ")");
 				updateCanvas();
 			}
 		}
 
 		logger.info("Done cycles: " + cycles);
-
 		updateCanvas();
 	}
 
