@@ -1,4 +1,4 @@
-package hu.csega.toolshed.parser.lr;
+package hu.csega.toolshed.parser.lr.basictests;
 
 import java.util.Collections;
 import java.util.List;
