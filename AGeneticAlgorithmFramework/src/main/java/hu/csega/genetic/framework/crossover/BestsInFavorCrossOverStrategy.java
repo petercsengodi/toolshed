@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import hu.csega.genetic.framework.Chromosome;
+import hu.csega.genetic.framework.Population;
 
 /** AFAIK this doesn't work right. */
 public class BestsInFavorCrossOverStrategy implements CrossOverStrategy {
@@ -20,7 +21,7 @@ public class BestsInFavorCrossOverStrategy implements CrossOverStrategy {
 	}
 
 	@Override
-	public ChromosomePair select() {
+	public ChromosomePair select(Population population) {
 		if(sourceOffset >= listSize) {
 			return null;
 		}
@@ -29,15 +30,11 @@ public class BestsInFavorCrossOverStrategy implements CrossOverStrategy {
 			sourceOffset += Chromosome.RND.nextInt(sourceRandomLength++) + 1;
 			targetOffset = sourceOffset + 1;
 			targetRandomLength = 1;
-			return select();
+			return select(population);
 		}
 
-		ChromosomePair pair = new ChromosomePair();
-		pair.chromosome1 = list.get(sourceOffset);
-		pair.chromosome2 = list.get(targetOffset);
-
+		ChromosomePair pair = population.createNewChromosomePair(list.get(sourceOffset), list.get(targetOffset));
 		targetOffset += Chromosome.RND.nextInt(targetRandomLength++) + 1;
-
 		return pair;
 	}
 

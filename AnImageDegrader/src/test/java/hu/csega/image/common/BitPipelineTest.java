@@ -31,14 +31,14 @@ public class BitPipelineTest {
 		}
 
 		bp.set(1);
+		assertFalse(bp.readBoolean());
+		assertFalse(bp.readBoolean());
+		assertFalse(bp.readBoolean());
+		assertFalse(bp.readBoolean());
+		assertFalse(bp.readBoolean());
+		assertFalse(bp.readBoolean());
+		assertFalse(bp.readBoolean());
 		assertTrue(bp.readBoolean());
-		assertFalse(bp.readBoolean());
-		assertFalse(bp.readBoolean());
-		assertFalse(bp.readBoolean());
-		assertFalse(bp.readBoolean());
-		assertFalse(bp.readBoolean());
-		assertFalse(bp.readBoolean());
-		assertFalse(bp.readBoolean());
 
 		try {
 			bp.readBoolean();
@@ -79,14 +79,14 @@ public class BitPipelineTest {
 		byte b = (byte)-2;
 
 		bp.set(b);
+		assertTrue(bp.readBoolean());
+		assertTrue(bp.readBoolean());
+		assertTrue(bp.readBoolean());
+		assertTrue(bp.readBoolean());
+		assertTrue(bp.readBoolean());
+		assertTrue(bp.readBoolean());
+		assertTrue(bp.readBoolean());
 		assertFalse(bp.readBoolean());
-		assertTrue(bp.readBoolean());
-		assertTrue(bp.readBoolean());
-		assertTrue(bp.readBoolean());
-		assertTrue(bp.readBoolean());
-		assertTrue(bp.readBoolean());
-		assertTrue(bp.readBoolean());
-		assertTrue(bp.readBoolean());
 
 		try {
 			bp.readBoolean();
@@ -107,7 +107,7 @@ public class BitPipelineTest {
 		bp.add(testByte);
 
 		for(int i = 0; i < 10; i++) {
-			Assert.assertEquals("Error in bit: " + i, (i % 2) == 1, bp.readBoolean());
+			Assert.assertEquals("Error in bit: " + i, (i % 2) == 0, bp.readBoolean());
 		}
 
 		// put in 16 bits, read 10 -> 12 remaining
@@ -115,13 +115,13 @@ public class BitPipelineTest {
 		bp.add(testByte);
 
 		for(int i = 0; i < 10; i++) {
-			Assert.assertEquals("Error in bit: " + i, (i % 2) == 1, bp.readBoolean());
+			Assert.assertEquals("Error in bit: " + i, (i % 2) == 0, bp.readBoolean());
 		}
 
 
 		// read 12 remaining
 		for(int i = 0; i < 12; i++) {
-			Assert.assertEquals("Error in bit: " + i, (i % 2) == 1, bp.readBoolean());
+			Assert.assertEquals("Error in bit: " + i, (i % 2) == 0, bp.readBoolean());
 		}
 
 		// should be out of bits

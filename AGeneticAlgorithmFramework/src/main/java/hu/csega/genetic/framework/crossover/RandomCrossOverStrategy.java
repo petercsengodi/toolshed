@@ -5,19 +5,21 @@ import java.util.Collection;
 import java.util.List;
 
 import hu.csega.genetic.framework.Chromosome;
+import hu.csega.genetic.framework.Population;
 
 public class RandomCrossOverStrategy implements CrossOverStrategy {
 
+	@Override
 	public void setChromosomes(Collection<Chromosome> chromosomes) {
 		this.list = new ArrayList<>(chromosomes);
 		this.listSize = list.size();
 	}
 
 	@Override
-	public ChromosomePair select() {
-		ChromosomePair pair = new ChromosomePair();
-		pair.chromosome1 = list.get(Chromosome.RND.nextInt(listSize));
-		pair.chromosome2 = list.get(Chromosome.RND.nextInt(listSize));
+	public ChromosomePair select(Population population) {
+		ChromosomePair pair = population.createNewChromosomePair(
+				list.get(Chromosome.RND.nextInt(listSize)),
+				list.get(Chromosome.RND.nextInt(listSize)));
 		return pair;
 	}
 

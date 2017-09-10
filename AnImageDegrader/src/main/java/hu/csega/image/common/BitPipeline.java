@@ -89,8 +89,8 @@ public class BitPipeline {
 		}
 
 		int j = values[position];
-		boolean ret = ((j & 1) == 1);
-		values[position] = (j >> 1);
+		boolean ret = ((j & 128) == 128);
+		values[position] = (j << 1);
 		c--;
 		return ret;
 	}

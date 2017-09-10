@@ -1,6 +1,7 @@
 package hu.csega.genetic.framework.mutation;
 
 import java.util.Iterator;
+import java.util.Map;
 import java.util.TreeMap;
 
 import hu.csega.genetic.framework.Chromosome;
@@ -18,19 +19,19 @@ public class BestsInFavorMutationStrategy implements MutationStrategy {
 	}
 
 	@Override
-	public Iterator<Chromosome> iterator() {
+	public Iterator<Map.Entry<PopulationKey, Chromosome>> iterator() {
 		MutationIterator iterator = new MutationIterator();
 
-		Iterator<Chromosome> it = chromosomes.values().iterator();
+		Iterator<Map.Entry<PopulationKey, Chromosome>> it = chromosomes.entrySet().iterator();
 		if(!it.hasNext())
 			throw new RuntimeException("No genoms to mutate!");
 
 		for(int i = 0; i < size; i++) {
 			if(!it.hasNext()) {
-				it = chromosomes.values().iterator();
+				it = chromosomes.entrySet().iterator();
 			}
 
-			Chromosome chromosomeToMutate = it.next();
+			Map.Entry<PopulationKey, Chromosome> chromosomeToMutate = it.next();
 			iterator.add(chromosomeToMutate);
 		}
 

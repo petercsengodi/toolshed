@@ -1,4 +1,4 @@
-package hu.csega.image.triangles;
+package hu.csega.image.testrep;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -24,21 +24,20 @@ import hu.csega.genetic.framework.measurement.TimeMeasurement;
 import hu.csega.genetic.framework.mutation.BestsInFavorMutationStrategy;
 import hu.csega.genetic.framework.mutation.MutationStrategy;
 import hu.csega.genetic.framework.mutation.RandomMutationStrategy;
-import hu.csega.image.GenerateTriangles;
+import hu.csega.image.TestImageRepresentation;
 import hu.csega.toolshed.logging.Logger;
 import hu.csega.toolshed.logging.LoggerFactory;
 
-public class ShowTriangles extends JFrame implements ActionListener, Runnable {
+public class TestImageRepresentationFrame extends JFrame implements ActionListener, Runnable {
 
-	public static final int SCALE = 100; // 100
 	public static final CrossOverStrategy crossOverStrategy = new RandomCrossOverStrategy();
 	public static final MutationStrategy bestFitMutationStrategy = new BestsInFavorMutationStrategy();
 	public static final MutationStrategy randomMutationStrategy = new RandomMutationStrategy();
 
 	private BufferedImage lastResult;
-	private ShowTrianglesCanvas canvas;
+	private TestImageRepresentationCanvas canvas;
 	private Population population;
-	private MultipleTriangles triangles;
+	private MultipleCubes cubes;
 
 	private JPanel buttons = new JPanel();
 	private JButton start = new JButton("Start");
@@ -46,15 +45,17 @@ public class ShowTriangles extends JFrame implements ActionListener, Runnable {
 	private boolean canStart = true;
 	private boolean keepRunning = false;
 
+	private int fixPosition = 0;
+
 	private Thread thread;
 
-	public ShowTriangles() {
-		super("Triangle Experiment");
+	public TestImageRepresentationFrame() {
+		super("Test Image Representation");
 
-		lastResult = new BufferedImage(GenerateTriangles.WIDTH, GenerateTriangles.HEIGHT, BufferedImage.TYPE_INT_RGB);
+		lastResult = new BufferedImage(TestImageRepresentation.WIDTH, TestImageRepresentation.HEIGHT, BufferedImage.TYPE_INT_RGB);
 
-		canvas = new ShowTrianglesCanvas(this);
-		canvas.setPreferredSize(new Dimension(GenerateTriangles.WIDTH, GenerateTriangles.HEIGHT));
+		canvas = new TestImageRepresentationCanvas(this);
+		canvas.setPreferredSize(new Dimension(TestImageRepresentation.WIDTH, TestImageRepresentation.HEIGHT));
 
 		Container cp = this.getContentPane();
 		cp.setLayout(new BorderLayout());
@@ -77,12 +78,12 @@ public class ShowTriangles extends JFrame implements ActionListener, Runnable {
 		this.population = population;
 	}
 
-	public void setTriangles(MultipleTriangles triangles) {
-		this.triangles = triangles;
+	public void setCubes(MultipleCubes cubes) {
+		this.cubes = cubes;
 	}
 
-	public synchronized void updateResult(MultipleTriangles triangles, Color clearColor) {
-		triangles.draw(lastResult, clearColor);
+	public synchronized void updateResult(MultipleCubes cubes, Color clearColor) {
+		cubes.draw(lastResult, clearColor);
 	}
 
 	public synchronized BufferedImage getResult() {
@@ -122,7 +123,7 @@ public class ShowTriangles extends JFrame implements ActionListener, Runnable {
 			doOneLoop();
 
 			try {
-				Thread.sleep(100);
+				Thread.sleep(10);
 			} catch (InterruptedException e) {
 				logger.info("Thread interrupted.");
 				break;
@@ -139,11 +140,18 @@ public class ShowTriangles extends JFrame implements ActionListener, Runnable {
 
 		while(!m.finished()) {
 			population.startRound();
-			population.mutateToNearOnes(10 * (SCALE / 10), bestFitMutationStrategy);
-			population.mutate(2 * SCALE, randomMutationStrategy);
-			population.createRandomGenes(3 * SCALE);
+
+			if(TestImageRepresentation.DIRECTED_MUTATION_APPROACH_ENABLED) {
+				fixPosition = (fixPosition + 1) % population.geneLength();
+				population.mutateContinuously(100, bestFitMutationStrategy, 100, fixPosition);
+			}
+
+			population.mutateToNearOnes(3, bestFitMutationStrategy);
+			population.mutate(3 * TestImageRepresentation.SCALE, randomMutationStrategy);
+			population.createRandomGenes(3 * TestImageRepresentation.SCALE);
 			population.initCrossOverStrategy(crossOverStrategy);
-			population.keep(5000);
+			population.crossOver(TestImageRepresentation.SCALE, crossOverStrategy);
+			population.keep(20000);
 			population.endRound();
 			cycles++;
 
@@ -160,8 +168,8 @@ public class ShowTriangles extends JFrame implements ActionListener, Runnable {
 		updateCanvas();
 
 		logger.info("Auto-saving...");
-		population.writeIntoFile(GenerateTriangles.POPULATION_FILE);
-		logger.info(population.statistics(triangles));
+		population.writeIntoFile(TestImageRepresentation.POPULATION_FILE);
+		logger.info(population.statistics(cubes));
 	}
 
 	private void updateCanvas() {
@@ -170,13 +178,13 @@ public class ShowTriangles extends JFrame implements ActionListener, Runnable {
 		logger.info("Best Fit Distance: " + distance);
 
 		Chromosome chromosome = firstElement.getValue();
-		triangles.fillFromChromosome(chromosome);
-		updateResult(triangles, GenerateTriangles.clearColor);
+		cubes.fillFromChromosome(chromosome);
+		updateResult(cubes, TestImageRepresentation.clearColor);
 
 		canvas.repaint();
 	}
 
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger logger = LoggerFactory.createLogger(ShowTriangles.class);
+	private static final Logger logger = LoggerFactory.createLogger(TestImageRepresentationFrame.class);
 }

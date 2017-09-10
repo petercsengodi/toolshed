@@ -52,9 +52,7 @@ public class NetworkTest {
 		Chromosome adamAndEve = NETWORK.toChromosome();
 		System.out.println("Initial value: " + DISTANCE.calculate(adamAndEve));
 
-		Population population = Population.builder(DISTANCE)
-				.adamAndEve(adamAndEve)
-				.build();
+		Population population = Population.builder(adamAndEve, DISTANCE).build();
 
 		MutationStrategy mutationStrategy = new BestsInFavorMutationStrategy();
 

@@ -9,17 +9,6 @@ public class Chromosome implements Serializable {
 
 	public static final Random RND = new Random(System.currentTimeMillis());
 
-	public static Chromosome createEmptyGene(int length) {
-		return new Chromosome(length);
-	}
-
-	public static Chromosome createRandomGene(int length) {
-		Chromosome chromosome = new Chromosome(length);
-		for(int i = 0; i < length; i++)
-			chromosome.genes[i] = getRandomByte();
-		return chromosome;
-	}
-
 	public Chromosome(int length) {
 		this.genes = new byte[length];
 	}
@@ -29,49 +18,36 @@ public class Chromosome implements Serializable {
 		System.arraycopy(genes, 0, this.genes, 0, genes.length);
 	}
 
-	public static ChromosomePair crossOverSameLength(Chromosome chromosome1, Chromosome chromosome2) {
+	public void fromOtherChromosome(Chromosome other) {
+		System.arraycopy(other.genes, 0, this.genes, 0, other.genes.length);
+	}
+
+	public void randomizeGenes() {
+		int length = genes.length;
+		for(int i = 0; i < length; i++)
+			genes[i] = getRandomByte();
+	}
+
+	public static ChromosomePair crossOver(Population population, Chromosome chromosome1, Chromosome chromosome2) {
 		int length = chromosome1.genes.length;
 		int prefix = RND.nextInt(length - 2) + 1;
 		int suffix = length - prefix;
 
-		ChromosomePair children = new ChromosomePair();
+		ChromosomePair children = population.createNewChromosomePair(population.createNewChromosome(), population.createNewChromosome());
 
-		children.chromosome1 = new Chromosome(length);
 		System.arraycopy(chromosome1.genes, 0, children.chromosome1.genes, 0, prefix);
 		System.arraycopy(chromosome2.genes, prefix, children.chromosome1.genes, prefix, suffix);
 
-		children.chromosome2 = new Chromosome(length);
 		System.arraycopy(chromosome2.genes, 0, children.chromosome2.genes, 0, prefix);
 		System.arraycopy(chromosome1.genes, prefix, children.chromosome2.genes, prefix, suffix);
 
 		return children;
 	}
 
-	public static ChromosomePair crossOverVariateLength(Chromosome chromosome1, Chromosome chromosome2) {
-		int length1 = chromosome1.genes.length;
-		int prefix1 = RND.nextInt(length1 - 2) + 1;
-		int suffix1 = length1 - prefix1;
-		int length2 = chromosome2.genes.length;
-		int prefix2 = RND.nextInt(length2 - 2) + 1;
-		int suffix2 = length2 - prefix2;
-
-		ChromosomePair children = new ChromosomePair();
-
-		children.chromosome1 = new Chromosome(prefix1 + suffix2);
-		System.arraycopy(chromosome1.genes, 0, children.chromosome1.genes, 0, prefix1);
-		System.arraycopy(chromosome2.genes, prefix2, children.chromosome1.genes, prefix1, suffix2);
-
-		children.chromosome2 = new Chromosome(prefix2 + suffix1);
-		System.arraycopy(chromosome2.genes, 0, children.chromosome2.genes, 0, prefix2);
-		System.arraycopy(chromosome1.genes, prefix1, children.chromosome2.genes, prefix2, suffix1);
-
-		return children;
-	}
-
-	public static Chromosome mutateFix(Chromosome chromosome, int index, byte add) {
+	public static Chromosome mutateFix(Population population, Chromosome chromosome, int index, byte add) {
 		byte oldValue = chromosome.genes[index];
 		if(oldValue > Byte.MIN_VALUE && add < 0 || oldValue < Byte.MAX_VALUE && add > 0) {
-			Chromosome result = new Chromosome(chromosome.genes);
+			Chromosome result = population.copyChromosome(chromosome);
 			if(add > 0)
 				result.genes[index]++;
 			else
@@ -82,14 +58,14 @@ public class Chromosome implements Serializable {
 		return null;
 	}
 
-	public static Chromosome mutate(Chromosome chromosome, int maxMutatedBytes) {
+	public static Chromosome mutate(Population population, Chromosome chromosome, int maxMutatedBytes) {
 		int numberOfMutations;
 		if(maxMutatedBytes < 2)
 			numberOfMutations = 1;
 		else
 			numberOfMutations = RND.nextInt(maxMutatedBytes - 1) + 1;
 
-		Chromosome result = new Chromosome(chromosome.genes);
+		Chromosome result = population.copyChromosome(chromosome);
 
 		int length = chromosome.genes.length;
 		for(int i = 0; i < numberOfMutations; i++) {
@@ -107,6 +83,14 @@ public class Chromosome implements Serializable {
 
 	public static double getRandomDouble() {
 		return RND.nextDouble();
+	}
+
+	public static byte getRandomAddOrRemove() {
+		return RND.nextBoolean() ? (byte)1 : (byte)-1;
+	}
+
+	public int getRandomPosition() {
+		return RND.nextInt(genes.length);
 	}
 
 	@Override
