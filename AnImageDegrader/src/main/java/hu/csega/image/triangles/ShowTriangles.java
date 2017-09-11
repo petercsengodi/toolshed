@@ -1,5 +1,7 @@
 package hu.csega.image.triangles;
 
+import static hu.csega.image.GenerateTriangles.SCALE;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
@@ -138,9 +140,9 @@ public class ShowTriangles extends JFrame implements ActionListener, Runnable {
 
 		while(!m.finished()) {
 			population.startRound();
-			population.mutateContinuously(1, bestFitMutationStrategy, GenerateTriangles.SCALE);
-			population.mutate(GenerateTriangles.SCALE, randomMutationStrategy);
-			population.createRandomGenes(GenerateTriangles.SCALE);
+			population.mutateContinuously(SCALE, bestFitMutationStrategy, SCALE);
+			population.mutate(SCALE, randomMutationStrategy);
+			population.createRandomGenes(SCALE);
 			population.initCrossOverStrategy(crossOverStrategy);
 			population.keep(30000);
 			population.endRound();
