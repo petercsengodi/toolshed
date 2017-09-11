@@ -20,20 +20,22 @@ import hu.csega.toolshed.logging.LoggerFactory;
 
 public class GenerateTriangles {
 
-	public static final String POPULATION_FILE = "/tmp/triangles.dat";
+	public static final String VERSION = "autumn"; // autumn 800x500
+	public static final int WIDTH = 680;
+	public static final int HEIGHT = 520;
+
+	public static final String FILE = "res/image/" + VERSION + ".jpg";
+	public static final String POPULATION_FILE = "/tmp/triangles-" + VERSION + ".dat";
+
+	public static final int NUMBER_OF_TRIANGLES = 100;
 	public static final int SCALE = 30;
 
-	public static final int NUMBER_OF_TRIANGLES = 300;
-
-	public static final String FILE = "res/image/autumn.jpg";
-	public static final int WIDTH = 800;
-	public static final int HEIGHT = 500;
-	public static final Color clearColor = Color.BLACK;
+	public static final Color CLEAR_COLOR = Color.BLACK;
 
 	public static void main(String[] args) {
 
 		ImageEffectService service = new ImageEffectServiceImpl();
-		BufferedImage reference = service.loadBufferedImage(FILE, WIDTH, HEIGHT, clearColor);
+		BufferedImage reference = service.loadBufferedImage(FILE, WIDTH, HEIGHT, CLEAR_COLOR);
 
 		MultipleTriangles triangles = new MultipleTriangles(NUMBER_OF_TRIANGLES);
 		ImageDistanceFromOptimum distance = new ImageDistanceFromOptimum(reference, service, triangles);
@@ -46,7 +48,7 @@ public class GenerateTriangles {
 		ShowTriangles frame = new ShowTriangles();
 		Entry<PopulationKey, Chromosome> firstElement = population.iterator().next();
 		triangles.fillFromChromosome(firstElement.getValue());
-		frame.updateResult(triangles, clearColor);
+		frame.updateResult(triangles, CLEAR_COLOR);
 		frame.setPopulation(population);
 		frame.setTriangles(triangles);
 		frame.setRandomizer(randomizer);

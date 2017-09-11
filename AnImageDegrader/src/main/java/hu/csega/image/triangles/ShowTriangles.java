@@ -198,7 +198,7 @@ public class ShowTriangles extends JFrame implements ActionListener, Runnable {
 
 		Chromosome chromosome = firstElement.getValue();
 		triangles.fillFromChromosome(chromosome);
-		updateResult(triangles, GenerateTriangles.clearColor);
+		updateResult(triangles, GenerateTriangles.CLEAR_COLOR);
 
 		canvas.repaint();
 	}
