@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import hu.csega.genetic.framework.Chromosome;
 import hu.csega.genetic.framework.Population;
 import hu.csega.genetic.framework.PopulationKey;
+import hu.csega.genetic.framework.crossover.BestsInFavorCrossOverStrategy;
 import hu.csega.genetic.framework.crossover.CrossOverStrategy;
 import hu.csega.genetic.framework.crossover.RandomCrossOverStrategy;
 import hu.csega.genetic.framework.measurement.Measurement;
@@ -32,7 +33,8 @@ import hu.csega.toolshed.logging.LoggerFactory;
 
 public class ShowTriangles extends JFrame implements ActionListener, Runnable {
 
-	public static final CrossOverStrategy crossOverStrategy = new RandomCrossOverStrategy();
+	public static final CrossOverStrategy randomCrossOverStrategy = new RandomCrossOverStrategy();
+	public static final CrossOverStrategy bestFitCrossOverStrategy = new BestsInFavorCrossOverStrategy();
 	public static final MutationStrategy bestFitMutationStrategy = new BestsInFavorMutationStrategy();
 	public static final MutationStrategy randomMutationStrategy = new RandomMutationStrategy();
 
@@ -145,8 +147,12 @@ public class ShowTriangles extends JFrame implements ActionListener, Runnable {
 			population.startRound();
 			population.mutateContinuously(SCALE, bestFitMutationStrategy, SCALE);
 			population.mutate(SCALE, randomMutationStrategy);
+			population.mutate(SCALE, SCALE / 10, randomMutationStrategy);
 			population.createRandomGenes(SCALE);
-			population.initCrossOverStrategy(crossOverStrategy);
+			population.initCrossOverStrategy(randomCrossOverStrategy);
+			population.crossOver(SCALE, randomCrossOverStrategy);
+			population.initCrossOverStrategy(bestFitCrossOverStrategy);
+			population.crossOver(SCALE, bestFitCrossOverStrategy);
 			population.keep(30000);
 			population.endRound();
 			cycles++;
