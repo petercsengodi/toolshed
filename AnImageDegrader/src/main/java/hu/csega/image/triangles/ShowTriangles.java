@@ -47,6 +47,9 @@ public class ShowTriangles extends JFrame implements ActionListener, Runnable {
 	private boolean canStart = true;
 	private boolean keepRunning = false;
 
+	private double optimumThisFar = Double.MAX_VALUE;
+	private int optimumCounter = 0;
+
 	private Thread thread;
 
 	public ShowTriangles() {
@@ -168,7 +171,18 @@ public class ShowTriangles extends JFrame implements ActionListener, Runnable {
 	private void updateCanvas() {
 		Entry<PopulationKey, Chromosome> firstElement = population.iterator().next();
 		double distance = firstElement.getKey().getDistance();
-		logger.info("Best Fit Distance: " + distance);
+
+		StringBuilder builder = new StringBuilder("Best Fit Distance: " + distance);
+		if(distance < optimumThisFar) {
+			builder.append(" Reduced: ").append(optimumThisFar - distance);
+			optimumThisFar = distance;
+			optimumCounter = 0;
+		} else {
+			optimumCounter++;
+			builder.append(" -- no change since ").append(optimumCounter).append(" reports.");
+		}
+
+		logger.info(builder.toString());
 
 		Chromosome chromosome = firstElement.getValue();
 		triangles.fillFromChromosome(chromosome);
