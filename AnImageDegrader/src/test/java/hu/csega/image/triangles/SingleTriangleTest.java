@@ -46,15 +46,15 @@ public class SingleTriangleTest {
 
 		t.loadFromBytes(testArray, 0, helper);
 
-		assertEquals(771, t.x[0]);
-		assertEquals(12, t.y[0]);
-		assertEquals(48, t.x[1]);
-		assertEquals(192, t.y[1]);
-		assertEquals(771, t.x[2]);
-		assertEquals(12, t.y[2]);
-		assertEquals(12, t.r);
-		assertEquals(12, t.g);
-		assertEquals(12, t.b);
+		assertEquals(12, t.x[0]);
+		assertEquals(192, t.x[1]);
+		assertEquals(12, t.x[2]);
+		assertEquals(48, t.y[0]);
+		assertEquals(771, t.y[1]);
+		assertEquals(48, t.y[2]);
+		assertEquals(48, t.r);
+		assertEquals(48, t.g);
+		assertEquals(48, t.b);
 	}
 
 }
