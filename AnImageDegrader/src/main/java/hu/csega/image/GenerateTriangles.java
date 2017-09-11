@@ -20,7 +20,7 @@ import hu.csega.toolshed.logging.LoggerFactory;
 
 public class GenerateTriangles {
 
-	public static final String VERSION = "autumn"; // autumn 800x500
+	public static final String VERSION = "tim-curry"; // autumn 800x500
 	public static final int WIDTH = 680;
 	public static final int HEIGHT = 520;
 

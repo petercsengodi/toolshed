@@ -33,12 +33,12 @@ public class TriangleChromosomeRandomizer implements ChromosomeRandomizer {
 			x = Chromosome.RND.nextInt(width);
 			y = Chromosome.RND.nextInt(height);
 
-			triangleToRandomize.x[0] = x;
-			triangleToRandomize.y[0] = y;
-			triangleToRandomize.x[1] = x + 10 + Chromosome.RND.nextInt(50);
+			triangleToRandomize.x[0] = Math.max(0, x-20);
+			triangleToRandomize.y[0] = Math.max(0, y-20);
+			triangleToRandomize.x[1] = x;
 			triangleToRandomize.y[1] = y + 10 + Chromosome.RND.nextInt(50);
 			triangleToRandomize.x[2] = x + 10 + Chromosome.RND.nextInt(50);
-			triangleToRandomize.y[2] = y + 10 + Chromosome.RND.nextInt(50);
+			triangleToRandomize.y[2] = y;
 
 			p = (y * width + x) * 3;
 			triangleToRandomize.r = rgb[p];
