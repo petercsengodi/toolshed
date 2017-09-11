@@ -153,7 +153,7 @@ public class ShowTriangles extends JFrame implements ActionListener, Runnable {
 			population.crossOver(SCALE, randomCrossOverStrategy);
 			population.initCrossOverStrategy(bestFitCrossOverStrategy);
 			population.crossOver(SCALE, bestFitCrossOverStrategy);
-			population.keep(30000);
+			population.keep(50_000);
 			population.endRound();
 			cycles++;
 
