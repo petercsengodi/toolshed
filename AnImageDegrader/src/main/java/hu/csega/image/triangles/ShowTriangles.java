@@ -30,7 +30,6 @@ import hu.csega.toolshed.logging.LoggerFactory;
 
 public class ShowTriangles extends JFrame implements ActionListener, Runnable {
 
-	public static final int SCALE = 100; // 100
 	public static final CrossOverStrategy crossOverStrategy = new RandomCrossOverStrategy();
 	public static final MutationStrategy bestFitMutationStrategy = new BestsInFavorMutationStrategy();
 	public static final MutationStrategy randomMutationStrategy = new RandomMutationStrategy();
@@ -139,12 +138,11 @@ public class ShowTriangles extends JFrame implements ActionListener, Runnable {
 
 		while(!m.finished()) {
 			population.startRound();
-			// population.mutateToNearOnes(3, bestFitMutationStrategy);
-			population.mutateContinuously(100, bestFitMutationStrategy, 100);
-			population.mutate(SCALE, randomMutationStrategy);
-			population.createRandomGenes(SCALE);
+			population.mutateContinuously(1, bestFitMutationStrategy, GenerateTriangles.SCALE);
+			population.mutate(GenerateTriangles.SCALE, randomMutationStrategy);
+			population.createRandomGenes(GenerateTriangles.SCALE);
 			population.initCrossOverStrategy(crossOverStrategy);
-			population.keep(5000);
+			population.keep(30000);
 			population.endRound();
 			cycles++;
 

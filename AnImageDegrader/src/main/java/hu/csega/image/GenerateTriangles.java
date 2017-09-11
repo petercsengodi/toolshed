@@ -20,6 +20,7 @@ import hu.csega.toolshed.logging.LoggerFactory;
 public class GenerateTriangles {
 
 	public static final String POPULATION_FILE = "/tmp/triangles.dat";
+	public static final int SCALE = 30;
 
 	public static final int NUMBER_OF_TRIANGLES = 300;
 
