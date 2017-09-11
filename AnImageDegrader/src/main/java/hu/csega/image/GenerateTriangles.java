@@ -14,6 +14,7 @@ import hu.csega.image.common.ImageEffectService;
 import hu.csega.image.common.ImageEffectServiceImpl;
 import hu.csega.image.triangles.MultipleTriangles;
 import hu.csega.image.triangles.ShowTriangles;
+import hu.csega.image.triangles.TriangleChromosomeRandomizer;
 import hu.csega.toolshed.logging.Logger;
 import hu.csega.toolshed.logging.LoggerFactory;
 
@@ -37,6 +38,9 @@ public class GenerateTriangles {
 		MultipleTriangles triangles = new MultipleTriangles(NUMBER_OF_TRIANGLES);
 		ImageDistanceFromOptimum distance = new ImageDistanceFromOptimum(reference, service, triangles);
 
+		TriangleChromosomeRandomizer randomizer = new TriangleChromosomeRandomizer(distance.getRgb(), WIDTH, HEIGHT);
+		randomizer.setPrototype(triangles);
+
 		Population population = createOrLoadPopulation(POPULATION_FILE, triangles, distance);
 
 		ShowTriangles frame = new ShowTriangles();
@@ -45,6 +49,7 @@ public class GenerateTriangles {
 		frame.updateResult(triangles, clearColor);
 		frame.setPopulation(population);
 		frame.setTriangles(triangles);
+		frame.setRandomizer(randomizer);
 		frame.setVisible(true);
 	}
 

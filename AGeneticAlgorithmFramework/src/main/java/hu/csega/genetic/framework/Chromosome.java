@@ -108,6 +108,10 @@ public class Chromosome implements Serializable {
 		return genes;
 	}
 
+	public void randomizeGenes(ChromosomeRandomizer randomizerStrategy) {
+		randomizerStrategy.randomizeGenes(genes);
+	}
+
 	private byte[] genes;
 
 	private static final long serialVersionUID = 1L;

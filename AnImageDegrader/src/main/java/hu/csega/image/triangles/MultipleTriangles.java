@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 
 import hu.csega.genetic.framework.Chromosome;
+import hu.csega.image.common.BitAssembler;
 import hu.csega.image.common.BitPipeline;
 import hu.csega.image.common.ImageChromosomeReceiver;
 
@@ -14,6 +15,7 @@ public class MultipleTriangles implements ImageChromosomeReceiver {
 
 	public SingleTriangle[] triangles;
 	public BitPipeline helper = new BitPipeline();
+	public BitAssembler assembler = new BitAssembler();
 
 	public MultipleTriangles(int capacity) {
 		this.capacity = capacity;
@@ -52,6 +54,7 @@ public class MultipleTriangles implements ImageChromosomeReceiver {
 		}
 	}
 
+	@Override
 	public void draw(Image img, Color clearColor) {
 		Graphics g = img.getGraphics();
 
@@ -63,6 +66,22 @@ public class MultipleTriangles implements ImageChromosomeReceiver {
 		for(SingleTriangle t : triangles) {
 			g.setColor(new Color(t.r, t.g, t.b));
 			g.fillPolygon(t.x, t.y, 3);
+		}
+	}
+
+	public int getCapacity() {
+		return capacity;
+	}
+
+	public SingleTriangle getTriangle(int i) {
+		return triangles[i];
+	}
+
+	public void loadIntoGenes(byte[] genes) {
+		assembler.setByteArray(genes);
+		for(int i = 0; i < capacity; i++) {
+			assembler.setPosition(i * SingleTriangle.SIZE_IN_BYTES);
+			triangles[i].loadIntoGenes(assembler);
 		}
 	}
 

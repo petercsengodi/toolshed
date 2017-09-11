@@ -4,9 +4,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 import hu.csega.genetic.framework.Chromosome;
-import hu.csega.genetic.framework.ChromosomeReceiver;
 import hu.csega.genetic.framework.DistanceFromOptimum;
-import hu.csega.image.triangles.MultipleTriangles;
 
 public class ImageDistanceFromOptimum implements DistanceFromOptimum {
 
@@ -50,6 +48,10 @@ public class ImageDistanceFromOptimum implements DistanceFromOptimum {
 		}
 
 		return sum;
+	}
+
+	public int[] getRgb() {
+		return rgb;
 	}
 
 	private static final long serialVersionUID = 1L;

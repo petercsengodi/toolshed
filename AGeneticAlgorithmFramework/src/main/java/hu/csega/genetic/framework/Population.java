@@ -212,6 +212,16 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 		}
 	}
 
+	public void createRandomGenes(int numberOfRandomGenes, ChromosomeRandomizer randomizerStrategy) {
+		for(int i = 0; i < numberOfRandomGenes; i++) {
+			Chromosome chromosome = createNewChromosome();
+			chromosome.randomizeGenes(randomizerStrategy);
+
+			double distance = distanceStrategy.calculate(chromosome);
+			chromosomes.put(new PopulationKey(distance, chromosome.getGenes()), chromosome);
+		}
+	}
+
 	public void mutate(int numberOfMutations, MutationStrategy strategy) {
 		mutate(numberOfMutations, 1, strategy);
 	}

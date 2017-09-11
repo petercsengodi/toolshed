@@ -42,6 +42,7 @@ public class ShowTriangles extends JFrame implements ActionListener, Runnable {
 	private ShowTrianglesCanvas canvas;
 	private Population population;
 	private MultipleTriangles triangles;
+	private TriangleChromosomeRandomizer randomizer;
 
 	private JPanel buttons = new JPanel();
 	private JButton start = new JButton("Start");
@@ -85,6 +86,10 @@ public class ShowTriangles extends JFrame implements ActionListener, Runnable {
 
 	public void setTriangles(MultipleTriangles triangles) {
 		this.triangles = triangles;
+	}
+
+	public void setRandomizer(TriangleChromosomeRandomizer randomizer) {
+		this.randomizer = randomizer;
 	}
 
 	public synchronized void updateResult(MultipleTriangles triangles, Color clearColor) {
@@ -148,7 +153,7 @@ public class ShowTriangles extends JFrame implements ActionListener, Runnable {
 			population.mutateContinuously(SCALE, bestFitMutationStrategy, SCALE);
 			population.mutate(SCALE, randomMutationStrategy);
 			population.mutate(SCALE, SCALE / 10, randomMutationStrategy);
-			population.createRandomGenes(SCALE);
+			population.createRandomGenes(SCALE, randomizer);
 			population.initCrossOverStrategy(randomCrossOverStrategy);
 			population.crossOver(SCALE, randomCrossOverStrategy);
 			population.initCrossOverStrategy(bestFitCrossOverStrategy);
