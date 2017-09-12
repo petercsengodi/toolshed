@@ -15,19 +15,20 @@ import hu.csega.image.common.ImageEffectServiceImpl;
 import hu.csega.image.triangles.MultipleTriangles;
 import hu.csega.image.triangles.ShowTriangles;
 import hu.csega.image.triangles.TriangleChromosomeRandomizer;
+import hu.csega.image.triangles.TriangleTestImages;
 import hu.csega.toolshed.logging.Logger;
 import hu.csega.toolshed.logging.LoggerFactory;
 
 public class GenerateTriangles {
 
-	public static final String VERSION = "tim-curry"; // autumn 800x500
-	public static final int WIDTH = 680;
-	public static final int HEIGHT = 520;
+	public static final TriangleTestImages IMAGE = TriangleTestImages.TIM_CURRY;
+	public static final int WIDTH = IMAGE.getWidth();
+	public static final int HEIGHT = IMAGE.getHeight();
+	public static final String FILE = IMAGE.getImageFile();
+	public static final String POPULATION_FILE = "/tmp/" + IMAGE.getPopulationFile() + ".dat";
+	public static final String LOG_FILE = "/tmp/" + IMAGE.getPopulationFile() + ".csv";
 
-	public static final String FILE = "res/image/" + VERSION + ".jpg";
-	public static final String POPULATION_FILE = "/tmp/triangles-" + VERSION + ".dat";
-
-	public static final int NUMBER_OF_TRIANGLES = 100;
+	public static final int NUMBER_OF_TRIANGLES = 300;
 	public static final int SCALE = 30;
 
 	public static final Color CLEAR_COLOR = Color.BLACK;
@@ -38,7 +39,7 @@ public class GenerateTriangles {
 		BufferedImage reference = service.loadBufferedImage(FILE, WIDTH, HEIGHT, CLEAR_COLOR);
 
 		MultipleTriangles triangles = new MultipleTriangles(NUMBER_OF_TRIANGLES);
-		ImageDistanceFromOptimum distance = new ImageDistanceFromOptimum(reference, service, triangles);
+		ImageDistanceFromOptimum distance = new ImageDistanceFromOptimum(reference, service, triangles, IMAGE);
 
 		TriangleChromosomeRandomizer randomizer = new TriangleChromosomeRandomizer(distance.getRgb(), WIDTH, HEIGHT);
 		randomizer.setPrototype(triangles);

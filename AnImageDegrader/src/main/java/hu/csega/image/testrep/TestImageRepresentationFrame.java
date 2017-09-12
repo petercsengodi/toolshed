@@ -183,7 +183,7 @@ public class TestImageRepresentationFrame extends JFrame implements ActionListen
 
 		Chromosome chromosome = firstElement.getValue();
 		cubes.fillFromChromosome(chromosome);
-		updateResult(cubes, TestImageRepresentation.clearColor);
+		updateResult(cubes, TestImageRepresentation.CLEAR_COLOR);
 
 		canvas.repaint();
 	}

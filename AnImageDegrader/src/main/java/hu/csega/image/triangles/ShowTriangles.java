@@ -10,6 +10,13 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map.Entry;
 
 import javax.swing.JButton;
@@ -52,6 +59,8 @@ public class ShowTriangles extends JFrame implements ActionListener, Runnable {
 
 	private double optimumThisFar = Double.MAX_VALUE;
 	private int optimumCounter = 0;
+	private OutputStreamWriter writer = null;
+	private DateFormat format = null;
 
 	private Thread thread;
 
@@ -140,6 +149,7 @@ public class ShowTriangles extends JFrame implements ActionListener, Runnable {
 			}
 		}
 
+		closeLogFile();
 		canStart = true;
 		logger.info("Thread stopped.");
 	}
@@ -184,23 +194,65 @@ public class ShowTriangles extends JFrame implements ActionListener, Runnable {
 		Entry<PopulationKey, Chromosome> firstElement = population.iterator().next();
 		double distance = firstElement.getKey().getDistance();
 
-		StringBuilder builder = new StringBuilder("Best Fit Distance: " + distance);
-		if(distance < optimumThisFar) {
-			builder.append(" Reduced: ").append(optimumThisFar - distance);
-			optimumThisFar = distance;
-			optimumCounter = 0;
-		} else {
-			optimumCounter++;
-			builder.append(" -- no change since ").append(optimumCounter).append(" reports.");
+		StringBuilder builder = new StringBuilder("Best Fit Distance: ").append(distance);
+		if(optimumThisFar < Double.MAX_VALUE) {
+			if(distance < optimumThisFar) {
+				builder.append(" Reduced: ").append(optimumThisFar - distance);
+				optimumThisFar = distance;
+				optimumCounter = 0;
+			} else {
+				optimumCounter++;
+				builder.append(" -- no change since ").append(optimumCounter).append(" reports.");
+			}
 		}
 
 		logger.info(builder.toString());
+		logIntoFile(distance);
 
 		Chromosome chromosome = firstElement.getValue();
 		triangles.fillFromChromosome(chromosome);
 		updateResult(triangles, GenerateTriangles.CLEAR_COLOR);
 
 		canvas.repaint();
+	}
+
+	private void openLogFile() {
+		try {
+			writer = new OutputStreamWriter(new FileOutputStream(GenerateTriangles.LOG_FILE));
+		} catch (FileNotFoundException ex) {
+			throw new RuntimeException("Couldn't open log file!", ex);
+		}
+
+		if(format == null) {
+			format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		}
+	}
+
+	private void closeLogFile() {
+		try {
+			if(writer != null) {
+				writer.close();
+				writer = null;
+			}
+		} catch (IOException ex) {
+			throw new RuntimeException("Couldn't close log file!", ex);
+		}
+	}
+
+	private void logIntoFile(double distance) {
+		if(writer == null) {
+			openLogFile();
+		}
+
+		try {
+			writer.write(format.format(new Date()));
+			writer.write(";");
+			writer.write(String.valueOf(distance));
+			writer.write(";\n");
+			writer.flush();
+		} catch (IOException ex) {
+			throw new RuntimeException("Couldn't write log file!", ex);
+		}
 	}
 
 	private static final long serialVersionUID = 1L;

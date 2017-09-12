@@ -14,11 +14,13 @@ import hu.csega.image.common.ImageEffectService;
 import hu.csega.image.common.ImageEffectServiceImpl;
 import hu.csega.image.testrep.MultipleCubes;
 import hu.csega.image.testrep.TestImageRepresentationFrame;
+import hu.csega.image.triangles.TriangleTestImages;
 import hu.csega.toolshed.logging.Logger;
 import hu.csega.toolshed.logging.LoggerFactory;
 
 public class TestImageRepresentation {
 
+	public static final TriangleTestImages IMAGE = TriangleTestImages.AUTUMN;
 	public static final String POPULATION_FILE = "/tmp/test-image-representation.dat";
 
 	public static final int SCALE = 300; // 100
@@ -28,24 +30,24 @@ public class TestImageRepresentation {
 	public static final int CUBES_HEIGHT = 8;
 	public static final int CUBES_SIZE = 50;
 
-	public static final String FILE = "res/image/autumn.jpg";
+	public static final String FILE = IMAGE.getImageFile();
 	public static final int WIDTH = CUBES_WIDTH * CUBES_SIZE;
 	public static final int HEIGHT = CUBES_HEIGHT * CUBES_SIZE;
-	public static final Color clearColor = Color.BLACK;
+	public static final Color CLEAR_COLOR = Color.BLACK;
 
 	public static void main(String[] args) {
 		ImageEffectService service = new ImageEffectServiceImpl();
-		BufferedImage reference = service.loadBufferedImage(FILE, WIDTH, HEIGHT, clearColor);
+		BufferedImage reference = service.loadBufferedImage(FILE, WIDTH, HEIGHT, CLEAR_COLOR);
 
 		MultipleCubes cubes = new MultipleCubes(CUBES_WIDTH, CUBES_HEIGHT, CUBES_SIZE);
-		ImageDistanceFromOptimum distance = new ImageDistanceFromOptimum(reference, service, cubes);
+		ImageDistanceFromOptimum distance = new ImageDistanceFromOptimum(reference, service, cubes, IMAGE);
 
 		Population population = createOrLoadPopulation(POPULATION_FILE, cubes, distance);
 
 		TestImageRepresentationFrame frame = new TestImageRepresentationFrame();
 		Entry<PopulationKey, Chromosome> firstElement = population.iterator().next();
 		cubes.fillFromChromosome(firstElement.getValue());
-		frame.updateResult(cubes, clearColor);
+		frame.updateResult(cubes, CLEAR_COLOR);
 		frame.setPopulation(population);
 		frame.setCubes(cubes);
 		frame.setVisible(true);
