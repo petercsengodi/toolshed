@@ -5,8 +5,8 @@ public enum TriangleTestImages {
 	AUTUMN("triangles-autumn", "res/image/autumn.jpg", 800, 500),
 
 	TIM_CURRY("triangles-tim-curry", "res/image/tim-curry.jpg", 680, 520,
-			new TriangleSweetSpot(285, 18, 600, 178, 2),
-			new TriangleSweetSpot(290, 10, 620, 500, 1));
+			new TriangleSweetSpot(285, 18, 600, 178, 10),
+			new TriangleSweetSpot(290, 10, 620, 500, 3));
 
 	private final String populationFile;
 	private final String imageFile;

@@ -198,12 +198,15 @@ public class ShowTriangles extends JFrame implements ActionListener, Runnable {
 		if(optimumThisFar < Double.MAX_VALUE) {
 			if(distance < optimumThisFar) {
 				builder.append(" Reduced: ").append(optimumThisFar - distance);
-				optimumThisFar = distance;
-				optimumCounter = 0;
 			} else {
 				optimumCounter++;
 				builder.append(" -- no change since ").append(optimumCounter).append(" reports.");
 			}
+		}
+
+		if(distance < optimumThisFar) {
+			optimumThisFar = distance;
+			optimumCounter = 0;
 		}
 
 		logger.info(builder.toString());
