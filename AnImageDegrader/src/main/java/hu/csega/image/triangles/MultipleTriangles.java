@@ -8,21 +8,25 @@ import hu.csega.genetic.framework.Chromosome;
 import hu.csega.image.common.BitAssembler;
 import hu.csega.image.common.BitPipeline;
 import hu.csega.image.common.ImageChromosomeReceiver;
+import hu.csega.image.common.TriangleChecker;
 
 public class MultipleTriangles implements ImageChromosomeReceiver {
 
 	private int capacity;
 
 	public SingleTriangle[] triangles;
+	public TriangleChecker[] checkers;
 	public BitPipeline helper = new BitPipeline();
 	public BitAssembler assembler = new BitAssembler();
 
 	public MultipleTriangles(int capacity) {
 		this.capacity = capacity;
 		triangles = new SingleTriangle[capacity];
+		checkers = new TriangleChecker[capacity];
 
 		for(int i = 0; i < capacity; i++) {
 			triangles[i] = new SingleTriangle();
+			checkers[i] = new TriangleChecker();
 		}
 	}
 
@@ -58,15 +62,57 @@ public class MultipleTriangles implements ImageChromosomeReceiver {
 	public void draw(Image img, Color clearColor) {
 		Graphics g = img.getGraphics();
 
-		if(clearColor != null) {
-			g.setColor(clearColor);
-			g.fillRect(0, 0, img.getWidth(null), img.getHeight(null));
-		}
-
 		for(SingleTriangle t : triangles) {
 			g.setColor(new Color(t.r, t.g, t.b));
 			g.fillPolygon(t.x, t.y, 3);
 		}
+	}
+
+	@Override
+	public void draw(int[] buffer, int width, int height, int clearR, int clearG, int clearB) {
+		// 1. initialize checkers
+		for(int i = 0; i < capacity; i++) {
+			SingleTriangle triangle = triangles[i];
+			int[] x = triangle.x;
+			int[] y = triangle.y;
+			checkers[i].loadTriangle(x[0], y[0], x[1], y[1], x[2], y[2]);
+		}
+
+		SingleTriangle t;
+		int colorPosition = 0, r, g, b;
+
+		// 2. iterate through pixels
+		for(int x = 0; x < width; x++) {
+			for(int y = 0; y < height; y++) {
+
+				r = clearR;
+				g = clearG;
+				b = clearB;
+
+				// 3. iterate through triangles backwards
+				for(int i = capacity-1; i >= 0; i--) {
+
+					// 4. if pixel is contained by current triangle, we set this color
+					// (if not contained by any, "clear color" remains)
+
+					if(checkers[i].inside(x, y)) {
+						t = triangles[i];
+						r = t.r;
+						g = t.g;
+						b = t.b;
+						break;
+					}
+
+				} // end 3.
+
+				// 5. we paint the pixel
+				// (because all pixels will be colored _somehow_, no previous clearing is needed)
+				buffer[colorPosition++] = r;
+				buffer[colorPosition++] = g;
+				buffer[colorPosition++] = b;
+			}
+
+		} // end 2.
 	}
 
 	public int getCapacity() {

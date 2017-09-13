@@ -13,6 +13,7 @@ import hu.csega.image.common.ImageDistanceFromOptimum;
 import hu.csega.image.common.ImageEffectService;
 import hu.csega.image.common.ImageEffectServiceImpl;
 import hu.csega.image.testrep.MultipleCubes;
+import hu.csega.image.testrep.TestImageRepresentationConverter;
 import hu.csega.image.testrep.TestImageRepresentationFrame;
 import hu.csega.image.triangles.TriangleTestImages;
 import hu.csega.toolshed.logging.Logger;
@@ -33,14 +34,19 @@ public class TestImageRepresentation {
 	public static final String FILE = IMAGE.getImageFile();
 	public static final int WIDTH = CUBES_WIDTH * CUBES_SIZE;
 	public static final int HEIGHT = CUBES_HEIGHT * CUBES_SIZE;
+	public static final int BUFFER_CAPACITY = WIDTH * HEIGHT * 3;
 	public static final Color CLEAR_COLOR = Color.BLACK;
 
 	public static void main(String[] args) {
 		ImageEffectService service = new ImageEffectServiceImpl();
 		BufferedImage reference = service.loadBufferedImage(FILE, WIDTH, HEIGHT, CLEAR_COLOR);
+		int[] referenceImageData = new int[BUFFER_CAPACITY];
+		service.imageToRGBArray(reference, referenceImageData);
 
+		int[] buffer = new int[BUFFER_CAPACITY];
 		MultipleCubes cubes = new MultipleCubes(CUBES_WIDTH, CUBES_HEIGHT, CUBES_SIZE);
-		ImageDistanceFromOptimum distance = new ImageDistanceFromOptimum(reference, service, cubes, IMAGE);
+		TestImageRepresentationConverter converter = new TestImageRepresentationConverter(buffer, reference, CLEAR_COLOR, service);
+		ImageDistanceFromOptimum distance = new ImageDistanceFromOptimum(referenceImageData, WIDTH, HEIGHT, cubes, converter, IMAGE);
 
 		Population population = createOrLoadPopulation(POPULATION_FILE, cubes, distance);
 

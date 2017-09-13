@@ -13,6 +13,7 @@ import hu.csega.image.common.ImageDistanceFromOptimum;
 import hu.csega.image.common.ImageEffectService;
 import hu.csega.image.common.ImageEffectServiceImpl;
 import hu.csega.image.triangles.MultipleTriangles;
+import hu.csega.image.triangles.MultipleTrianglesArrayConverter;
 import hu.csega.image.triangles.ShowTriangles;
 import hu.csega.image.triangles.TriangleChromosomeRandomizer;
 import hu.csega.image.triangles.TriangleTestImages;
@@ -24,6 +25,7 @@ public class GenerateTriangles {
 	public static final TriangleTestImages IMAGE = TriangleTestImages.TIM_CURRY;
 	public static final int WIDTH = IMAGE.getWidth();
 	public static final int HEIGHT = IMAGE.getHeight();
+	public static final int BUFFER_CAPACITY = WIDTH * HEIGHT * 3;
 	public static final String FILE = IMAGE.getImageFile();
 	public static final String POPULATION_FILE = "/tmp/" + IMAGE.getPopulationFile() + ".dat";
 	public static final String LOG_FILE = "/tmp/" + IMAGE.getPopulationFile() + ".csv";
@@ -34,14 +36,22 @@ public class GenerateTriangles {
 	public static final Color CLEAR_COLOR = Color.BLACK;
 
 	public static void main(String[] args) {
-
 		ImageEffectService service = new ImageEffectServiceImpl();
 		BufferedImage reference = service.loadBufferedImage(FILE, WIDTH, HEIGHT, CLEAR_COLOR);
+		int[] referenceImageData = new int[BUFFER_CAPACITY];
+		service.imageToRGBArray(reference, referenceImageData);
 
+		int[] buffer = new int[BUFFER_CAPACITY];
 		MultipleTriangles triangles = new MultipleTriangles(NUMBER_OF_TRIANGLES);
-		ImageDistanceFromOptimum distance = new ImageDistanceFromOptimum(reference, service, triangles, IMAGE);
 
-		TriangleChromosomeRandomizer randomizer = new TriangleChromosomeRandomizer(distance.getRgb(), WIDTH, HEIGHT);
+		MultipleTrianglesArrayConverter converter = new MultipleTrianglesArrayConverter(buffer, WIDTH, HEIGHT, CLEAR_COLOR.getRed(), CLEAR_COLOR.getGreen(), CLEAR_COLOR.getBlue());
+
+		// BufferedImage bufferImage = service.createNewImage(WIDTH, HEIGHT);
+		// MultipleTrianglesImageConverter converter = new MultipleTrianglesImageConverter(buffer, bufferImage, CLEAR_COLOR, service);
+
+		ImageDistanceFromOptimum distance = new ImageDistanceFromOptimum(referenceImageData, WIDTH, HEIGHT, triangles, converter, IMAGE);
+
+		TriangleChromosomeRandomizer randomizer = new TriangleChromosomeRandomizer(distance.getReferencePictureData(), WIDTH, HEIGHT);
 		randomizer.setPrototype(triangles);
 
 		Population population = createOrLoadPopulation(POPULATION_FILE, triangles, distance);
