@@ -1,6 +1,6 @@
 package hu.csega.image.common;
 
-public class LineChecker {
+public class LineChecker1 {
 
 	private double m, C;
 	private int referenceValue;

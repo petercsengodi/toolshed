@@ -9,6 +9,7 @@ import hu.csega.image.common.BitAssembler;
 import hu.csega.image.common.BitPipeline;
 import hu.csega.image.common.ImageChromosomeReceiver;
 import hu.csega.image.common.TriangleChecker;
+import hu.csega.image.common.TriangleChecker2Impl;
 
 public class MultipleTriangles implements ImageChromosomeReceiver {
 
@@ -26,7 +27,7 @@ public class MultipleTriangles implements ImageChromosomeReceiver {
 
 		for(int i = 0; i < capacity; i++) {
 			triangles[i] = new SingleTriangle();
-			checkers[i] = new TriangleChecker();
+			checkers[i] = new TriangleChecker2Impl();
 		}
 	}
 
@@ -95,7 +96,7 @@ public class MultipleTriangles implements ImageChromosomeReceiver {
 					// 4. if pixel is contained by current triangle, we set this color
 					// (if not contained by any, "clear color" remains)
 
-					if(checkers[i].inside(x, y)) {
+					if (checkers[i].inside(x, y)) {
 						t = triangles[i];
 						r = t.r;
 						g = t.g;

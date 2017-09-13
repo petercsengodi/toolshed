@@ -46,8 +46,8 @@ public class GenerateTriangles {
 
 		MultipleTrianglesArrayConverter converter = new MultipleTrianglesArrayConverter(buffer, WIDTH, HEIGHT, CLEAR_COLOR.getRed(), CLEAR_COLOR.getGreen(), CLEAR_COLOR.getBlue());
 
-		// BufferedImage bufferImage = service.createNewImage(WIDTH, HEIGHT);
-		// MultipleTrianglesImageConverter converter = new MultipleTrianglesImageConverter(buffer, bufferImage, CLEAR_COLOR, service);
+		//		BufferedImage bufferImage = service.createNewImage(WIDTH, HEIGHT);
+		//		MultipleTrianglesImageConverter converter = new MultipleTrianglesImageConverter(buffer, bufferImage, CLEAR_COLOR, service);
 
 		ImageDistanceFromOptimum distance = new ImageDistanceFromOptimum(referenceImageData, WIDTH, HEIGHT, triangles, converter, IMAGE);
 

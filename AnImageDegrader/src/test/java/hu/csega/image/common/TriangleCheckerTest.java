@@ -17,8 +17,22 @@ public class TriangleCheckerTest {
 	}
 
 	@Test
-	public void test() {
-		TriangleChecker tc = new TriangleChecker();
+	public void test1Impl() {
+		TriangleChecker tc = new TriangleChecker1Impl();
+		assertEquals(false, tc.inside(1, 5));
+
+		tc.loadTriangle(-10, -10, 0, 10, 10, -10);
+		assertEquals(true, tc.inside(0, 0));
+		assertEquals(true, tc.inside(1, 1));
+		assertEquals(true, tc.inside(-1, -1));
+		assertEquals(false, tc.inside(-10, 0));
+		assertEquals(false, tc.inside(10, 0));
+		assertEquals(false, tc.inside(0, -10));
+	}
+
+	@Test
+	public void test2Impl() {
+		TriangleChecker tc = new TriangleChecker2Impl();
 		assertEquals(false, tc.inside(1, 5));
 
 		tc.loadTriangle(-10, -10, 0, 10, 10, -10);

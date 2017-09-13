@@ -17,7 +17,7 @@ public class LineCheckerTest {
 
 	@Test
 	public void test() {
-		LineChecker lc = new LineChecker();
+		LineChecker1 lc = new LineChecker1();
 
 		lc.loadLine(0, 0, 10, 5, 5, 10);
 		Assert.assertEquals(true, lc.isOnTheSameSideAsReferenceValue(2, 10));
