@@ -2,9 +2,8 @@ package hu.csega.image.common;
 
 public class LineChecker3 {
 
-	private double m, C;
 	private boolean horizontal, vertical, leftOrAboveFromLine, cachedValue;
-	private double borderX, borderY;
+	private double m, C, borderX, borderY;
 
 	private int cachedLastY = Integer.MIN_VALUE; // to avoid multiplication in many cases
 

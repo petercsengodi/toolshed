@@ -14,28 +14,23 @@ public class TriangleCheckerPerformanceTest {
 	public static void main(String[] args) {
 		System.out.println("Memory: " + Runtime.getRuntime().freeMemory());
 
-		TriangleChecker1Impl t1 = new TriangleChecker1Impl();
-		TriangleChecker2Impl t2 = new TriangleChecker2Impl();
-		TriangleChecker3Impl t3 = new TriangleChecker3Impl();
-
-		System.gc();
+		TriangleChecker t1 = new TriangleChecker1Impl();
+		TriangleChecker t2 = new TriangleChecker2Impl();
+		TriangleChecker t3 = new TriangleChecker3Impl();
+		TriangleChecker t4 = new TriangleChecker4Impl();
 
 		System.out.println("Memory: " + Runtime.getRuntime().freeMemory());
 
+		measure(t4);
+		measure(t4);
+		measure(t4);
+		measure(t4);
 		measure(t3);
 		measure(t2);
 		measure(t1);
-
-		System.gc();
-
+		measure(t4);
 		measure(t3);
-
-		System.gc();
-
 		measure(t2);
-
-		System.gc();
-
 		measure(t1);
 	}
 

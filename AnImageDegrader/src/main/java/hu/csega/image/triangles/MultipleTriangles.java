@@ -9,7 +9,7 @@ import hu.csega.image.common.BitAssembler;
 import hu.csega.image.common.BitPipeline;
 import hu.csega.image.common.ImageChromosomeReceiver;
 import hu.csega.image.common.TriangleChecker;
-import hu.csega.image.common.TriangleChecker2Impl;
+import hu.csega.image.common.TriangleChecker4Impl;
 
 public class MultipleTriangles implements ImageChromosomeReceiver {
 
@@ -27,7 +27,7 @@ public class MultipleTriangles implements ImageChromosomeReceiver {
 
 		for(int i = 0; i < capacity; i++) {
 			triangles[i] = new SingleTriangle();
-			checkers[i] = new TriangleChecker2Impl();
+			checkers[i] = new TriangleChecker4Impl();
 		}
 	}
 
