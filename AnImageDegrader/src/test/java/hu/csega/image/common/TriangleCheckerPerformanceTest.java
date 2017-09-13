@@ -1,73 +1,79 @@
 package hu.csega.image.common;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 public class TriangleCheckerPerformanceTest {
-
-	private static final NumberFormat FORMATTER = new DecimalFormat("#0.00000000");
 
 	private static final long NUMBER_OF_ROUNDS = 3;
 
-	private static final long PICTURE_SIZE = 800 * 600; // 480_000
+	private static final long PICTURE_WIDTH = 800;
+	private static final long PICTURE_HEIGHT = 800;
 	private static final long NUMBER_OF_TRIANGLES = 300;
 	private static final long NUMBER_OF_CYCLES = 1;
 
-	private static final long NUMBER_OF_LOADS = NUMBER_OF_TRIANGLES * NUMBER_OF_CYCLES;
+	private static final long NUMBER_OF_OPERATIONS = NUMBER_OF_TRIANGLES * NUMBER_OF_CYCLES;
 
-	private static final long NUMBER_OF_OPERATIONS = PICTURE_SIZE * NUMBER_OF_TRIANGLES * NUMBER_OF_CYCLES;
+	public static void main(String[] args) {
+		System.out.println("Memory: " + Runtime.getRuntime().freeMemory());
 
-	@Before
-	public void setUp() throws Exception {
+		TriangleChecker1Impl t1 = new TriangleChecker1Impl();
+		TriangleChecker2Impl t2 = new TriangleChecker2Impl();
+		TriangleChecker3Impl t3 = new TriangleChecker3Impl();
+
+		System.gc();
+
+		System.out.println("Memory: " + Runtime.getRuntime().freeMemory());
+
+		measure(t3);
+		measure(t2);
+		measure(t1);
+
+		System.gc();
+
+		measure(t3);
+
+		System.gc();
+
+		measure(t2);
+
+		System.gc();
+
+		measure(t1);
 	}
 
-	@After
-	public void tearDown() throws Exception {
-	}
+	private static void measure(TriangleChecker tc) {
+		long start1, start2, end1, end2, i, j, x, y;
+		for(j = 0; j < NUMBER_OF_ROUNDS; j++) {
+			start1 = System.currentTimeMillis();
 
-	@Test
-	public void test() {
-		measure(new TriangleChecker1Impl());
-		measure(new TriangleChecker2Impl());
-		measure(new TriangleChecker1Impl());
-		measure(new TriangleChecker2Impl());
-		measure(new TriangleChecker1Impl());
-		measure(new TriangleChecker2Impl());
-	}
-
-	private void measure(TriangleChecker tc) {
-		for(long j = 0; j < NUMBER_OF_ROUNDS; j++) {
-			long start1 = System.nanoTime();
-
-			for(long i = 0; i < NUMBER_OF_LOADS; i++) {
+			for(i = 0; i < NUMBER_OF_OPERATIONS * 10_000; i++) {
 				tc.loadTriangle(-10, -10, 0, 10, 10, -10);
 			}
 
-			long end1 = System.nanoTime();
+			end1 = System.currentTimeMillis();
 
-			long start2 = System.nanoTime();
+			start2 = System.currentTimeMillis();
 
-			for(long i = 0; i < NUMBER_OF_OPERATIONS; i++) {
-				tc.inside(0, 0);
-				tc.inside(1, 1);
-				tc.inside(-1, -1);
-				tc.inside(-10, 0);
-				tc.inside(10, 0);
-				tc.inside(0, -10);
+			for(i = 0; i < NUMBER_OF_OPERATIONS; i++) {
+				for(y = 0; y < PICTURE_HEIGHT; y++) {
+					tc.moveToY(5);
+					for(x = 0; x < PICTURE_WIDTH; x++) {
+						tc.inside(-5);
+						tc.inside(-1);
+						tc.inside(0);
+						tc.inside(1);
+						tc.inside(5);
+						tc.inside(9);
+					}
+				}
 			}
 
-			long end2 = System.nanoTime();
+			end2 = System.currentTimeMillis();
 
 			System.out.println(tc.getClass().getSimpleName() + " (" + j + ") – Loading phase: " + diff(start1, end1) + " Calculation phase: " + diff(start2, end2));
+			System.out.println("Memory: " + Runtime.getRuntime().freeMemory());
 		}
 	}
 
 	private static String diff(long start, long end) {
-		double d = ((end - start) / 1_000) / 1000_000.0;
-		return FORMATTER.format(d) + " secs.";
+		return ((end - start) / 1_000.0) + " secs.";
 	}
 }

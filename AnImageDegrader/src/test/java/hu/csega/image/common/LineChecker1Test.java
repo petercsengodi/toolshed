@@ -5,7 +5,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class LineCheckerTest {
+public class LineChecker1Test {
 
 	@Before
 	public void setUp() throws Exception {

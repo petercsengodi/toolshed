@@ -5,9 +5,10 @@ public class TriangleChecker1Impl implements TriangleChecker {
 	private boolean initializedWithValidData = false;
 	private double sx, sy, minx, miny, maxx, maxy;
 	private LineChecker1 lc1 = new LineChecker1(), lc2 = new LineChecker1(), lc3 = new LineChecker1();
+	private double currentY;
 
 	@Override
-	public void loadTriangle(double x1, double y1, double x2, double y2, double x3, double y3) {
+	public void loadTriangle(int x1, int y1, int x2, int y2, int x3, int y3) {
 		double d;
 
 		// If either of the two points are (almost) the same, the triangle has no valid area
@@ -52,7 +53,37 @@ public class TriangleChecker1Impl implements TriangleChecker {
 	}
 
 	@Override
-	public boolean inside(double x, double y) {
+	public void moveToY(int y) {
+		this.currentY = y;
+	}
+
+	@Override
+	public boolean inside(int x) {
+		return inside(x, currentY);
+	}
+
+	@Override
+	public double getMinX() {
+		return minx;
+	}
+
+	@Override
+	public double getMinY() {
+		return miny;
+	}
+
+	@Override
+	public double getMaxX() {
+		return maxx;
+	}
+
+	@Override
+	public double getMaxY() {
+		return maxy;
+	}
+
+	// Legacy method / old interface
+	private boolean inside(double x, double y) {
 		// 1. check if object is initialized well
 		if(!initializedWithValidData)
 			return false;

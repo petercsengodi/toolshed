@@ -1,6 +1,6 @@
 package hu.csega.image.common;
 
-public class LineChecker2 {
+public class LineChecker3 {
 
 	private double m, C;
 	private boolean horizontal, vertical, leftOrAboveFromLine, cachedValue;
@@ -8,47 +8,43 @@ public class LineChecker2 {
 
 	private int cachedLastY = Integer.MIN_VALUE; // to avoid multiplication in many cases
 
-	public void loadLine(double x1, double y1, double x2, double y2, double sx, double sy) {
-		double dx = x2 - x1;
-		double dy = y2 - y1;
-		if(Math.abs(dy) < TriangleChecker.ERROR) {
+	public void loadLine(int x1, int y1, int x2, int y2, double sx, double sy) {
+		if(y1 == y2) {
 			this.horizontal = true;
 			this.vertical = false;
-			borderY = y1;
-			leftOrAboveFromLine = (sy <= y1);
-		} else if(Math.abs(dx) < TriangleChecker.ERROR) {
+			this.borderY = y1;
+			this.leftOrAboveFromLine = (sy <= y1);
+		} else if(x1 == x2) {
 			this.horizontal = false;
 			this.vertical = true;
-			borderX = x1;
-			leftOrAboveFromLine = (sx <= x1);
+			this.borderX = x1;
+			this.leftOrAboveFromLine = (sx <= x1);
 		} else {
 			this.horizontal = false;
 			this.vertical = false;
-			this.m = dx / dy;
+			this.m = (x2 - x1) / (double)(y2 - y1);
 			this.C = x1 - this.m * y1;
-
-			double borderS = m*sy + C;
-			leftOrAboveFromLine = (sx < borderS);
+			this.leftOrAboveFromLine = (sx < m*sy + C);
 		}
 	}
 
-	public void moveToY(double y) {
+	public void moveToY(int y) {
 		if(horizontal) {
 			cachedValue = (leftOrAboveFromLine ? y <= borderY : y >= borderY);
 		} else if(vertical) {
 			// nothing
 		} else {
-			int yy = (int)y;
-			if(cachedLastY + 1 == yy) {
+			if(cachedLastY == y - 1) {
 				borderX += m;
+				cachedLastY++;
 			} else {
 				borderX = y*m + C;
+				cachedLastY = y;
 			}
-			cachedLastY = yy;
 		}
 	}
 
-	public boolean isOnTheSameSideAsReferenceValue(double x) {
+	public boolean isOnTheSameSideAsReferenceValue(int x) {
 		if(horizontal) {
 			return cachedValue;
 		} else { // generic + vertical

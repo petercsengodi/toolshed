@@ -69,53 +69,6 @@ public class MultipleTriangles implements ImageChromosomeReceiver {
 		}
 	}
 
-	@Override
-	public void draw(int[] buffer, int width, int height, int clearR, int clearG, int clearB) {
-		// 1. initialize checkers
-		for(int i = 0; i < capacity; i++) {
-			SingleTriangle triangle = triangles[i];
-			int[] x = triangle.x;
-			int[] y = triangle.y;
-			checkers[i].loadTriangle(x[0], y[0], x[1], y[1], x[2], y[2]);
-		}
-
-		SingleTriangle t;
-		int colorPosition = 0, r, g, b;
-
-		// 2. iterate through pixels
-		for(int x = 0; x < width; x++) {
-			for(int y = 0; y < height; y++) {
-
-				r = clearR;
-				g = clearG;
-				b = clearB;
-
-				// 3. iterate through triangles backwards
-				for(int i = capacity-1; i >= 0; i--) {
-
-					// 4. if pixel is contained by current triangle, we set this color
-					// (if not contained by any, "clear color" remains)
-
-					if (checkers[i].inside(x, y)) {
-						t = triangles[i];
-						r = t.r;
-						g = t.g;
-						b = t.b;
-						break;
-					}
-
-				} // end 3.
-
-				// 5. we paint the pixel
-				// (because all pixels will be colored _somehow_, no previous clearing is needed)
-				buffer[colorPosition++] = r;
-				buffer[colorPosition++] = g;
-				buffer[colorPosition++] = b;
-			}
-
-		} // end 2.
-	}
-
 	public int getCapacity() {
 		return capacity;
 	}

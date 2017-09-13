@@ -12,8 +12,9 @@ import hu.csega.genetic.framework.PopulationKey;
 import hu.csega.image.common.ImageDistanceFromOptimum;
 import hu.csega.image.common.ImageEffectService;
 import hu.csega.image.common.ImageEffectServiceImpl;
+import hu.csega.image.common.PrototypeToArrayConverter;
 import hu.csega.image.triangles.MultipleTriangles;
-import hu.csega.image.triangles.MultipleTrianglesArrayConverter;
+import hu.csega.image.triangles.MultipleTrianglesArrayConverter2;
 import hu.csega.image.triangles.ShowTriangles;
 import hu.csega.image.triangles.TriangleChromosomeRandomizer;
 import hu.csega.image.triangles.TriangleTestImages;
@@ -44,10 +45,12 @@ public class GenerateTriangles {
 		int[] buffer = new int[BUFFER_CAPACITY];
 		MultipleTriangles triangles = new MultipleTriangles(NUMBER_OF_TRIANGLES);
 
-		MultipleTrianglesArrayConverter converter = new MultipleTrianglesArrayConverter(buffer, WIDTH, HEIGHT, CLEAR_COLOR.getRed(), CLEAR_COLOR.getGreen(), CLEAR_COLOR.getBlue());
+		// PrototypeToArrayConverter converter = new MultipleTrianglesArrayConverter1(buffer, WIDTH, HEIGHT, CLEAR_COLOR.getRed(), CLEAR_COLOR.getGreen(), CLEAR_COLOR.getBlue());
 
-		//		BufferedImage bufferImage = service.createNewImage(WIDTH, HEIGHT);
-		//		MultipleTrianglesImageConverter converter = new MultipleTrianglesImageConverter(buffer, bufferImage, CLEAR_COLOR, service);
+		PrototypeToArrayConverter converter = new MultipleTrianglesArrayConverter2(buffer, WIDTH, HEIGHT, CLEAR_COLOR.getRed(), CLEAR_COLOR.getGreen(), CLEAR_COLOR.getBlue());
+
+		// BufferedImage bufferImage = service.createNewImage(WIDTH, HEIGHT);
+		// MultipleTrianglesImageConverter converter = new MultipleTrianglesImageConverter(buffer, bufferImage, CLEAR_COLOR, service);
 
 		ImageDistanceFromOptimum distance = new ImageDistanceFromOptimum(referenceImageData, WIDTH, HEIGHT, triangles, converter, IMAGE);
 

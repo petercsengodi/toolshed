@@ -101,7 +101,7 @@ public class EquationTest {
 				}
 
 				result = EQUATION.calculate(TEST_DATA[i].variables);
-				if(Double.isFinite(result) && !Double.isNaN(result)) {
+				if(!Double.isInfinite(result) && !Double.isNaN(result)) {
 					diff = val - result;
 					if(diff > 1000)
 						diff = 1000;

@@ -88,9 +88,4 @@ public class MultipleCubes implements ImageChromosomeReceiver {
 		}
 	}
 
-	@Override
-	public void draw(int[] buffer, int width, int height, int clearR, int clearG, int clearB) {
-		throw new UnsupportedOperationException("draw into int[]");
-	}
-
 }
