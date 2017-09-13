@@ -12,40 +12,51 @@ public class TriangleCheckerPerformanceTest {
 	private static final long NUMBER_OF_OPERATIONS = NUMBER_OF_TRIANGLES * NUMBER_OF_CYCLES;
 
 	public static void main(String[] args) {
-		System.out.println("Memory: " + Runtime.getRuntime().freeMemory());
-
 		TriangleChecker t1 = new TriangleChecker1Impl();
 		TriangleChecker t2 = new TriangleChecker2Impl();
 		TriangleChecker t3 = new TriangleChecker3Impl();
 		TriangleChecker t4 = new TriangleChecker4Impl();
 
-		System.out.println("Memory: " + Runtime.getRuntime().freeMemory());
-
-		measure(t4);
-		measure(t4);
-		measure(t4);
-		measure(t4);
-		measure(t3);
-		measure(t2);
-		measure(t1);
-		measure(t4);
-		measure(t3);
-		measure(t2);
-		measure(t1);
+		measure("4th implementation", t4);
+		measure("4th implementation", t4);
+		measure("4th implementation", t4);
+		measure("4th implementation", t4);
+		measure("4th implementation", t4);
+		measure("4th implementation", t4);
+		measure("4th implementation", t4);
+		measure("4th implementation", t4);
+		measure("4th implementation", t4);
+		measure("4th implementation", t4);
+		measure("4th implementation", t4);
+		measure("4th implementation", t4);
+		measure("4th implementation", t4);
+		measure("1st implementation", t1);
+		measure("2nd implementation", t2);
+		measure("3rd implementation", t3);
+		measure("4th implementation", t4);
+		measure("4th implementation", t4);
+		measure("4th implementation", t4);
+		measure("4th implementation", t4);
+		measure("4th implementation", t4);
+		measure("4th implementation", t4);
+		measure("4th implementation", t4);
+		measure("4th implementation", t4);
+		measure("4th implementation", t4);
+		measure("4th implementation", t4);
+		measure("4th implementation", t4);
+		measure("4th implementation", t4);
+		measure("4th implementation", t4);
 	}
 
-	private static void measure(TriangleChecker tc) {
-		long start1, start2, end1, end2, i, j, x, y;
+	private static void measure(String label, TriangleChecker tc) {
+		long start, end, i, j, x, y;
+
 		for(j = 0; j < NUMBER_OF_ROUNDS; j++) {
-			start1 = System.currentTimeMillis();
+			start = System.currentTimeMillis();
 
 			for(i = 0; i < NUMBER_OF_OPERATIONS * 10_000; i++) {
 				tc.loadTriangle(-10, -10, 0, 10, 10, -10);
 			}
-
-			end1 = System.currentTimeMillis();
-
-			start2 = System.currentTimeMillis();
 
 			for(i = 0; i < NUMBER_OF_OPERATIONS; i++) {
 				for(y = 0; y < PICTURE_HEIGHT; y++) {
@@ -61,10 +72,8 @@ public class TriangleCheckerPerformanceTest {
 				}
 			}
 
-			end2 = System.currentTimeMillis();
-
-			System.out.println(tc.getClass().getSimpleName() + " (" + j + ") – Loading phase: " + diff(start1, end1) + " Calculation phase: " + diff(start2, end2));
-			System.out.println("Memory: " + Runtime.getRuntime().freeMemory());
+			end = System.currentTimeMillis();
+			System.out.println(label + ": " + diff(start, end));
 		}
 	}
 

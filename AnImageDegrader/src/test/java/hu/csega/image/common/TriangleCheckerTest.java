@@ -64,6 +64,22 @@ public class TriangleCheckerTest {
 		assertEquals(false, inside(tc, 0, -15));
 	}
 
+	@Test
+	public void test4Impl() {
+		TriangleChecker tc = new TriangleChecker4Impl();
+		assertEquals(false, inside(tc, 1, 5));
+
+		tc.loadTriangle(-10, -10, 0, 10, 10, -10);
+		assertEquals(true, inside(tc, 0, 0));
+		assertEquals(true, inside(tc, 1, 1));
+		assertEquals(true, inside(tc, -1, -1));
+		assertEquals(false, inside(tc, -10, 0));
+		assertEquals(false, inside(tc, 10, 0));
+		assertEquals(true, inside(tc, 0, -5));
+		assertEquals(true, inside(tc, 0, -10)); // !!!
+		assertEquals(false, inside(tc, 0, -15));
+	}
+
 	private boolean inside(TriangleChecker tc, int x, int y) {
 		tc.moveToY(y);
 		return tc.inside(x);
