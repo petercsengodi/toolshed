@@ -33,10 +33,7 @@ public class ImageDistanceFromOptimum implements DistanceFromOptimum {
 		}
 
 		prototype.fillFromChromosome(chromosome);
-
-		long now = System.currentTimeMillis();
 		int[] tmp = converter.convert(prototype);
-		System.out.println("Converting: " + ((System.currentTimeMillis() - now) / 1000.0) + " secs.");
 
 		int x = 0, y = 0, c = 0, e, m;
 		long sum = 0;
