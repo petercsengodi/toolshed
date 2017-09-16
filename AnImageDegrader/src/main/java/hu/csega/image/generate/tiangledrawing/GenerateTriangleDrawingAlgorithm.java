@@ -14,9 +14,8 @@ public class GenerateTriangleDrawingAlgorithm {
 	private static final int PIECES_IN_A_BLOCK = 30;
 	private static final int NUMBER_OF_BLOCKS = 10;
 	private static final int NUMBER_OF_TRIANGLES = NUMBER_OF_BLOCKS * PIECES_IN_A_BLOCK; // 300
-	private static final String GENERATED_JAVA_DRAWER = "/AnImageDegrader/src/main/java/hu/csega/image/triangles/GeneratedTriangleDrawer.java";
-	private static final String GENERATED_JAVA_LOADER = "/AnImageDegrader/src/main/java/hu/csega/image/triangles/GeneratedTriangleLoader.java";
-	private static final String GENERATED_CPP_DRAWER = "/AlgorithmsInCpp/src/GeneratedTriangleDrawer.cpp";
+	private static final String GENERATED_JAVA_DRAWER = "/AnImageDegrader/src/main/java/hu/csega/image/triangles/GeneratedTrianglejava";
+	private static final String GENERATED_CPP_DRAWER = "/AlgorithmsInCpp/src/GeneratedTrianglecpp";
 	
 	private static final Charset CHARSET;
 	
@@ -136,17 +135,6 @@ public class GenerateTriangleDrawingAlgorithm {
 		GenerateTriangleDrawingAlgorithm.writer = null;
 		System.out.println("Generated: " + filename);
 		
-		filename = rootPath + GENERATED_JAVA_LOADER;
-		try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(rootPath + GENERATED_JAVA_LOADER), CHARSET)) {
-			GenerateTriangleDrawingAlgorithm.writer = writer;
-			generateJavaLoader();
-		} catch(Throwable t) {
-			t.printStackTrace();
-		}
-		
-		GenerateTriangleDrawingAlgorithm.writer = null; 
-		System.out.println("Generated: " + filename);
-
 		filename = rootPath + GENERATED_CPP_DRAWER;
 		try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(rootPath + GENERATED_CPP_DRAWER), CHARSET)) {
 			GenerateTriangleDrawingAlgorithm.writer = writer;
@@ -195,18 +183,9 @@ public class GenerateTriangleDrawingAlgorithm {
 		println("public class GeneratedTriangleDrawer {");
 	
 		int TAB = 1;
-
-		println();
-		println(TAB, "private GeneratedTriangleLoader loader;");
-
-		println();
-		println(TAB, "public GeneratedTriangleDrawer() {");
-		println(TAB+1, "loader = new GeneratedTriangleLoader();");
-		println(TAB+1, "loader.drawer = this;");
-		println(TAB, "}");
 		
 		println();
-		println(TAB, "int offset = 0, r, g, b, x, y;");
+		println(TAB, "int r, g, b, x, y;");
 		
 		for(int i = 0; i < NUMBER_OF_TRIANGLES; i++) {
 			println();
@@ -221,7 +200,107 @@ public class GenerateTriangleDrawingAlgorithm {
 			println(TAB, "int T$1_r, T$1_g, T$1_b, T$1_lc1_lastY = Integer.MIN_VALUE, T$1_lc2_lastY = Integer.MIN_VALUE, T$1_lc3_lastY = Integer.MIN_VALUE;", i);
 		}
 
+
+		println();
+		println(TAB, "public void loadTriangles(SingleTriangle[] triangles) {");
+		for(int j = 0; j < NUMBER_OF_BLOCKS; j++) {
+			println(TAB+1, "loadTriangles$1(triangles);", j+1);
+		}
+		println(TAB, "}");
+
 		int block = 0;
+
+		for(int i = 0; i < NUMBER_OF_TRIANGLES; i++) {
+			
+			if(i % PIECES_IN_A_BLOCK == 0) {
+		 		println();
+		 		block++;
+				println(TAB, "public void loadTriangles$1(SingleTriangle[] triangles) {", block);
+				TAB++;
+				println(TAB, "int x1, y1, x2, y2, x3, y3;");
+				println(TAB, "SingleTriangle t;");
+			}
+			
+			println();
+			println(TAB, "t = triangles[$1]; x1 = t.x[0]; x2 = t.x[1]; x3 = t.x[2]; y1 = t.y[0]; y2 = t.y[1]; y3 = t.y[2]; T$1_r = t.r; T$1_g = t.g; T$1_b = t.b;", i);
+			println();
+			println(TAB, "if((x1 == x2 && y1 == y2) || (x1 == x3 && y1 == y3) || (x3 == x2 && y3 == y2)) {", i);
+			println(TAB+1, "T$1_initializedWithValidData = false;", i);
+			println(TAB, "} else {", i); TAB++;
+			println();
+			println(TAB, "T$1_sx = (x1 + x2 + x3) / 3.0;", i);
+			println(TAB, "T$1_sy = (y1 + y2 + y3) / 3.0;", i);
+			println();
+			println(TAB, "if(y1 == y2) {", i);
+			println(TAB+1, "T$1_lc1_horizontal = true;", i);
+			println(TAB+1, "T$1_lc1_vertical = false;", i);
+			println(TAB+1, "T$1_lc1_borderY = y1;", i);
+			println(TAB+1, "T$1_lc1_leftOrAbove = (T$1_sy <= y1);", i);
+			println(TAB, "} else if(x1 == x2) {", i);
+			println(TAB+1, "T$1_lc1_horizontal = false;", i);
+			println(TAB+1, "T$1_lc1_vertical = true;", i);
+			println(TAB+1, "T$1_lc1_borderX = x1;", i);
+			println(TAB+1, "T$1_lc1_leftOrAbove = (T$1_sx <= x1);", i);
+			println(TAB, "} else {", i);
+			println(TAB+1, "T$1_lc1_horizontal = false;", i);
+			println(TAB+1, "T$1_lc1_vertical = false;", i);
+			println(TAB+1, "T$1_lc1_m = (x2 - x1) / (double)(y2 - y1);", i);
+			println(TAB+1, "T$1_lc1_C = x1 - T$1_lc1_m * y1;", i);
+			println(TAB+1, "T$1_lc1_leftOrAbove = (T$1_sx < T$1_lc1_m*T$1_sy + T$1_lc1_C);", i);
+			println(TAB, "}", i);
+			println();
+			println(TAB, "if(y2 == y3) {", i);
+			println(TAB+1, "T$1_lc2_horizontal = true;", i);
+			println(TAB+1, "T$1_lc2_vertical = false;", i);
+			println(TAB+1, "T$1_lc2_borderY = y2;", i);
+			println(TAB+1, "T$1_lc2_leftOrAbove = (T$1_sy <= y2);", i);
+			println(TAB, "} else if(x2 == x3) {", i);
+			println(TAB+1, "T$1_lc2_horizontal = false;", i);
+			println(TAB+1, "T$1_lc2_vertical = true;", i);
+			println(TAB+1, "T$1_lc2_borderX = x2;", i);
+			println(TAB+1, "T$1_lc2_leftOrAbove = (T$1_sx <= x2);", i);
+			println(TAB, "} else {", i);
+			println(TAB+1, "T$1_lc2_horizontal = false;", i);
+			println(TAB+1, "T$1_lc2_vertical = false;", i);
+			println(TAB+1, "T$1_lc2_m = (x3 - x2) / (double)(y3 - y2);", i);
+			println(TAB+1, "T$1_lc2_C = x2 - T$1_lc2_m * y2;", i);
+			println(TAB+1, "T$1_lc2_leftOrAbove = (T$1_sx < T$1_lc2_m*T$1_sy + T$1_lc2_C);", i);
+			println(TAB, "}", i);
+			println();
+			println(TAB, "if(y3 == y1) {", i);
+			println(TAB+1, "T$1_lc3_horizontal = true;", i);
+			println(TAB+1, "T$1_lc3_vertical = false;", i);
+			println(TAB+1, "T$1_lc3_borderY = y3;", i);
+			println(TAB+1, "T$1_lc3_leftOrAbove = (T$1_sy <= y3);", i);
+			println(TAB, "} else if(x3 == x1) {", i);
+			println(TAB+1, "T$1_lc3_horizontal = false;", i);
+			println(TAB+1, "T$1_lc3_vertical = true;", i);
+			println(TAB+1, "T$1_lc3_borderX = x3;", i);
+			println(TAB+1, "T$1_lc3_leftOrAbove = (T$1_sx <= x3);", i);
+			println(TAB, "} else {", i);
+			println(TAB+1, "T$1_lc3_horizontal = false;", i);
+			println(TAB+1, "T$1_lc3_vertical = false;", i);
+			println(TAB+1, "T$1_lc3_m = (x1 - x3) / (double)(y1 - y3);", i);
+			println(TAB+1, "T$1_lc3_C = x3 - T$1_lc3_m * y3;", i);
+			println(TAB+1, "T$1_lc3_leftOrAbove = (T$1_sx < T$1_lc3_m*T$1_sy + T$1_lc3_C);", i);
+			println(TAB, "}", i);
+			println();
+			println(TAB, "T$1_minx = Math.min(Math.min(x1, x2), x3);", i);
+			println(TAB, "T$1_miny = Math.min(Math.min(y1, y2), y3);", i);
+			println(TAB, "T$1_maxx = Math.max(Math.max(x1, x2), x3);", i);
+			println(TAB, "T$1_maxy = Math.max(Math.max(y1, y2), y3);", i);
+			println();
+			println(TAB, "T$1_initializedWithValidData = true;", i);
+			TAB--; println(TAB, "}", i);
+
+			if((i+1) % PIECES_IN_A_BLOCK == 0) {
+				TAB--;
+				println(TAB, "}"); // end of loadTriangles
+			}
+			
+		}
+
+		block = 0;
 
 		println();
 		println(TAB, "public void moveToY(int y) {");
@@ -301,7 +380,7 @@ public class GenerateTriangleDrawingAlgorithm {
 			if((i+1) % PIECES_IN_A_BLOCK == 0) {
 				block++;
 				println();
-				println(TAB, "private boolean drawPart$1() {", block);
+				println(TAB, "private boolean drawPart$1(int x, int y) {", block);
 				TAB++;
 			}
 
@@ -325,9 +404,9 @@ public class GenerateTriangleDrawingAlgorithm {
 		println();
 		println(TAB, "public void draw(int[] rgb, int width, int height, MultipleTriangles mt, int clearR, int clearG, int clearB) {");
 		println(TAB+1, "SingleTriangle[] triangles = mt.triangles;");
-		println(TAB+1, "loader.loadTriangles(triangles);");
+		println(TAB+1, "loadTriangles(triangles);");
 		println();
-		println(TAB+1, "offset = 0;");
+		println(TAB+1, "int offset = 0, x, y;");
 		println(TAB+1, "for(y = 0; y < height; y++) {");
 		println(TAB+2, "moveToY(y);");
 		println();
@@ -336,10 +415,10 @@ public class GenerateTriangleDrawingAlgorithm {
 		
 		for(int j = 0; j < NUMBER_OF_BLOCKS; j++) {
 			if(j == NUMBER_OF_BLOCKS - 1) {
-				println(TAB+3, "drawPart$1();", j+1);
+				println(TAB+3, "drawPart$1(x, y);", j+1);
 				break;
 			}
-			println(TAB+3, "if(!drawPart$1())", j+1);
+			println(TAB+3, "if(!drawPart$1(x, y))", j+1);
 		}
 		
 		println(TAB+3, "rgb[offset++] = r; rgb[offset++] = g; rgb[offset++] = b;");
@@ -349,118 +428,6 @@ public class GenerateTriangleDrawingAlgorithm {
 		println();
 		println(TAB, "}"); // end if draw
 
-		
-		println("}");
-	}
-
-	private static void generateJavaLoader() {
-		println("package hu.csega.image.triangles;");
-		println();
-		println("public class GeneratedTriangleLoader {");
-	
-		int TAB = 1;
-		
-		println();
-		println(TAB, "GeneratedTriangleDrawer drawer;");
-
-		println();
-		println(TAB, "public void loadTriangles(SingleTriangle[] triangles) {");
-		for(int j = 0; j < NUMBER_OF_BLOCKS; j++) {
-			println(TAB+1, "loadTriangles$1(triangles);", j+1);
-		}
-		println(TAB, "}");
-
-		int block = 0;
-
-		for(int i = 0; i < NUMBER_OF_TRIANGLES; i++) {
-			
-			if(i % PIECES_IN_A_BLOCK == 0) {
-		 		println();
-		 		block++;
-				println(TAB, "public void loadTriangles$1(SingleTriangle[] triangles) {", block);
-				TAB++;
-				println(TAB, "int x1, y1, x2, y2, x3, y3;");
-				println(TAB, "SingleTriangle t;");
-			}
-			
-			println();
-			println(TAB, "t = triangles[$1]; x1 = t.x[0]; x2 = t.x[1]; x3 = t.x[2]; y1 = t.y[0]; y2 = t.y[1]; y3 = t.y[2]; drawer.T$1_r = t.r; drawer.T$1_g = t.g; drawer.T$1_b = t.b;", i);
-			println();
-			println(TAB, "if((x1 == x2 && y1 == y2) || (x1 == x3 && y1 == y3) || (x3 == x2 && y3 == y2)) {", i);
-			println(TAB+1, "drawer.T$1_initializedWithValidData = false;", i);
-			println(TAB, "} else {", i); TAB++;
-			println();
-			println(TAB, "drawer.T$1_sx = (x1 + x2 + x3) / 3.0;", i);
-			println(TAB, "drawer.T$1_sy = (y1 + y2 + y3) / 3.0;", i);
-			println();
-			println(TAB, "if(y1 == y2) {", i);
-			println(TAB+1, "drawer.T$1_lc1_horizontal = true;", i);
-			println(TAB+1, "drawer.T$1_lc1_vertical = false;", i);
-			println(TAB+1, "drawer.T$1_lc1_borderY = y1;", i);
-			println(TAB+1, "drawer.T$1_lc1_leftOrAbove = (drawer.T$1_sy <= y1);", i);
-			println(TAB, "} else if(x1 == x2) {", i);
-			println(TAB+1, "drawer.T$1_lc1_horizontal = false;", i);
-			println(TAB+1, "drawer.T$1_lc1_vertical = true;", i);
-			println(TAB+1, "drawer.T$1_lc1_borderX = x1;", i);
-			println(TAB+1, "drawer.T$1_lc1_leftOrAbove = (drawer.T$1_sx <= x1);", i);
-			println(TAB, "} else {", i);
-			println(TAB+1, "drawer.T$1_lc1_horizontal = false;", i);
-			println(TAB+1, "drawer.T$1_lc1_vertical = false;", i);
-			println(TAB+1, "drawer.T$1_lc1_m = (x2 - x1) / (double)(y2 - y1);", i);
-			println(TAB+1, "drawer.T$1_lc1_C = x1 - drawer.T$1_lc1_m * y1;", i);
-			println(TAB+1, "drawer.T$1_lc1_leftOrAbove = (drawer.T$1_sx < drawer.T$1_lc1_m*drawer.T$1_sy + drawer.T$1_lc1_C);", i);
-			println(TAB, "}", i);
-			println();
-			println(TAB, "if(y2 == y3) {", i);
-			println(TAB+1, "drawer.T$1_lc2_horizontal = true;", i);
-			println(TAB+1, "drawer.T$1_lc2_vertical = false;", i);
-			println(TAB+1, "drawer.T$1_lc2_borderY = y2;", i);
-			println(TAB+1, "drawer.T$1_lc2_leftOrAbove = (drawer.T$1_sy <= y2);", i);
-			println(TAB, "} else if(x2 == x3) {", i);
-			println(TAB+1, "drawer.T$1_lc2_horizontal = false;", i);
-			println(TAB+1, "drawer.T$1_lc2_vertical = true;", i);
-			println(TAB+1, "drawer.T$1_lc2_borderX = x2;", i);
-			println(TAB+1, "drawer.T$1_lc2_leftOrAbove = (drawer.T$1_sx <= x2);", i);
-			println(TAB, "} else {", i);
-			println(TAB+1, "drawer.T$1_lc2_horizontal = false;", i);
-			println(TAB+1, "drawer.T$1_lc2_vertical = false;", i);
-			println(TAB+1, "drawer.T$1_lc2_m = (x3 - x2) / (double)(y3 - y2);", i);
-			println(TAB+1, "drawer.T$1_lc2_C = x2 - drawer.T$1_lc2_m * y2;", i);
-			println(TAB+1, "drawer.T$1_lc2_leftOrAbove = (drawer.T$1_sx < drawer.T$1_lc2_m*drawer.T$1_sy + drawer.T$1_lc2_C);", i);
-			println(TAB, "}", i);
-			println();
-			println(TAB, "if(y3 == y1) {", i);
-			println(TAB+1, "drawer.T$1_lc3_horizontal = true;", i);
-			println(TAB+1, "drawer.T$1_lc3_vertical = false;", i);
-			println(TAB+1, "drawer.T$1_lc3_borderY = y3;", i);
-			println(TAB+1, "drawer.T$1_lc3_leftOrAbove = (drawer.T$1_sy <= y3);", i);
-			println(TAB, "} else if(x3 == x1) {", i);
-			println(TAB+1, "drawer.T$1_lc3_horizontal = false;", i);
-			println(TAB+1, "drawer.T$1_lc3_vertical = true;", i);
-			println(TAB+1, "drawer.T$1_lc3_borderX = x3;", i);
-			println(TAB+1, "drawer.T$1_lc3_leftOrAbove = (drawer.T$1_sx <= x3);", i);
-			println(TAB, "} else {", i);
-			println(TAB+1, "drawer.T$1_lc3_horizontal = false;", i);
-			println(TAB+1, "drawer.T$1_lc3_vertical = false;", i);
-			println(TAB+1, "drawer.T$1_lc3_m = (x1 - x3) / (double)(y1 - y3);", i);
-			println(TAB+1, "drawer.T$1_lc3_C = x3 - drawer.T$1_lc3_m * y3;", i);
-			println(TAB+1, "drawer.T$1_lc3_leftOrAbove = (drawer.T$1_sx < drawer.T$1_lc3_m*drawer.T$1_sy + drawer.T$1_lc3_C);", i);
-			println(TAB, "}", i);
-			println();
-			println(TAB, "drawer.T$1_minx = Math.min(Math.min(x1, x2), x3);", i);
-			println(TAB, "drawer.T$1_miny = Math.min(Math.min(y1, y2), y3);", i);
-			println(TAB, "drawer.T$1_maxx = Math.max(Math.max(x1, x2), x3);", i);
-			println(TAB, "drawer.T$1_maxy = Math.max(Math.max(y1, y2), y3);", i);
-			println();
-			println(TAB, "drawer.T$1_initializedWithValidData = true;", i);
-			TAB--; println(TAB, "}", i);
-
-			if((i+1) % PIECES_IN_A_BLOCK == 0) {
-				TAB--;
-				println(TAB, "}"); // end of loadTriangles
-			}
-			
-		}
 		
 		println("}");
 	}
