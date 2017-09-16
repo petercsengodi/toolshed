@@ -1,0 +1,2 @@
+.dat: serialized population data
+.csv: decreasing of the error function's value by time

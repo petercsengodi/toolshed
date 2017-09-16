@@ -1,7 +1,8 @@
 */bin
 */target
 AnImageDegrader/tmp
-AnImageDegrader/output
+AnImageDegrader/output/*.dat
+AnImageDegrader/output/*.csv
 BLooper/loops/*.wav
 BLooper/loops/properties.ini
 
