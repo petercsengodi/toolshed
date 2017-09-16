@@ -28,8 +28,8 @@ public class GenerateTriangles {
 	public static final int HEIGHT = IMAGE.getHeight();
 	public static final int BUFFER_CAPACITY = WIDTH * HEIGHT * 3;
 	public static final String FILE = IMAGE.getImageFile();
-	public static final String POPULATION_FILE = "/tmp/" + IMAGE.getPopulationFile() + ".dat";
-	public static final String LOG_FILE = "/tmp/" + IMAGE.getPopulationFile() + ".csv";
+	public static final String POPULATION_FILE = "output/" + IMAGE.getPopulationFile() + ".dat";
+	public static final String LOG_FILE = "output/" + IMAGE.getPopulationFile() + ".csv";
 
 	public static final int NUMBER_OF_TRIANGLES = 300;
 	public static final int SCALE = 30;

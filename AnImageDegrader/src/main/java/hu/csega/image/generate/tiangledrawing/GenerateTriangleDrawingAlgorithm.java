@@ -14,7 +14,7 @@ public class GenerateTriangleDrawingAlgorithm {
 	private static final int PIECES_IN_A_BLOCK = 30;
 	private static final int NUMBER_OF_BLOCKS = 10;
 	private static final int NUMBER_OF_TRIANGLES = NUMBER_OF_BLOCKS * PIECES_IN_A_BLOCK; // 300
-	private static final String GENERATED_JAVA_DRAWER = "/AnImageDegrader/src/main/java/hu/csega/image/triangles/GeneratedTrianglejava";
+	private static final String GENERATED_JAVA_DRAWER = "/AnImageDegrader/src/main/java/hu/csega/image/triangles/GeneratedTriangleDrawer.java";
 	private static final String GENERATED_CPP_DRAWER = "/AlgorithmsInCpp/src/GeneratedTrianglecpp";
 	
 	private static final Charset CHARSET;

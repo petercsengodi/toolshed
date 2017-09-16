@@ -1,6 +1,7 @@
 */bin
 */target
 AnImageDegrader/tmp
+AnImageDegrader/output
 BLooper/loops/*.wav
 BLooper/loops/properties.ini
 
