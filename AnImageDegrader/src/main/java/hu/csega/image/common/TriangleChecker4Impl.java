@@ -2,7 +2,7 @@ package hu.csega.image.common;
 
 public class TriangleChecker4Impl implements TriangleChecker {
 
-	private boolean initializedWithValidData = false;
+	private boolean initializedWithValidData = false, okay = false;
 	private double sx, sy, minx, miny, maxx, maxy;
 
 	private boolean lc1_horizontal, lc1_vertical, lc1_leftOrAboveFromLine, lc1_cachedValue;
@@ -105,6 +105,12 @@ public class TriangleChecker4Impl implements TriangleChecker {
 	@Override
 	public void moveToY(int y) {
 		if(initializedWithValidData) {
+			if(y < miny || y > maxy) {
+				okay = false;
+				return;
+			}
+			
+			okay = true;
 			if(lc1_horizontal) {
 				lc1_cachedValue = (lc1_leftOrAboveFromLine ? y <= lc1_borderY : y >= lc1_borderY);
 			} else if(lc1_vertical) {
@@ -149,7 +155,7 @@ public class TriangleChecker4Impl implements TriangleChecker {
 
 	@Override
 	public boolean inside(int x) {
-		return (initializedWithValidData &&
+		return (okay &&
 				(lc1_horizontal ? lc1_cachedValue : (lc1_leftOrAboveFromLine ? x <= lc1_borderX : x >= lc1_borderX)) &&
 				(lc2_horizontal ? lc2_cachedValue : (lc2_leftOrAboveFromLine ? x <= lc2_borderX : x >= lc2_borderX)) &&
 				(lc3_horizontal ? lc3_cachedValue : (lc3_leftOrAboveFromLine ? x <= lc3_borderX : x >= lc3_borderX))
