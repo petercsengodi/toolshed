@@ -2,7 +2,6 @@ package hu.csega.image.triangles;
 
 import hu.csega.image.common.ImageChromosomeReceiver;
 import hu.csega.image.common.PrototypeToArrayConverter;
-import hu.csega.image.common.TriangleChecker;
 
 public class MultipleTrianglesArrayConverter3 implements PrototypeToArrayConverter {
 
@@ -13,8 +12,6 @@ public class MultipleTrianglesArrayConverter3 implements PrototypeToArrayConvert
 	private int clearG;
 	private int clearB;
 	
-	private GeneratedTriangleDrawer drawer = new GeneratedTriangleDrawer();
-
 	public MultipleTrianglesArrayConverter3(int[] buffer, int width, int height, int clearR, int clearG, int clearB) {
 		this.buffer = buffer;
 		this.width = width;
@@ -27,7 +24,7 @@ public class MultipleTrianglesArrayConverter3 implements PrototypeToArrayConvert
 	@Override
 	public int[] convert(ImageChromosomeReceiver receiver) {
 		MultipleTriangles mt = (MultipleTriangles)receiver;
-		drawer.draw(buffer, width, height, mt, clearR, clearG, clearB);		
+		GeneratedTriangleDrawer.draw(buffer, width, height, mt, clearR, clearG, clearB);		
 		return buffer;
 	}
 

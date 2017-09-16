@@ -6,9 +6,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 
-import hu.csega.image.triangles.MultipleTriangles;
-import hu.csega.image.triangles.SingleTriangle;
-
 public class GenerateTriangleDrawingAlgorithm {
 
 	private static final int PIECES_IN_A_BLOCK = 30;
@@ -185,24 +182,24 @@ public class GenerateTriangleDrawingAlgorithm {
 		int TAB = 1;
 		
 		println();
-		println(TAB, "int r, g, b, x, y;");
+		println(TAB, "static int r, g, b, x, y, offset;");
 		
 		for(int i = 0; i < NUMBER_OF_TRIANGLES; i++) {
 			println();
-			println(TAB, "boolean T$1_initializedWithValidData = false, T$1_okay = false;", i);
-			println(TAB, "double T$1_sx, T$1_sy, T$1_minx, T$1_miny, T$1_maxx, T$1_maxy;", i);
-			println(TAB, "boolean T$1_lc1_horizontal, T$1_lc1_vertical, T$1_lc1_leftOrAbove, T$1_lc1_cached;", i);
-			println(TAB, "double T$1_lc1_m, T$1_lc1_C, T$1_lc1_borderX, T$1_lc1_borderY;", i);
-			println(TAB, "boolean T$1_lc2_horizontal, T$1_lc2_vertical, T$1_lc2_leftOrAbove, T$1_lc2_cached;", i);
-			println(TAB, "double T$1_lc2_m, T$1_lc2_C, T$1_lc2_borderX, T$1_lc2_borderY;", i);
-			println(TAB, "boolean T$1_lc3_horizontal, T$1_lc3_vertical, T$1_lc3_leftOrAbove, T$1_lc3_cached;", i);
-			println(TAB, "double T$1_lc3_m, T$1_lc3_C, T$1_lc3_borderX, T$1_lc3_borderY;", i);
-			println(TAB, "int T$1_r, T$1_g, T$1_b, T$1_lc1_lastY = Integer.MIN_VALUE, T$1_lc2_lastY = Integer.MIN_VALUE, T$1_lc3_lastY = Integer.MIN_VALUE;", i);
+			println(TAB, "static boolean T$1_initializedWithValidData = false, T$1_okay = false;", i);
+			println(TAB, "static double T$1_sx, T$1_sy, T$1_minx, T$1_miny, T$1_maxx, T$1_maxy;", i);
+			println(TAB, "static boolean T$1_lc1_horizontal, T$1_lc1_vertical, T$1_lc1_leftOrAbove, T$1_lc1_cached;", i);
+			println(TAB, "static double T$1_lc1_m, T$1_lc1_C, T$1_lc1_borderX, T$1_lc1_borderY;", i);
+			println(TAB, "static boolean T$1_lc2_horizontal, T$1_lc2_vertical, T$1_lc2_leftOrAbove, T$1_lc2_cached;", i);
+			println(TAB, "static double T$1_lc2_m, T$1_lc2_C, T$1_lc2_borderX, T$1_lc2_borderY;", i);
+			println(TAB, "static boolean T$1_lc3_horizontal, T$1_lc3_vertical, T$1_lc3_leftOrAbove, T$1_lc3_cached;", i);
+			println(TAB, "static double T$1_lc3_m, T$1_lc3_C, T$1_lc3_borderX, T$1_lc3_borderY;", i);
+			println(TAB, "static int T$1_r, T$1_g, T$1_b, T$1_lc1_lastY = Integer.MIN_VALUE, T$1_lc2_lastY = Integer.MIN_VALUE, T$1_lc3_lastY = Integer.MIN_VALUE;", i);
 		}
 
 
 		println();
-		println(TAB, "public void loadTriangles(SingleTriangle[] triangles) {");
+		println(TAB, "public static void loadTriangles(SingleTriangle[] triangles) {");
 		for(int j = 0; j < NUMBER_OF_BLOCKS; j++) {
 			println(TAB+1, "loadTriangles$1(triangles);", j+1);
 		}
@@ -215,7 +212,7 @@ public class GenerateTriangleDrawingAlgorithm {
 			if(i % PIECES_IN_A_BLOCK == 0) {
 		 		println();
 		 		block++;
-				println(TAB, "public void loadTriangles$1(SingleTriangle[] triangles) {", block);
+				println(TAB, "private static void loadTriangles$1(SingleTriangle[] triangles) {", block);
 				TAB++;
 				println(TAB, "int x1, y1, x2, y2, x3, y3;");
 				println(TAB, "SingleTriangle t;");
@@ -303,9 +300,9 @@ public class GenerateTriangleDrawingAlgorithm {
 		block = 0;
 
 		println();
-		println(TAB, "public void moveToY(int y) {");
+		println(TAB, "private static final void moveToY() {");
 		for(int j = 0; j < NUMBER_OF_BLOCKS; j++) {
-			println(TAB+1, "moveToY$1(y);", j+1);
+			println(TAB+1, "moveToY$1();", j+1);
 		}
 		println(TAB, "}");
 
@@ -314,7 +311,7 @@ public class GenerateTriangleDrawingAlgorithm {
 			if(i % PIECES_IN_A_BLOCK == 0) {
 		 		println();
 		 		block++;
-				println(TAB, "public void moveToY$1(int y) {", block);
+				println(TAB, "private static final void moveToY$1() {", block);
 				TAB++;
 			}
 			
@@ -380,7 +377,7 @@ public class GenerateTriangleDrawingAlgorithm {
 			if((i+1) % PIECES_IN_A_BLOCK == 0) {
 				block++;
 				println();
-				println(TAB, "private boolean drawPart$1(int x, int y) {", block);
+				println(TAB, "private static final boolean drawPart$1() {", block);
 				TAB++;
 			}
 
@@ -402,23 +399,23 @@ public class GenerateTriangleDrawingAlgorithm {
 
 		
 		println();
-		println(TAB, "public void draw(int[] rgb, int width, int height, MultipleTriangles mt, int clearR, int clearG, int clearB) {");
+		println(TAB, "public static final void draw(int[] rgb, int width, int height, MultipleTriangles mt, int clearR, int clearG, int clearB) {");
 		println(TAB+1, "SingleTriangle[] triangles = mt.triangles;");
 		println(TAB+1, "loadTriangles(triangles);");
 		println();
-		println(TAB+1, "int offset = 0, x, y;");
+		println(TAB+1, "offset = 0;");
 		println(TAB+1, "for(y = 0; y < height; y++) {");
-		println(TAB+2, "moveToY(y);");
+		println(TAB+2, "moveToY();");
 		println();
 		println(TAB+2, "for(x = 0; x < width; x++) {");
 		println(TAB+3, "r = clearR; g = clearG; b = clearB;");
 		
 		for(int j = 0; j < NUMBER_OF_BLOCKS; j++) {
 			if(j == NUMBER_OF_BLOCKS - 1) {
-				println(TAB+3, "drawPart$1(x, y);", j+1);
+				println(TAB+3, "drawPart$1();", j+1);
 				break;
 			}
-			println(TAB+3, "if(!drawPart$1(x, y))", j+1);
+			println(TAB+3, "if(!drawPart$1())", j+1);
 		}
 		
 		println(TAB+3, "rgb[offset++] = r; rgb[offset++] = g; rgb[offset++] = b;");
