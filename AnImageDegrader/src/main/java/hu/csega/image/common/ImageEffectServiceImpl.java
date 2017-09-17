@@ -65,4 +65,10 @@ public class ImageEffectServiceImpl implements ImageEffectService {
 		return new ImageGeneticAlgorithmContainerImpl();
 	}
 
+	@Override
+	public void rgbArrayToImage(int[] result, BufferedImage image) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -20,6 +20,8 @@ public interface ImageEffectService {
 
 	void imageToRGBArray(BufferedImage image, int result[]);
 
+	void rgbArrayToImage(int result[], BufferedImage image);
+
 	ImageGeneticAlgorithmContainer createGeneticAlgorithmContainer();
 
 }
