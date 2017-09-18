@@ -61,14 +61,18 @@ public class ImageEffectServiceImpl implements ImageEffectService {
 	}
 
 	@Override
-	public ImageGeneticAlgorithmContainer createGeneticAlgorithmContainer() {
-		return new ImageGeneticAlgorithmContainerImpl();
+	public void rgbArrayToImage(int[] result, BufferedImage image) {
+		final int[] pixels = ( (DataBufferInt) image.getRaster().getDataBuffer() ).getData();
+
+		int offset = 0;
+		for(int i = 0; i < pixels.length; i++) {
+			pixels[i] = ((result[offset++] & 0xff) << 16) + ((result[offset++] & 0xff) << 8) + (result[offset++] & 0xff);
+		}
 	}
 
 	@Override
-	public void rgbArrayToImage(int[] result, BufferedImage image) {
-		// TODO Auto-generated method stub
-		
+	public ImageGeneticAlgorithmContainer createGeneticAlgorithmContainer() {
+		return new ImageGeneticAlgorithmContainerImpl();
 	}
 
 }

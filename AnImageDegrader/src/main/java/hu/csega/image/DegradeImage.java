@@ -9,18 +9,12 @@ import hu.csega.genetic.framework.Chromosome;
 import hu.csega.genetic.framework.DistanceFromOptimum;
 import hu.csega.genetic.framework.Population;
 import hu.csega.genetic.framework.PopulationKey;
-import hu.csega.image.common.ImageDistanceFromOptimum;
 import hu.csega.image.common.ImageEffectService;
 import hu.csega.image.common.ImageEffectServiceImpl;
 import hu.csega.image.common.MedianDistanceFromOptimum;
-import hu.csega.image.common.PrototypeToArrayConverter;
 import hu.csega.image.degrader.ChromosomeToImageConverter;
 import hu.csega.image.degrader.DegraderTestImages;
-import hu.csega.image.triangles.MultipleTriangles;
-import hu.csega.image.triangles.MultipleTrianglesImageConverter;
-import hu.csega.image.triangles.ShowTriangles;
-import hu.csega.image.triangles.TriangleChromosomeRandomizer;
-import hu.csega.image.triangles.TriangleTestImages;
+import hu.csega.image.degrader.ShowDegrader;
 import hu.csega.toolshed.logging.Logger;
 import hu.csega.toolshed.logging.LoggerFactory;
 
@@ -45,22 +39,21 @@ public class DegradeImage {
 		service.imageToRGBArray(reference, referenceImageData);
 
 		int[] buffer = new int[BUFFER_CAPACITY];
-		ChromosomeToImageConverter converter = new ChromosomeToImageConverter();
+		ChromosomeToImageConverter converter = new ChromosomeToImageConverter(service, buffer);
 		MedianDistanceFromOptimum distance = new MedianDistanceFromOptimum(referenceImageData, WIDTH, HEIGHT, converter, IMAGE);
 
-		Population population = createOrLoadPopulation(POPULATION_FILE, triangles, distance);
+		Population population = createOrLoadPopulation(POPULATION_FILE, converter, distance);
 
-		ShowTriangles frame = new ShowTriangles();
+		ShowDegrader frame = new ShowDegrader(IMAGE);
 		Entry<PopulationKey, Chromosome> firstElement = population.iterator().next();
-		triangles.fillFromChromosome(firstElement.getValue());
-		frame.updateResult(triangles, CLEAR_COLOR);
+		converter.fillFromChromosome(firstElement.getValue());
+		frame.updateResult(converter, CLEAR_COLOR);
 		frame.setPopulation(population);
-		frame.setTriangles(triangles);
-		frame.setRandomizer(randomizer);
+		frame.setPrototype(converter);
 		frame.setVisible(true);
 	}
 
-	private static Population createBrandNewPopulation(MultipleTriangles prototype, DistanceFromOptimum distanceStrategy) {
+	private static Population createBrandNewPopulation(ChromosomeToImageConverter prototype, DistanceFromOptimum distanceStrategy) {
 		byte[] zeros = new byte[prototype.sizeInBytes()];
 		Chromosome adamAndEve = new Chromosome(zeros);
 
@@ -68,7 +61,7 @@ public class DegradeImage {
 		return population;
 	}
 
-	private static Population createOrLoadPopulation(String populationFile, MultipleTriangles prototype, DistanceFromOptimum distanceStrategy) {
+	private static Population createOrLoadPopulation(String populationFile, ChromosomeToImageConverter prototype, DistanceFromOptimum distanceStrategy) {
 		Population population = null;
 
 		File file = new File(populationFile);

@@ -2,19 +2,28 @@ package hu.csega.image.degrader;
 
 import java.awt.Color;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 
 import hu.csega.genetic.framework.Chromosome;
 import hu.csega.image.common.BitPipeline;
 import hu.csega.image.common.ImageChromosomeReceiver;
+import hu.csega.image.common.ImageEffectService;
 
 public class ChromosomeToImageConverter implements ImageChromosomeReceiver {
 
+	private ImageEffectService service;
 	private BitPipeline bp = new BitPipeline();
-	
-	public void convert(int[] buffer, Chromosome chromosome) {
+	private int[] buffer;
+
+	public ChromosomeToImageConverter(ImageEffectService service, int[] buffer) {
+		this.service = service;
+		this.buffer = buffer;
+	}
+
+	public int[] convert(Chromosome chromosome) {
 		int v, offset = 0;
 		byte[] bytes = chromosome.getGenes();
-		
+
 		for(int i = 0; i < bytes.length; i++) {
 			bp.set(bytes[i]);
 			v = bp.readBits(4);
@@ -26,8 +35,10 @@ public class ChromosomeToImageConverter implements ImageChromosomeReceiver {
 			buffer[offset++] = PALETTE[v][1];
 			buffer[offset++] = PALETTE[v][2];
 		}
+
+		return buffer;
 	}
-	
+
 	private static int valueOf(char c) {
 		switch(c) {
 		case '0':
@@ -72,15 +83,15 @@ public class ChromosomeToImageConverter implements ImageChromosomeReceiver {
 			throw new RuntimeException("Undefined character: " + c);
 		}
 	}
-	
+
 	private static void colorOf(int index, String s) {
 		PALETTE[index][0] = valueOf(s.charAt(0)) * 16 + valueOf(s.charAt(1));
 		PALETTE[index][1] = valueOf(s.charAt(2)) * 16 + valueOf(s.charAt(3));
 		PALETTE[index][2] = valueOf(s.charAt(4)) * 16 + valueOf(s.charAt(4));
 	}
-	
+
 	public static final int[][] PALETTE;
-	
+
 	static {
 		PALETTE = new int[16][3];
 		colorOf(0, "000000");
@@ -103,8 +114,7 @@ public class ChromosomeToImageConverter implements ImageChromosomeReceiver {
 
 	@Override
 	public void fillFromChromosome(Chromosome chromosome) {
-		// TODO Auto-generated method stub
-		
+		convert(chromosome);
 	}
 
 	@Override
@@ -114,7 +124,10 @@ public class ChromosomeToImageConverter implements ImageChromosomeReceiver {
 
 	@Override
 	public void draw(Image tmpImage, Color clearColor) {
-		// TODO Auto-generated method stub
-		
+		service.rgbArrayToImage(buffer, (BufferedImage)tmpImage);
+	}
+
+	public int sizeInBytes() {
+		return buffer.length / 6;
 	}
 }
