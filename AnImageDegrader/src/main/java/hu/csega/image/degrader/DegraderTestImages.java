@@ -3,7 +3,7 @@ package hu.csega.image.degrader;
 public enum DegraderTestImages {
 
 	AUTUMN_80("degrade-autumn-80", "res/image/autumn.jpg", 80, 80, 50000),
-	AUTUMN_800("degrade-autumn-800", "res/image/autumn.jpg", 800, 500, 600);
+	AUTUMN_800("degrade-autumn-800", "res/image/autumn.jpg", 800, 500, 2000);
 
 	private final String populationFile;
 	private final String imageFile;

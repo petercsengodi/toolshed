@@ -114,6 +114,8 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 		builder.append("All rounds done: ").append(roundsCounted)
 		.append(" All time spent: ").append(allTimeSpent).append('\n');
 
+		builder.append("Size of population: ").append(chromosomes.size()).append('\n');
+
 		Iterator<Entry<PopulationKey, Chromosome>> it = this.iterator();
 
 		Entry<PopulationKey, Chromosome> bestFitWithKey = it.next();
