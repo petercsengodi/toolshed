@@ -90,6 +90,30 @@ public class ChromosomeToImageConverter implements ImageChromosomeReceiver {
 		PALETTE[index][2] = valueOf(s.charAt(4)) * 16 + valueOf(s.charAt(4));
 	}
 
+	@Override
+	public void fillFromChromosome(Chromosome chromosome) {
+		convert(chromosome);
+	}
+
+	@Override
+	public String printableMessage() {
+		return "";
+	}
+
+	@Override
+	public void draw(Image tmpImage, Color clearColor) {
+		service.rgbArrayToImage(buffer, (BufferedImage)tmpImage);
+	}
+
+	public int sizeInBytes() {
+		return buffer.length / 6;
+	}
+
+	@Override
+	public String toString() {
+		return "16 colored image";
+	}
+
 	public static final int[][] PALETTE;
 
 	static {
@@ -110,24 +134,5 @@ public class ChromosomeToImageConverter implements ImageChromosomeReceiver {
 		colorOf(13, "FF55FF");
 		colorOf(14, "FFFF55");
 		colorOf(15, "FFFFFF");
-	}
-
-	@Override
-	public void fillFromChromosome(Chromosome chromosome) {
-		convert(chromosome);
-	}
-
-	@Override
-	public String printableMessage() {
-		return "";
-	}
-
-	@Override
-	public void draw(Image tmpImage, Color clearColor) {
-		service.rgbArrayToImage(buffer, (BufferedImage)tmpImage);
-	}
-
-	public int sizeInBytes() {
-		return buffer.length / 6;
 	}
 }

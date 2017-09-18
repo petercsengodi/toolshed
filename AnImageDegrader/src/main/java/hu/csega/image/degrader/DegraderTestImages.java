@@ -2,18 +2,21 @@ package hu.csega.image.degrader;
 
 public enum DegraderTestImages {
 
-	AUTUMN_80("degrade-autumn-80", "res/image/autumn.jpg", 80, 80);
+	AUTUMN_80("degrade-autumn-80", "res/image/autumn.jpg", 80, 80, 50000),
+	AUTUMN_800("degrade-autumn-800", "res/image/autumn.jpg", 800, 500, 600);
 
 	private final String populationFile;
 	private final String imageFile;
 	private final int width;
 	private final int height;
+	private final int keepValue;
 
-	private DegraderTestImages(String populationFile, String imageFile, int width, int height) {
+	private DegraderTestImages(String populationFile, String imageFile, int width, int height, int keepValue) {
 		this.populationFile = populationFile;
 		this.imageFile = imageFile;
 		this.width = width;
 		this.height = height;
+		this.keepValue = keepValue;
 	}
 
 	public String getPopulationFile() {
@@ -30,5 +33,9 @@ public enum DegraderTestImages {
 
 	public int getHeight() {
 		return height;
+	}
+
+	public int getKeepValue() {
+		return keepValue;
 	}
 }

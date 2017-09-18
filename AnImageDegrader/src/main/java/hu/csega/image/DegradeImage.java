@@ -20,7 +20,7 @@ import hu.csega.toolshed.logging.LoggerFactory;
 
 public class DegradeImage {
 
-	public static final DegraderTestImages IMAGE = DegraderTestImages.AUTUMN_80;
+	public static final DegraderTestImages IMAGE = DegraderTestImages.AUTUMN_800;
 	public static final int WIDTH = IMAGE.getWidth();
 	public static final int HEIGHT = IMAGE.getHeight();
 	public static final int BUFFER_CAPACITY = WIDTH * HEIGHT * 3;

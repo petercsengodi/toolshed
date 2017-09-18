@@ -61,10 +61,14 @@ public class ShowDegrader extends JFrame implements ActionListener, Runnable {
 	private OutputStreamWriter writer = null;
 	private DateFormat format = null;
 
+	private DegraderTestImages image;
+
 	private Thread thread;
 
 	public ShowDegrader(DegraderTestImages image) {
 		super("Image Degrader");
+
+		this.image = image;
 
 		lastResult = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
 
@@ -163,7 +167,7 @@ public class ShowDegrader extends JFrame implements ActionListener, Runnable {
 			population.crossOver(SCALE, randomCrossOverStrategy);
 			population.initCrossOverStrategy(bestFitCrossOverStrategy);
 			population.crossOver(SCALE, bestFitCrossOverStrategy);
-			population.keep(50_000);
+			population.keep(image.getKeepValue());
 			population.endRound();
 			cycles++;
 

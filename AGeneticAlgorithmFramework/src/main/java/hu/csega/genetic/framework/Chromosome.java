@@ -96,10 +96,19 @@ public class Chromosome implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder("[");
+		int toShow = Math.min(20, genes.length);
+		String tmp;
 
-		for(int i = 0; i < genes.length; i++) {
-			builder.append(' ').append((int)(genes[i]));
+		for(int i = 0; i < toShow; i++) {
+			tmp = Integer.toHexString(genes[i] & 0xff).toUpperCase();
+			builder.append(' ');
+			if(tmp.length() < 2)
+				builder.append('0');
+			builder.append(tmp);
 		}
+
+		if(genes.length > 20)
+			builder.append(" ...");
 
 		return builder.append(" ]").toString();
 	}
