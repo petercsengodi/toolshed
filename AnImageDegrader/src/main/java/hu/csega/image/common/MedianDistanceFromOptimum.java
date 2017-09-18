@@ -30,18 +30,21 @@ public class MedianDistanceFromOptimum implements DistanceFromOptimum {
 
 		for(int y = 0; y < height - 2; y++) {
 			for(int x = 0; x < width - 2; x++) {
-				this.referenceMedian[y*width+x] = (
-						referencePictureData[y*width+x] +
-						referencePictureData[y*width+x+1] +
-						referencePictureData[y*width+x+2] +
-						referencePictureData[(y+1)*width+x] +
-						referencePictureData[(y+1)*width+x+1] +
-						referencePictureData[(y+1)*width+x+2] +
-						referencePictureData[y*width+x+2] +
-						referencePictureData[(y+2)*width+x] +
-						referencePictureData[(y+2)*width+x+1] +
-						referencePictureData[(y+2)*width+x+2]
-						) / 9.0;
+				for(int rgb = 0; rgb < 2; rgb++) {
+					this.referenceMedian[(y*width+x)*3 + rgb] = (
+							referencePictureData[(y*width+x)*3 + rgb] +
+							referencePictureData[(y*width+x+1)*3 + rgb] +
+							referencePictureData[(y*width+x+2)*3 + rgb] +
+							referencePictureData[((y+1)*width+x)*3 + rgb] +
+							referencePictureData[((y+1)*width+x+1)*3 + rgb] +
+							referencePictureData[((y+1)*width+x+1)*3 + rgb] + // middle one twice
+							referencePictureData[((y+1)*width+x+2)*3 + rgb] +
+							referencePictureData[(y*width+x+2)*3 + rgb] +
+							referencePictureData[((y+2)*width+x)*3 + rgb] +
+							referencePictureData[((y+2)*width+x+1)*3 + rgb] +
+							referencePictureData[((y+2)*width+x+2)*3 + rgb]
+							) / 10.0; // middle one twice
+				}
 			}
 		}
 	}
@@ -58,21 +61,24 @@ public class MedianDistanceFromOptimum implements DistanceFromOptimum {
 
 		for(int y = 0; y < height - 2; y++) {
 			for(int x = 0; x < width - 2; x++) {
-				median1 = (
-						buffer[y*width+x] +
-						buffer[y*width+x+1] +
-						buffer[y*width+x+2] +
-						buffer[(y+1)*width+x] +
-						buffer[(y+1)*width+x+1] +
-						buffer[(y+1)*width+x+2] +
-						buffer[y*width+x+2] +
-						buffer[(y+2)*width+x] +
-						buffer[(y+2)*width+x+1] +
-						buffer[(y+2)*width+x+2]
-						) / 9.0;
+				for(int rgb = 0; rgb < 2; rgb++) {
+					median1 = (
+							buffer[(y*width+x)*3 + rgb] +
+							buffer[(y*width+x+1)*3 + rgb] +
+							buffer[(y*width+x+2)*3 + rgb] +
+							buffer[((y+1)*width+x)*3 + rgb] +
+							buffer[((y+1)*width+x+1)*3 + rgb] +
+							buffer[((y+1)*width+x+1)*3 + rgb] + // middle one twice
+							buffer[((y+1)*width+x+2)*3 + rgb] +
+							buffer[(y*width+x+2)*3 + rgb] +
+							buffer[((y+2)*width+x)*3 + rgb] +
+							buffer[((y+2)*width+x+1)*3 + rgb] +
+							buffer[((y+2)*width+x+2)*3 + rgb]
+							) / 10.0; // middle one twice
 
-				median2 = referenceMedian[y*width+x];
-				sum += Math.abs(median2 - median1);
+					median2 = referenceMedian[(y*width+x)*3 + rgb];
+					sum += Math.abs(median2 - median1);
+				}
 			}
 		}
 
