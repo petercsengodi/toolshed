@@ -68,6 +68,16 @@ public class ImageEffectServiceImpl implements ImageEffectService {
 		for(int i = 0; i < pixels.length; i++) {
 			pixels[i] = ((result[offset++] & 0xff) << 16) + ((result[offset++] & 0xff) << 8) + (result[offset++] & 0xff);
 		}
+
+//		int height = image.getHeight();
+//		int width = image.getWidth();
+//		int offset = 0;
+//
+//		for(int y = 0; y < height; y++) {
+//			for(int x = 0; x < width; x++) {
+//				image.setRGB(x, y, ((result[offset++] & 0xff) << 16) + ((result[offset++] & 0xff) << 8) + (result[offset++] & 0xff));
+//			}
+//		}
 	}
 
 	@Override
