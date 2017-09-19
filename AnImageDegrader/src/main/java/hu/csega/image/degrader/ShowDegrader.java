@@ -173,11 +173,27 @@ public class ShowDegrader extends JFrame implements ActionListener, Runnable {
 			// population.crossOver(SCALE, randomCrossOverStrategy);
 			// population.initCrossOverStrategy(bestFitCrossOverStrategy);
 			// population.crossOver(SCALE, bestFitCrossOverStrategy);
-			population.keep(image.getKeepValue());
+			// population.keep(image.getKeepValue());
+			population.keep(30);
 			population.endRound();
 			cycles++;
 
-			logger.debug("leftOff: " + ep.get("leftOff") + " (" + ep.get("percentage") + "%)");
+			String leftOff = ep.get("leftOff");
+			int column = 0, row = 0;
+			int width = image.getWidth();
+			int height = image.getHeight();
+
+			try {
+				int lo = Integer.parseInt(leftOff);
+				row = lo / width + 1;
+				column = lo % width + 1;
+			} catch(Exception ex) {
+			}
+
+			String current = "[" + column + ';' + row + ']';
+			String size = "[" + width + ';' + height + ']';
+
+			logger.debug("leftOff: " + leftOff + " " + current + " of " + size + " (" + ep.get("percentage") + "%)");
 
 			if(!keepRunning) {
 				logger.info("Breaking loop.");
