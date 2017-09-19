@@ -8,7 +8,7 @@ import hu.csega.genetic.framework.Chromosome;
 import hu.csega.genetic.framework.Population;
 import hu.csega.genetic.framework.PopulationKey;
 import hu.csega.genetic.framework.mutation.BestsInFavorMutationStrategy;
-import hu.csega.genetic.framework.mutation.MutationStrategy;
+import hu.csega.genetic.framework.mutation.MutationSelectionStrategy;
 
 public class TestVariatingGeneLength {
 
@@ -56,7 +56,7 @@ public class TestVariatingGeneLength {
 
 		Population population = Population.builder(adamAndEve, DISTANCE).build();
 
-		MutationStrategy mutationStrategy = new BestsInFavorMutationStrategy();
+		MutationSelectionStrategy mutationStrategy = new BestsInFavorMutationStrategy();
 
 		population.mutate(100, mutationStrategy);
 		population.keep(5);

@@ -19,7 +19,12 @@ public class PopulationKey implements Comparable<PopulationKey>, Serializable {
 
 	@Override
 	public int compareTo(PopulationKey otherKey) {
-		return Double.compare(this.distance, otherKey.distance);
+		int ret = Double.compare(this.distance, otherKey.distance);
+		if(ret == 0) {
+			ret = this.uuid.compareTo(otherKey.uuid);
+		}
+
+		return ret;
 	}
 
 	public double getDistance() {

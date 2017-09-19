@@ -9,7 +9,7 @@ import java.util.TreeMap;
 import hu.csega.genetic.framework.Chromosome;
 import hu.csega.genetic.framework.PopulationKey;
 
-public class RandomMutationStrategy implements MutationStrategy {
+public class RandomMutationStrategy implements MutationSelectionStrategy {
 
 	private TreeMap<PopulationKey, Chromosome> chromosomes;
 	private int size;

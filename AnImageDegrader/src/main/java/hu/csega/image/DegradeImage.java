@@ -20,7 +20,7 @@ import hu.csega.toolshed.logging.LoggerFactory;
 
 public class DegradeImage {
 
-	public static final DegraderTestImages IMAGE = DegraderTestImages.AUTUMN_800;
+	public static final DegraderTestImages IMAGE = DegraderTestImages.TIM_CURRY;
 	public static final int WIDTH = IMAGE.getWidth();
 	public static final int HEIGHT = IMAGE.getHeight();
 	public static final int BUFFER_CAPACITY = WIDTH * HEIGHT * 3;
@@ -28,7 +28,7 @@ public class DegradeImage {
 	public static final String POPULATION_FILE = "output/" + IMAGE.getPopulationFile() + ".dat";
 	public static final String LOG_FILE = "output/" + IMAGE.getPopulationFile() + ".csv";
 
-	public static final int SCALE = 30;
+	public static final int SCALE = 10;
 
 	public static final Color CLEAR_COLOR = Color.BLACK;
 
@@ -54,8 +54,15 @@ public class DegradeImage {
 	}
 
 	private static Population createBrandNewPopulation(ChromosomeToImageConverter prototype, DistanceFromOptimum distanceStrategy) {
-		byte[] zeros = new byte[prototype.sizeInBytes()];
-		Chromosome adamAndEve = new Chromosome(zeros);
+		MedianDistanceFromOptimum distance = (MedianDistanceFromOptimum) distanceStrategy;
+		int[] reference = distance.getReferencePictureData();
+
+		logger.info("Starting generating AdamAndEve.");
+		long now = System.currentTimeMillis();
+		Chromosome adamAndEve = prototype.nativeNearest(reference);
+		long end = System.currentTimeMillis();
+		double elapsed = (end - now) / 1000.0;
+		logger.info("Finished generating AdamAndEve. (Took " + elapsed + " seconds.)");
 
 		Population population = Population.builder(adamAndEve, distanceStrategy).build();
 		return population;

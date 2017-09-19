@@ -2,6 +2,10 @@ package hu.csega.image.common;
 
 public class BitAssembler {
 
+	private byte[] byteArray;
+	private int position;
+	private int bitNumber;
+
 	public byte[] getByteArray() {
 		return byteArray;
 	}
@@ -134,9 +138,5 @@ public class BitAssembler {
 		else
 			byteArray[position] &= 0xFE;
 	}
-
-	private byte[] byteArray;
-	private int position;
-	private int bitNumber;
 
 }

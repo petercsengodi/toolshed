@@ -3,8 +3,10 @@ package hu.csega.image.degrader;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.util.TreeMap;
 
 import hu.csega.genetic.framework.Chromosome;
+import hu.csega.image.common.BitAssembler;
 import hu.csega.image.common.BitPipeline;
 import hu.csega.image.common.ImageChromosomeReceiver;
 import hu.csega.image.common.ImageEffectService;
@@ -13,6 +15,7 @@ public class ChromosomeToImageConverter implements ImageChromosomeReceiver {
 
 	private ImageEffectService service;
 	private BitPipeline bp = new BitPipeline();
+	private BitAssembler ba = new BitAssembler();
 	private int[] buffer;
 
 	public ChromosomeToImageConverter(ImageEffectService service, int[] buffer) {
@@ -37,6 +40,42 @@ public class ChromosomeToImageConverter implements ImageChromosomeReceiver {
 		}
 
 		return buffer;
+	}
+
+	public Chromosome nativeNearest(int[] referencePicture) {
+		int referenceLength = referencePicture.length;
+		int genesLength = referenceLength / 6;
+		byte[] array = new byte[genesLength];
+		TreeMap<Double, Integer> sorted = new TreeMap<>();
+
+		ba.setByteArray(array);
+		int r, g, b, j;
+		Double distance;
+
+		for(int i = 0; i < referenceLength;) {
+			r = referencePicture[i++];
+			g = referencePicture[i++];
+			b = referencePicture[i++];
+
+			sorted.clear();
+			for(j = 0; j < 16; j++) {
+				distance = distanceSquareFrom(j, r, g, b);
+				sorted.put(distance, j);
+			}
+
+			j = sorted.firstEntry().getValue();
+			ba.setBitsAndSlide(j, 4);
+		}
+
+		Chromosome ret = new Chromosome(array);
+		return ret;
+	}
+
+	private Double distanceSquareFrom(int index, int r, int g, int b) {
+		double d1 = PALETTE[index][0] - r;
+		double d2 = PALETTE[index][1] - g;
+		double d3 = PALETTE[index][2] - b;
+		return d1*d1 + d2*d2 + d3*d3;
 	}
 
 	private static int valueOf(char c) {

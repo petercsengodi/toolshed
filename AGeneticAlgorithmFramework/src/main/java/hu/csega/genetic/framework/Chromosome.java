@@ -77,6 +77,7 @@ public class Chromosome implements Serializable {
 		return result;
 	}
 
+
 	public static byte getRandomByte() {
 		return ((byte)(RND.nextInt(256) - 128));
 	}

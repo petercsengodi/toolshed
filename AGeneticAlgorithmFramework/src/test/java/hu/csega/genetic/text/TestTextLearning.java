@@ -7,7 +7,7 @@ import hu.csega.genetic.framework.PopulationKey;
 import hu.csega.genetic.framework.crossover.BestsInFavorCrossOverStrategy;
 import hu.csega.genetic.framework.crossover.CrossOverStrategy;
 import hu.csega.genetic.framework.mutation.BestsInFavorMutationStrategy;
-import hu.csega.genetic.framework.mutation.MutationStrategy;
+import hu.csega.genetic.framework.mutation.MutationSelectionStrategy;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -186,7 +186,7 @@ public class TestTextLearning {
 	public static void main(String[] args) throws Exception {
 		Population population = loadPopulation();
 
-		MutationStrategy mutationStrategy = new BestsInFavorMutationStrategy();
+		MutationSelectionStrategy mutationStrategy = new BestsInFavorMutationStrategy();
 
 		System.out.println();
 		System.out.println("--- THERE WAS A POPULATION OF NEURAL NETWORKS... ---");

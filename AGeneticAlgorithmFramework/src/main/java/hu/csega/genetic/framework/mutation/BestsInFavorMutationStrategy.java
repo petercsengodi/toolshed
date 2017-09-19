@@ -7,7 +7,7 @@ import java.util.TreeMap;
 import hu.csega.genetic.framework.Chromosome;
 import hu.csega.genetic.framework.PopulationKey;
 
-public class BestsInFavorMutationStrategy implements MutationStrategy {
+public class BestsInFavorMutationStrategy implements MutationSelectionStrategy {
 
 	private TreeMap<PopulationKey, Chromosome> chromosomes;
 	private int size;

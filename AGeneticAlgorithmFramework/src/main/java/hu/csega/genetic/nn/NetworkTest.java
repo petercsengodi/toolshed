@@ -8,7 +8,7 @@ import hu.csega.genetic.framework.Chromosome;
 import hu.csega.genetic.framework.Population;
 import hu.csega.genetic.framework.PopulationKey;
 import hu.csega.genetic.framework.mutation.BestsInFavorMutationStrategy;
-import hu.csega.genetic.framework.mutation.MutationStrategy;
+import hu.csega.genetic.framework.mutation.MutationSelectionStrategy;
 
 public class NetworkTest {
 
@@ -54,7 +54,7 @@ public class NetworkTest {
 
 		Population population = Population.builder(adamAndEve, DISTANCE).build();
 
-		MutationStrategy mutationStrategy = new BestsInFavorMutationStrategy();
+		MutationSelectionStrategy mutationStrategy = new BestsInFavorMutationStrategy();
 
 		int ROUNDS = 1000;
 		int DIV = ROUNDS / 10;

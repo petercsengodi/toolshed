@@ -6,6 +6,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -16,9 +17,29 @@ import java.util.TreeMap;
 import hu.csega.genetic.framework.crossover.ChromosomePair;
 import hu.csega.genetic.framework.crossover.CrossOverStrategy;
 import hu.csega.genetic.framework.crossover.RandomCrossOverStrategy;
-import hu.csega.genetic.framework.mutation.MutationStrategy;
+import hu.csega.genetic.framework.mutation.MutationExecutionStrategy;
+import hu.csega.genetic.framework.mutation.MutationSelectionStrategy;
 
 public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>>, Serializable {
+
+	private transient long roundStartedAt;
+
+	private long allTimeSpent;
+	private long roundsCounted;
+
+	private TreeMap<PopulationKey, Chromosome> chromosomes;
+	private DistanceFromOptimum distanceStrategy;
+	private int geneLength;
+
+	private int discardedChromosomesMaxLength;
+	private int discardedChromosomePairsMaxLength;
+
+	private Map<String, String> extraProperties;
+
+	private transient Stack<Chromosome> discardedChromosomes;
+	private transient Stack<ChromosomePair> discardedChromosomePairs;
+
+	private static final RandomCrossOverStrategy RANDOM = new RandomCrossOverStrategy();
 
 	public static Builder builder(Chromosome chromosome, DistanceFromOptimum distanceStrategy) {
 		Population population = new Population();
@@ -68,6 +89,7 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 		}
 	}
 
+	@SuppressWarnings("unused")
 	public void migrateData() {
 		// from V1 -> V2
 		if(chromosomes != null && !chromosomes.isEmpty()) {
@@ -224,11 +246,11 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 		}
 	}
 
-	public void mutate(int numberOfMutations, MutationStrategy strategy) {
+	public void mutate(int numberOfMutations, MutationSelectionStrategy strategy) {
 		mutate(numberOfMutations, 1, strategy);
 	}
 
-	public void mutate(int numberOfChromosomesToMutate, int maxMutatedBytes, MutationStrategy strategy) {
+	public void mutate(int numberOfChromosomesToMutate, int maxMutatedBytes, MutationSelectionStrategy strategy) {
 		strategy.selectBatch(chromosomes, numberOfChromosomesToMutate);
 
 		Chromosome chromosomeToMutate;
@@ -242,7 +264,23 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 		}
 	}
 
-	public void mutateContinuously(int numberOfChromosomesToMutate, MutationStrategy strategy, int maxNumberOfMutations) {
+	public void mutate(int numberOfChromosomesToMutate, MutationSelectionStrategy strategy, MutationExecutionStrategy mutator) {
+		strategy.selectBatch(chromosomes, numberOfChromosomesToMutate);
+
+		Chromosome chromosomeToMutate;
+		double distance;
+
+		for(Map.Entry<PopulationKey, Chromosome> chromosomeWithKey : strategy) {
+			chromosomeToMutate = chromosomeWithKey.getValue();
+			List<Chromosome> mutatedChromosomes = mutator.mutate(this, chromosomeToMutate);
+			for(Chromosome mutated : mutatedChromosomes) {
+				distance = distanceStrategy.calculate(mutated);
+				chromosomes.put(new PopulationKey(distance, mutated.getGenes()), mutated);
+			}
+		}
+	}
+
+	public void mutateContinuously(int numberOfChromosomesToMutate, MutationSelectionStrategy strategy, int maxNumberOfMutations) {
 		mutateContinuously(numberOfChromosomesToMutate, strategy, maxNumberOfMutations, -1);
 	}
 
@@ -250,7 +288,7 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 	 * Main idea: if we manage to reduce the distance with a mutation, do that mutation
 	 * a plenty more times in this cycle.
 	 */
-	public void mutateContinuously(int numberOfChromosomesToMutate, MutationStrategy strategy, int maxNumberOfMutations, int fixPosition) {
+	public void mutateContinuously(int numberOfChromosomesToMutate, MutationSelectionStrategy strategy, int maxNumberOfMutations, int fixPosition) {
 		strategy.selectBatch(chromosomes, numberOfChromosomesToMutate);
 
 		Chromosome startingChromosome, lastChromosome, mutated;
@@ -294,7 +332,7 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 	}
 
 	/** Results in (2*numberOfBytesInChromosome * numberOfChromosomesToMutate) new entities. */
-	public void mutateToNearOnes(int numberOfChromosomesToMutate, MutationStrategy strategy) {
+	public void mutateToNearOnes(int numberOfChromosomesToMutate, MutationSelectionStrategy strategy) {
 		strategy.selectBatch(chromosomes, numberOfChromosomesToMutate);
 
 		Chromosome chromosomeToMutate, mutated;
@@ -320,11 +358,51 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 		}
 	}
 
+	public int mutateToNearOnes(int numberOfChromosomesToMutate, MutationSelectionStrategy strategy, int start, int maxNumberOfMutations) {
+		strategy.selectBatch(chromosomes, numberOfChromosomesToMutate);
+
+		if(start >= geneLength)
+			start = (start % geneLength);
+
+		Chromosome chromosomeToMutate, mutated;
+		double distance;
+		int counter = 0, mutations = 0;
+
+		adios:
+		for(Map.Entry<PopulationKey, Chromosome> chromosomeWithKey : strategy) {
+			chromosomeToMutate = chromosomeWithKey.getValue();
+
+			for(byte k = -1; k < 2; k+= 2) { // -1 and +1
+				for(int j = start; j < geneLength; j++) {
+					mutated = Chromosome.mutateFix(this, chromosomeToMutate, j, k);
+					if(mutated != null) {
+						distance = distanceStrategy.calculate(mutated);
+						chromosomes.put(new PopulationKey(distance, mutated.getGenes()), mutated);
+					}
+
+					mutations ++;
+					if(mutations >= maxNumberOfMutations) {
+						start = j;
+						break adios;
+					}
+				}
+			}
+
+			start = 0;
+
+			counter++;
+			if(counter >= numberOfChromosomesToMutate)
+				break;
+		}
+
+		return start;
+	}
+
 	/**
 	 * Main idea: if we manage to reduce the distance with a mutation, do that mutation
 	 * a plenty more times in this cycle.
 	 */
-	public void mutateContinuouslyToNearOnes(int numberOfChromosomesToMutate, MutationStrategy strategy, int maxNumberOfMutations) {
+	public void mutateContinuouslyToNearOnes(int numberOfChromosomesToMutate, MutationSelectionStrategy strategy, int maxNumberOfMutations) {
 		strategy.selectBatch(chromosomes, numberOfChromosomesToMutate);
 
 		Chromosome startingChromosome, lastChromosome, mutated;
@@ -492,22 +570,11 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 		return geneLength;
 	}
 
-	private transient long roundStartedAt;
-
-	private long allTimeSpent;
-	private long roundsCounted;
-
-	private TreeMap<PopulationKey, Chromosome> chromosomes;
-	private DistanceFromOptimum distanceStrategy;
-	private int geneLength;
-
-	private int discardedChromosomesMaxLength;
-	private int discardedChromosomePairsMaxLength;
-
-	private transient Stack<Chromosome> discardedChromosomes;
-	private transient Stack<ChromosomePair> discardedChromosomePairs;
-
-	private static final RandomCrossOverStrategy RANDOM = new RandomCrossOverStrategy();
+	public Map<String, String> getExtraProperties() {
+		if(extraProperties == null)
+			extraProperties = new HashMap<>();
+		return extraProperties;
+	}
 
 	private static final long serialVersionUID = 1L;
 }

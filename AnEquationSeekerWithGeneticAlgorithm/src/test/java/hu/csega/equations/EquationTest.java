@@ -17,7 +17,7 @@ import hu.csega.genetic.framework.crossover.RandomCrossOverStrategy;
 import hu.csega.genetic.framework.measurement.Measurement;
 import hu.csega.genetic.framework.measurement.TimeMeasurement;
 import hu.csega.genetic.framework.mutation.BestsInFavorMutationStrategy;
-import hu.csega.genetic.framework.mutation.MutationStrategy;
+import hu.csega.genetic.framework.mutation.MutationSelectionStrategy;
 import hu.csega.genetic.framework.mutation.RandomMutationStrategy;
 
 public class EquationTest {
@@ -177,8 +177,8 @@ public class EquationTest {
 
 		int SCALE = 100; // 100
 
-		MutationStrategy bestFitMutationStrategy = new BestsInFavorMutationStrategy();
-		MutationStrategy randomMutationStrategy = new RandomMutationStrategy();
+		MutationSelectionStrategy bestFitMutationStrategy = new BestsInFavorMutationStrategy();
+		MutationSelectionStrategy randomMutationStrategy = new RandomMutationStrategy();
 
 		long cycles = 0;
 		Measurement m = new TimeMeasurement(120, 10);

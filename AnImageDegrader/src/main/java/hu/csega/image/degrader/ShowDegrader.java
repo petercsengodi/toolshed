@@ -1,7 +1,5 @@
 package hu.csega.image.degrader;
 
-import static hu.csega.image.DegradeImage.SCALE;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
@@ -17,6 +15,7 @@ import java.io.OutputStreamWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.swing.JButton;
@@ -32,7 +31,8 @@ import hu.csega.genetic.framework.crossover.RandomCrossOverStrategy;
 import hu.csega.genetic.framework.measurement.Measurement;
 import hu.csega.genetic.framework.measurement.TimeMeasurement;
 import hu.csega.genetic.framework.mutation.BestsInFavorMutationStrategy;
-import hu.csega.genetic.framework.mutation.MutationStrategy;
+import hu.csega.genetic.framework.mutation.MutationExecutionStrategy;
+import hu.csega.genetic.framework.mutation.MutationSelectionStrategy;
 import hu.csega.genetic.framework.mutation.RandomMutationStrategy;
 import hu.csega.image.DegradeImage;
 import hu.csega.toolshed.logging.Logger;
@@ -42,8 +42,9 @@ public class ShowDegrader extends JFrame implements ActionListener, Runnable {
 
 	public static final CrossOverStrategy randomCrossOverStrategy = new RandomCrossOverStrategy();
 	public static final CrossOverStrategy bestFitCrossOverStrategy = new BestsInFavorCrossOverStrategy();
-	public static final MutationStrategy bestFitMutationStrategy = new BestsInFavorMutationStrategy();
-	public static final MutationStrategy randomMutationStrategy = new RandomMutationStrategy();
+	public static final MutationSelectionStrategy bestFitMutationStrategy = new BestsInFavorMutationStrategy();
+	public static final MutationSelectionStrategy randomMutationStrategy = new RandomMutationStrategy();
+	public static final MutationExecutionStrategy focusedMutator = new FocusedMutator();
 
 	private BufferedImage lastResult;
 	private ShowDegraderCanvas canvas;
@@ -157,19 +158,26 @@ public class ShowDegrader extends JFrame implements ActionListener, Runnable {
 		long cycles = 0;
 		Measurement m = new TimeMeasurement(1, 2);
 
+		Map<String, String> ep = population.getExtraProperties();
+
 		while(!m.finished()) {
 			population.startRound();
-			population.mutateContinuously(SCALE, bestFitMutationStrategy, SCALE);
-			population.mutate(SCALE, randomMutationStrategy);
-			population.mutate(SCALE, SCALE / 10, randomMutationStrategy);
-			population.createRandomGenes(SCALE);
-			population.initCrossOverStrategy(randomCrossOverStrategy);
-			population.crossOver(SCALE, randomCrossOverStrategy);
-			population.initCrossOverStrategy(bestFitCrossOverStrategy);
-			population.crossOver(SCALE, bestFitCrossOverStrategy);
+			// population.mutateContinuously(SCALE, bestFitMutationStrategy, SCALE); // not really a great approach here
+			// population.mutate(SCALE, randomMutationStrategy);
+			// population.mutate(SCALE, SCALE / 10, randomMutationStrategy);
+			population.mutate(1, bestFitMutationStrategy, focusedMutator); /// %%%%% !!!!!
+			// population.mutateToNearOnes(1, bestFitMutationStrategy);  // not really a great approach here
+			// leftOff = population.mutateToNearOnes(1, bestFitMutationStrategy, leftOff, SCALE);
+			// population.createRandomGenes(SCALE); // not really a great approach here
+			// population.initCrossOverStrategy(randomCrossOverStrategy);
+			// population.crossOver(SCALE, randomCrossOverStrategy);
+			// population.initCrossOverStrategy(bestFitCrossOverStrategy);
+			// population.crossOver(SCALE, bestFitCrossOverStrategy);
 			population.keep(image.getKeepValue());
 			population.endRound();
 			cycles++;
+
+			logger.debug("leftOff: " + ep.get("leftOff") + " (" + ep.get("percentage") + "%)");
 
 			if(!keepRunning) {
 				logger.info("Breaking loop.");

@@ -32,7 +32,7 @@ import hu.csega.genetic.framework.crossover.RandomCrossOverStrategy;
 import hu.csega.genetic.framework.measurement.Measurement;
 import hu.csega.genetic.framework.measurement.TimeMeasurement;
 import hu.csega.genetic.framework.mutation.BestsInFavorMutationStrategy;
-import hu.csega.genetic.framework.mutation.MutationStrategy;
+import hu.csega.genetic.framework.mutation.MutationSelectionStrategy;
 import hu.csega.genetic.framework.mutation.RandomMutationStrategy;
 import hu.csega.image.GenerateTriangles;
 import hu.csega.toolshed.logging.Logger;
@@ -42,8 +42,8 @@ public class ShowTriangles extends JFrame implements ActionListener, Runnable {
 
 	public static final CrossOverStrategy randomCrossOverStrategy = new RandomCrossOverStrategy();
 	public static final CrossOverStrategy bestFitCrossOverStrategy = new BestsInFavorCrossOverStrategy();
-	public static final MutationStrategy bestFitMutationStrategy = new BestsInFavorMutationStrategy();
-	public static final MutationStrategy randomMutationStrategy = new RandomMutationStrategy();
+	public static final MutationSelectionStrategy bestFitMutationStrategy = new BestsInFavorMutationStrategy();
+	public static final MutationSelectionStrategy randomMutationStrategy = new RandomMutationStrategy();
 
 	private BufferedImage lastResult;
 	private ShowTrianglesCanvas canvas;

@@ -6,7 +6,7 @@ import hu.csega.genetic.framework.Population;
 import hu.csega.genetic.framework.measurement.Measurement;
 import hu.csega.genetic.framework.measurement.TimeMeasurement;
 import hu.csega.genetic.framework.mutation.BestsInFavorMutationStrategy;
-import hu.csega.genetic.framework.mutation.MutationStrategy;
+import hu.csega.genetic.framework.mutation.MutationSelectionStrategy;
 import hu.csega.toolshed.logging.Logger;
 import hu.csega.toolshed.logging.LoggerFactory;
 
@@ -43,7 +43,7 @@ public class TestRandomByteValues {
 
 		Chromosome adamAndEve = new Chromosome(LENGTH);
 		Population population = Population.builder(adamAndEve, distance).build();
-		MutationStrategy mutationStrategy = new BestsInFavorMutationStrategy();
+		MutationSelectionStrategy mutationStrategy = new BestsInFavorMutationStrategy();
 
 		double error = distance.calculate(adamAndEve);
 		logger.info("Initial error: " + error);
