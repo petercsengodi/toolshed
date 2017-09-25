@@ -57,11 +57,6 @@
 			<artifactId>Units</artifactId>
 			<version>1.0.0</version>
 		</dependency>
-		<dependency>
-			<groupId>hu.csega.toolshed</groupId>
-			<artifactId>ToolShedMiniWebApp</artifactId>
-			<version>1.0.0</version>
-		</dependency>
 	</dependencies>
 
 </project>

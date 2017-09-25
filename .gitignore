@@ -5,4 +5,5 @@ AnImageDegrader/output/*.dat
 AnImageDegrader/output/*.csv
 BLooper/loops/*.wav
 BLooper/loops/properties.ini
+ToolShedMiniWebApp/local/*.ser
 
