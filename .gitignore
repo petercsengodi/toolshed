@@ -5,5 +5,7 @@ AnImageDegrader/output/*.dat
 AnImageDegrader/output/*.csv
 BLooper/loops/*.wav
 BLooper/loops/properties.ini
+GenerateStoryCollection/input/*.story
+GenerateStoryCollection/output/*.php
 ToolShedMiniWebApp/local/*.ser
 
