@@ -58,6 +58,7 @@
 		<module>AGeneticAlgorithmFramework</module>
 		<module>AnEquationSeekerWithGeneticAlgorithm</module>
 		<module>AnImageDegrader</module>
+		<module>AnAgentGenerator</module>
 		<module>ParserPreProcessor</module>
 		<module>ParserLRAnalyzer</module>
 		<module>ParserExampleLanguage</module>

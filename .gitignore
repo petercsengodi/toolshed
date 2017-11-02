@@ -3,6 +3,8 @@
 AnImageDegrader/tmp
 AnImageDegrader/output/*.dat
 AnImageDegrader/output/*.csv
+AnAgentGenerator/output/*.dat
+AnAgentGenerator/output/*.csv
 BLooper/loops/*.wav
 BLooper/loops/properties.ini
 GenerateStoryCollection/input/*.story

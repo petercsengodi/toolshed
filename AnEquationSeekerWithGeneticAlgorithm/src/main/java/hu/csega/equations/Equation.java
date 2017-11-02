@@ -12,6 +12,11 @@ public class Equation implements ChromosomeReceiver {
 	public Executable root;
 
 	@Override
+	public int sizeInBytes() {
+		return 0; // unknown
+	}
+
+	@Override
 	public String printableMessage() {
 		return toString();
 	}
