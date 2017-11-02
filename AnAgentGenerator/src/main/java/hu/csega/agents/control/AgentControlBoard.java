@@ -1,4 +1,4 @@
-package hu.csega.agents.adder;
+package hu.csega.agents.control;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,33 +21,29 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import hu.csega.genetic.framework.Chromosome;
+import hu.csega.genetic.framework.ChromosomeReceiver;
+import hu.csega.genetic.framework.DistanceFromOptimum;
 import hu.csega.genetic.framework.Population;
 import hu.csega.genetic.framework.PopulationKey;
-import hu.csega.genetic.framework.crossover.BestsInFavorCrossOverStrategy;
 import hu.csega.genetic.framework.crossover.CrossOverStrategy;
-import hu.csega.genetic.framework.crossover.RandomCrossOverStrategy;
 import hu.csega.genetic.framework.measurement.Measurement;
 import hu.csega.genetic.framework.measurement.TimeMeasurement;
-import hu.csega.genetic.framework.mutation.BestsInFavorMutationStrategy;
 import hu.csega.genetic.framework.mutation.MutationSelectionStrategy;
-import hu.csega.genetic.framework.mutation.RandomMutationStrategy;
 import hu.csega.toolshed.logging.Logger;
 import hu.csega.toolshed.logging.LoggerFactory;
 
-public class AdderControlBoard extends JFrame implements ActionListener, Runnable {
+public class AgentControlBoard extends JFrame implements ActionListener, Runnable {
 
 	public static final int CANVAS_WIDTH = 800;
 	public static final int CANVAS_HEIGHT = 600;
 	public static final int SCALE = 300;
 
-	public static final CrossOverStrategy randomCrossOverStrategy = new RandomCrossOverStrategy();
-	public static final CrossOverStrategy bestFitCrossOverStrategy = new BestsInFavorCrossOverStrategy();
-	public static final MutationSelectionStrategy bestFitMutationStrategy = new BestsInFavorMutationStrategy();
-	public static final MutationSelectionStrategy randomMutationStrategy = new RandomMutationStrategy();
+	private AgentControlCanvas canvas;
 
-	private AdderControlCanvas canvas;
+	private AgentControlParameters parameters;
+
 	private Population population;
-	private AdderAgentBuilder prototype;
+	private ChromosomeReceiver prototype;
 
 	private JPanel buttons = new JPanel();
 	private JButton start = new JButton("Start");
@@ -64,12 +61,15 @@ public class AdderControlBoard extends JFrame implements ActionListener, Runnabl
 	private String populationFile;
 	private String logFile;
 
-	public AdderControlBoard(String populationFile, String logFile) {
-		super("Adder Agent Generator");
+	public AgentControlBoard(AgentControlParameters parameters, String populationFile, String logFile) {
+		super("Agent Generator – " + parameters.getTitle());
+		this.parameters = parameters;
 		this.populationFile = populationFile;
 		this.logFile = logFile;
 
-		canvas = new AdderControlCanvas(this, CANVAS_WIDTH, CANVAS_HEIGHT);
+		this.prototype = this.parameters.getPrototype();
+
+		canvas = new AgentControlCanvas(this, CANVAS_WIDTH, CANVAS_HEIGHT);
 		canvas.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
 
 		Container cp = this.getContentPane();
@@ -87,14 +87,6 @@ public class AdderControlBoard extends JFrame implements ActionListener, Runnabl
 
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.pack();
-	}
-
-	public void setPopulation(Population population) {
-		this.population = population;
-	}
-
-	public void setPrototype(AdderAgentBuilder prototype) {
-		this.prototype = prototype;
 	}
 
 	@Override
@@ -123,6 +115,18 @@ public class AdderControlBoard extends JFrame implements ActionListener, Runnabl
 	public void run() {
 		logger.info("Thread started.");
 
+		if(population == null) {
+			logger.info("Population doesn't exist, yet. Loading or creating.");
+			DistanceFromOptimum distanceStrategy = parameters.getDistanceStrategy();
+			population = createOrLoadPopulation(populationFile, prototype, distanceStrategy);
+			if(population != null) {
+				logger.info("Good to go!");
+			} else {
+				logger.error("Couldn't create population! Exitting.");
+				return;
+			}
+		}
+
 		while(true) {
 			if(!keepRunning)
 				break;
@@ -148,15 +152,37 @@ public class AdderControlBoard extends JFrame implements ActionListener, Runnabl
 
 		while(!m.finished()) {
 			population.startRound();
-			population.mutateContinuously(SCALE, bestFitMutationStrategy, SCALE);
-			population.mutate(SCALE, randomMutationStrategy);
-			population.mutate(SCALE, SCALE / 10, randomMutationStrategy);
-			population.createRandomGenes(SCALE / 4);
-			population.initCrossOverStrategy(randomCrossOverStrategy);
-			population.crossOver(SCALE, randomCrossOverStrategy);
-			population.initCrossOverStrategy(bestFitCrossOverStrategy);
-			population.crossOver(SCALE, bestFitCrossOverStrategy);
-			population.keep(50_000);
+
+			for(AgentControlCrossover crossover : parameters.getCrossovers()) {
+				CrossOverStrategy strategy = crossover.getStrategy();
+				int count = crossover.getCount();
+				population.initCrossOverStrategy(strategy);
+				population.crossOver(count, strategy);
+			}
+
+			for(AgentControlMutation mutation : parameters.getMutations()) {
+				AgentControlMutationKind kind = mutation.getKind();
+				MutationSelectionStrategy strategy = mutation.getStrategy();
+				int numberOfChromosomesToMutate = mutation.getNumberOfChromosomesToMutate();
+				int numberOfMaximumMutations = mutation.getNumberOfMaximumMutations();
+
+				switch(kind) {
+				case ONE_BYTE:
+					population.mutate(SCALE, numberOfChromosomesToMutate, strategy);
+					break;
+				case MULTIPLE_BYTES:
+					population.mutate(numberOfChromosomesToMutate, numberOfMaximumMutations, strategy);
+					break;
+				case CONTINUOUS:
+					population.mutateContinuously(numberOfChromosomesToMutate, strategy, numberOfMaximumMutations);
+					break;
+				default:
+					throw new IllegalStateException("No handler for kind: " + kind);
+				}
+			}
+
+			population.createRandomGenes(parameters.getNumberOfNewRandomGenes());
+			population.keep(parameters.getNumberOfGenesToKeep());
 			population.endRound();
 			cycles++;
 
@@ -241,7 +267,44 @@ public class AdderControlBoard extends JFrame implements ActionListener, Runnabl
 		}
 	}
 
+	private Population createBrandNewPopulation(ChromosomeReceiver prototype, DistanceFromOptimum distanceStrategy) {
+		byte[] zeros = new byte[prototype.sizeInBytes()];
+		Chromosome adamAndEve = new Chromosome(zeros);
+
+		Population population = Population.builder(adamAndEve, distanceStrategy).build();
+		return population;
+	}
+
+	private Population createOrLoadPopulation(String populationFile, ChromosomeReceiver prototype, DistanceFromOptimum distanceStrategy) {
+		Population population = null;
+
+		File file = new File(populationFile);
+		if(file.exists()) {
+			try {
+
+				logger.info("Trying to load file: " + populationFile);
+				population = Population.readFromFile(populationFile);
+				logger.info("File loaded.");
+
+			} catch(Exception ex) {
+				logger.info("Error loading population.");
+				population = null;
+				ex.printStackTrace();
+			}
+		}
+
+		if(population == null) {
+			logger.info("Creating new population.");
+			population = createBrandNewPopulation(prototype, distanceStrategy);
+		} else {
+			population.setDistanceStrategy(distanceStrategy);
+		}
+
+		logger.info(population.statistics(prototype));
+		return population;
+	}
+
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger logger = LoggerFactory.createLogger(AdderControlBoard.class);
+	private static final Logger logger = LoggerFactory.createLogger(AgentControlBoard.class);
 }

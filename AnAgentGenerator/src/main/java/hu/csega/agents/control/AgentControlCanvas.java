@@ -1,17 +1,17 @@
-package hu.csega.agents.adder;
+package hu.csega.agents.control;
 
 import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
-public class AdderControlCanvas extends JPanel {
+public class AgentControlCanvas extends JPanel {
 
-	public AdderControlBoard frame;
+	public AgentControlBoard frame;
 
 	private int width;
 	private int height;
 
-	public AdderControlCanvas(AdderControlBoard showTriangles, int width, int height) {
+	public AgentControlCanvas(AgentControlBoard showTriangles, int width, int height) {
 		this.frame = showTriangles;
 		this.width = width;
 		this.height = height;

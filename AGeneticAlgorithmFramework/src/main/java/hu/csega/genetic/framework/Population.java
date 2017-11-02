@@ -85,7 +85,7 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 			ois.close();
 			return population;
 		} catch (Exception e) {
-			throw new RuntimeException("Error reading population file from: " + filename);
+			throw new RuntimeException("Error reading population file from: " + filename, e);
 		}
 	}
 

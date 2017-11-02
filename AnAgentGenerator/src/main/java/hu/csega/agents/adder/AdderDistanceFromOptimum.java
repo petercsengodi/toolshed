@@ -3,7 +3,7 @@ package hu.csega.agents.adder;
 import hu.csega.genetic.framework.Chromosome;
 import hu.csega.genetic.framework.DistanceFromOptimum;
 
-public class AddedDistanceFromOptimum implements DistanceFromOptimum {
+public class AdderDistanceFromOptimum implements DistanceFromOptimum {
 
 	@Override
 	public double calculate(Chromosome chromosome) {
