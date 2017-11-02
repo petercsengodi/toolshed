@@ -1,0 +1,39 @@
+<?php
+
+  include ("util.php");
+
+?><html>
+  <head>
+    <title>Csengődi Péter: 1024 éjszaka meséi</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="author" content="Csengődi Péter"/>
+    <meta name="description" content="Rövid novellák sorozata a kockavilágból."/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+
+    <link rel="stylesheet" type="text/css" href="common_css.php" />
+
+<?php global $isPhone; global $isMobile; if($isMobile || $isPhone) { ?>
+    <link rel="stylesheet" type="text/css" href="mobile_css.php" />
+<?php } else { ?>
+    <link rel="stylesheet" type="text/css" href="screen_css.php" />
+<?php } /* End of isPhone || isMobile */ ?>
+
+  </head>
+<body>
+<div class="main">
+
+<?php
+
+  writeTitle("1024 éjszaka meséi", "title.png");
+  $part = 1;
+  if(isset($_GET["part"])) {
+    $part = intval($_GET["part"]);
+    if($part < 1 || $part > 1100) {
+      $part = 1;
+    }
+  }
+
+?>
+
