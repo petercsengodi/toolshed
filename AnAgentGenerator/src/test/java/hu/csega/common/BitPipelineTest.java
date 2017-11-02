@@ -1,4 +1,4 @@
-package hu.csega.image.common;
+package hu.csega.common;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

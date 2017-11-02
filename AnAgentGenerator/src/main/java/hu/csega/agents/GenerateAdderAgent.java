@@ -1,9 +1,10 @@
 package hu.csega.agents;
 
+import static hu.csega.agents.control.AgentControlMutationKind.ONE_BYTE;
+
 import hu.csega.agents.adder.AdderAgentBuilder;
 import hu.csega.agents.adder.AdderDistanceFromOptimum;
 import hu.csega.agents.control.AgentControlBoard;
-import hu.csega.agents.control.AgentControlMutationKind;
 import hu.csega.agents.control.AgentControlParameters;
 import hu.csega.genetic.framework.DistanceFromOptimum;
 import hu.csega.genetic.framework.crossover.BestsInFavorCrossOverStrategy;
@@ -29,7 +30,7 @@ public class GenerateAdderAgent {
 		logger.info("Application entry point for Adder Agent Generator.");
 
 		AdderAgentBuilder prototype = new AdderAgentBuilder();
-		DistanceFromOptimum distanceStrategy = new AdderDistanceFromOptimum();
+		DistanceFromOptimum distanceStrategy = new AdderDistanceFromOptimum(prototype);
 
 		AgentControlParameters parameters = new AgentControlParameters()
 				.title("Adder Agent Generation")
@@ -37,7 +38,7 @@ public class GenerateAdderAgent {
 				.distanceStrategy(distanceStrategy)
 				.addCrossover(bestFitCrossOverStrategy, 500)
 				.addCrossover(randomCrossOverStrategy, 200)
-				.addMutation(randomMutationStrategy, AgentControlMutationKind.ONE_BYTE, 1000, 1000)
+				.addMutation(randomMutationStrategy, ONE_BYTE, 1000, 1000)
 				.numberOfNewRandomGenes(200)
 				.numberOfGenesToKeep(50_000);
 

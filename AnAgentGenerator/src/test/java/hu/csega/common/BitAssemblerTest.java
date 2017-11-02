@@ -1,4 +1,4 @@
-package hu.csega.image.common;
+package hu.csega.common;
 
 import org.junit.After;
 import org.junit.Assert;
