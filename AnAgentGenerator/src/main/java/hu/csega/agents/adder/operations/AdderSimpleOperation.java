@@ -55,18 +55,30 @@ public class AdderSimpleOperation extends AdderNodeOperation {
 		}
 		case '/': {
 			int sum = 1;
+			boolean infinity = false;
 			boolean first = true;
 			for(AdderOperation child : children) {
 				Object obj = child.execute();
 				if(obj instanceof Integer) {
-					if(first)
-						sum = ((Integer)obj).intValue();
-					else
-						sum /= ((Integer)obj).intValue();
+					int intValue = ((Integer)obj).intValue();
+					if(first) {
+						sum = intValue;
+					} else {
+						if(intValue != 0) {
+							sum /= intValue;
+						} else {
+							infinity = true;
+							break;
+						}
+					}
 				}
 				first = false;
 			}
-			return Integer.valueOf(sum);
+
+			if(infinity)
+				return Integer.valueOf(sum);
+			else
+				return Integer.valueOf(Integer.MAX_VALUE);
 		}
 		default:
 			return Integer.valueOf(0);

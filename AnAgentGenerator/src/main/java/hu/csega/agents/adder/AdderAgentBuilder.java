@@ -1,5 +1,6 @@
 package hu.csega.agents.adder;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -15,7 +16,7 @@ import hu.csega.common.BytePipeline;
 import hu.csega.genetic.framework.Chromosome;
 import hu.csega.genetic.framework.ChromosomeReceiver;
 
-public class AdderAgentBuilder implements ChromosomeReceiver, AdderExecutionEnvironment {
+public class AdderAgentBuilder implements ChromosomeReceiver, AdderExecutionEnvironment, Serializable {
 
 	private boolean error;
 
@@ -25,8 +26,8 @@ public class AdderAgentBuilder implements ChromosomeReceiver, AdderExecutionEnvi
 	int[] registers = new int[10];
 
 	// Building the AST
-	Stack<AdderNodeOperation> parents = new Stack<>();
-	List<AdderOperation> programs = new ArrayList<>();
+	private transient Stack<AdderNodeOperation> parents;
+	private transient List<AdderOperation> programs;
 
 	public boolean isError() {
 		return error;
@@ -34,11 +35,14 @@ public class AdderAgentBuilder implements ChromosomeReceiver, AdderExecutionEnvi
 
 	@Override
 	public int sizeInBytes() {
-		return 100;
+		return 10;
 	}
 
 	@Override
 	public void fillFromChromosome(Chromosome chromosome) {
+		parents = new Stack<>();
+		programs = new ArrayList<>();
+
 		byte[] byteCode = chromosome.getGenes();
 		parseByteCode(byteCode);
 	}
@@ -230,4 +234,5 @@ public class AdderAgentBuilder implements ChromosomeReceiver, AdderExecutionEnvi
 		output[i] = value;
 	}
 
+	private static final long serialVersionUID = 1L;
 }

@@ -35,6 +35,9 @@ public class AdderDistanceFromOptimum implements DistanceFromOptimum {
 	public double calculate(Chromosome chromosome) {
 		prototype.fillFromChromosome(chromosome);
 
+		if(prototype.isError())
+			return Double.POSITIVE_INFINITY;
+
 		double sum = 0.0;
 
 		for(int counter = 0; counter < numberOfCases; counter++) {

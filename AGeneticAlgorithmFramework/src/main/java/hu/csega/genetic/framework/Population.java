@@ -125,7 +125,7 @@ public class Population implements Iterable<Map.Entry<PopulationKey, Chromosome>
 			out.close();
 			fileOut.close();
 		} catch(Exception ex) {
-			throw new RuntimeException("Error saving population to file: " + filename);
+			throw new RuntimeException("Error saving population to file: " + filename, ex);
 		}
 
 	}
