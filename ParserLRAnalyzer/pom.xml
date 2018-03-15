@@ -49,16 +49,6 @@
 	<dependencies>
 		<dependency>
 			<groupId>hu.csega.toolshed</groupId>
-			<artifactId>LoggingBitch</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>hu.csega.toolshed</groupId>
-			<artifactId>Units</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>hu.csega.toolshed</groupId>
 			<artifactId>ToolShedFramework</artifactId>
 			<version>1.0.0</version>
 		</dependency>

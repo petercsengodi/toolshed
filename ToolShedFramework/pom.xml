@@ -68,15 +68,11 @@
 	</build>
 
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/rhino/js -->
 		<dependency>
-			<groupId>hu.csega.toolshed</groupId>
-			<artifactId>LoggingBitch</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>hu.csega.toolshed</groupId>
-			<artifactId>Units</artifactId>
-			<version>1.0.0</version>
+			<groupId>rhino</groupId>
+			<artifactId>js</artifactId>
+			<version>1.7R2</version>
 		</dependency>
 	</dependencies>
 

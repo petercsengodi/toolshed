@@ -3,8 +3,7 @@
   <name>AGeneticAlgorithmFramework</name>
   <comment>NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
   <projects>
-    <project>Units</project>
-    <project>LoggingBitch</project>
+    <project>ToolShedFramework</project>
   </projects>
   <buildSpec>
     <buildCommand>
