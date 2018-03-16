@@ -2,7 +2,6 @@ package hu.csega.toolshed.parser.preprocessor.impl;
 
 import java.util.List;
 
-import hu.csega.toolshed.parser.preprocessor.helper.ExpressionWithPositions;
 import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedText;
 
 public class ValidateExpressions extends PreProcessorStep {

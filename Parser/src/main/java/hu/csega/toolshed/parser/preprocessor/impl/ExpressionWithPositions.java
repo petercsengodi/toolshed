@@ -1,6 +1,9 @@
-package hu.csega.toolshed.parser.preprocessor.helper;
+package hu.csega.toolshed.parser.preprocessor.impl;
 
 import java.awt.Point;
+
+import hu.csega.toolshed.parser.preprocessor.helper.CodeIterator;
+import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedText;
 
 public class ExpressionWithPositions {
 

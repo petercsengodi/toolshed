@@ -3,7 +3,7 @@ package hu.csega.toolshed.parser.preprocessor.tree;
 import java.util.ArrayList;
 import java.util.List;
 
-import hu.csega.toolshed.parser.preprocessor.helper.ExpressionWithPositions;
+import hu.csega.toolshed.parser.preprocessor.impl.ExpressionWithPositions;
 
 public class BlockExpression extends TreeExpression {
 

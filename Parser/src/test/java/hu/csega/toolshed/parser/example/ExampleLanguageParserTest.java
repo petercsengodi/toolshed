@@ -6,8 +6,8 @@ import hu.csega.toolshed.logging.LoggerFactory;
 import hu.csega.toolshed.parser.example.ExampleLanguageParser;
 import hu.csega.toolshed.parser.lr.oo.analyzer.Node;
 import hu.csega.toolshed.parser.lr.oo.analyzer.TreeBuilderFactory;
-import hu.csega.toolshed.parser.preprocessor.PreProcessorUtil;
 import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedText;
+import hu.csega.toolshed.parser.preprocessor.impl.PreProcessorUtil;
 import hu.csega.units.UnitStore;
 
 import org.junit.Test;

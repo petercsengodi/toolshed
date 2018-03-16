@@ -3,10 +3,9 @@ package hu.csega.toolshed.parser.preprocessor.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import hu.csega.toolshed.parser.preprocessor.helper.ExpressionWithPositions;
-import hu.csega.toolshed.parser.preprocessor.helper.NameExpression;
-import hu.csega.toolshed.parser.preprocessor.helper.NumberExpression;
 import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedText;
+import hu.csega.toolshed.parser.tokens.NameToken;
+import hu.csega.toolshed.parser.tokens.NumberToken;
 
 public class TransformUnprocessedExpressions extends PreProcessorStep {
 
@@ -24,9 +23,9 @@ public class TransformUnprocessedExpressions extends PreProcessorStep {
 				}
 				
 				if(Character.isDigit(content.charAt(0))) {
-					ret.add(new NumberExpression(chunk.getStartPosition(), chunk.getEndPosition()));
+					ret.add(new NumberToken(chunk.getStartPosition(), chunk.getEndPosition()));
 				} else {
-					ret.add(new NameExpression(chunk.getStartPosition(), chunk.getEndPosition()));
+					ret.add(new NameToken(chunk.getStartPosition(), chunk.getEndPosition()));
 				}
 			} else {
 				ret.add(chunk);

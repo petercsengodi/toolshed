@@ -4,13 +4,12 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-import hu.csega.toolshed.parser.preprocessor.helper.CharacterConstantExpression;
 import hu.csega.toolshed.parser.preprocessor.helper.CodeIterator;
-import hu.csega.toolshed.parser.preprocessor.helper.CommentExpression;
-import hu.csega.toolshed.parser.preprocessor.helper.ExpressionWithPositions;
-import hu.csega.toolshed.parser.preprocessor.helper.StringExpression;
 import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedChunkWithPositions;
 import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedText;
+import hu.csega.toolshed.parser.tokens.CharacterToken;
+import hu.csega.toolshed.parser.tokens.CommentToken;
+import hu.csega.toolshed.parser.tokens.StringToken;
 
 public class IdentifyStringsAndComments extends PreProcessorStep {
 
@@ -58,7 +57,7 @@ public class IdentifyStringsAndComments extends PreProcessorStep {
 						// do nothing
 					} else if(c == '\n' && externalCommentStarted) {
 						// this is how external comments are closed (with a new line)
-						ret.add(new CommentExpression(startPosition, lastPosition));
+						ret.add(new CommentToken(startPosition, lastPosition));
 						startPosition = it.getPosition();
 						externalCommentStarted = false;
 					} else if(nothingStarted() && c == '\"') {
@@ -78,12 +77,12 @@ public class IdentifyStringsAndComments extends PreProcessorStep {
 							startPosition.y = lastPosition.y;
 						}
 					} else if(stringStarted && c == '\"' && !skipNext) {
-						ret.add(new StringExpression(startPosition, it.getPosition()));
+						ret.add(new StringToken(startPosition, it.getPosition()));
 						startPosition = it.getPosition();
 						stringStarted = false;
 						skipNext = false;
 					} else if(characterStarted && c == '\'' && !skipNext) {
-						ret.add(new CharacterConstantExpression(startPosition, it.getPosition()));
+						ret.add(new CharacterToken(startPosition, it.getPosition()));
 						startPosition = it.getPosition();
 						characterStarted = false;
 						skipNext = false;
@@ -111,7 +110,7 @@ public class IdentifyStringsAndComments extends PreProcessorStep {
 						}
 					} else if(internalCommentStarted && lastCharacter == '*' && c == '/') {
 						internalCommentStarted = false;
-						ret.add(new CommentExpression(startPosition, it.getPosition()));
+						ret.add(new CommentToken(startPosition, it.getPosition()));
 						startPosition = it.getPosition();
 					} else {
 						// do nothing
@@ -130,7 +129,7 @@ public class IdentifyStringsAndComments extends PreProcessorStep {
 					} else if(externalCommentStarted) {
 						lastPosition = it.getPosition();
 						if(isAfter(lastPosition, startPosition)) {
-							ret.add(new CommentExpression(startPosition, lastPosition));
+							ret.add(new CommentToken(startPosition, lastPosition));
 						}
 					} else {
 						lastPosition = it.getPosition();

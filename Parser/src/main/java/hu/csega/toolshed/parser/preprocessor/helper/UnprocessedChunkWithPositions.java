@@ -2,6 +2,8 @@ package hu.csega.toolshed.parser.preprocessor.helper;
 
 import java.awt.Point;
 
+import hu.csega.toolshed.parser.preprocessor.impl.ExpressionWithPositions;
+
 public class UnprocessedChunkWithPositions extends ExpressionWithPositions {
 
 	public UnprocessedChunkWithPositions(int startColumn, int startRow, int endColumn, int endRow) {

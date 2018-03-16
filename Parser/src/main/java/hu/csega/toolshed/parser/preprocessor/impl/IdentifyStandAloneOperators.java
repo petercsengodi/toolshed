@@ -5,10 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import hu.csega.toolshed.parser.preprocessor.helper.CodeIterator;
-import hu.csega.toolshed.parser.preprocessor.helper.ExpressionWithPositions;
-import hu.csega.toolshed.parser.preprocessor.helper.OperatorExpression;
 import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedChunkWithPositions;
 import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedText;
+import hu.csega.toolshed.parser.tokens.OperatorToken;
 
 public class IdentifyStandAloneOperators extends PreProcessorStep {
 
@@ -39,7 +38,7 @@ public class IdentifyStandAloneOperators extends PreProcessorStep {
 							ret.add(new UnprocessedChunkWithPositions(startPosition, lastPosition));
 						}
 						startPosition = it.getPosition();
-						ret.add(new OperatorExpression(lastPosition, startPosition));
+						ret.add(new OperatorToken(lastPosition, startPosition));
 					} else {
 						// do nothing
 					}

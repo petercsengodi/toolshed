@@ -5,9 +5,9 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import hu.csega.toolshed.parser.preprocessor.helper.ExpressionWithPositions;
-import hu.csega.toolshed.parser.preprocessor.helper.OperatorExpression;
 import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedText;
+import hu.csega.toolshed.parser.preprocessor.impl.ExpressionWithPositions;
+import hu.csega.toolshed.parser.tokens.OperatorToken;
 
 public class TreeBuilderUtil {
 
@@ -27,7 +27,7 @@ public class TreeBuilderUtil {
 		while(it.hasNext()) {
 			ExpressionWithPositions expression = it.next();
 			
-			if(expression instanceof OperatorExpression) {
+			if(expression instanceof OperatorToken) {
 				String operator = expression.getContent(text);
 				
 				if(operator.equals("{")) {
@@ -108,8 +108,8 @@ public class TreeBuilderUtil {
 			TreeExpression treeExpression = blockExpression.expressions.get(i);
 			if(treeExpression instanceof UnidentifiedExpression) {
 				UnidentifiedExpression exp = (UnidentifiedExpression) treeExpression;
-				if(exp.innerExpression instanceof OperatorExpression) {
-					OperatorExpression op = (OperatorExpression) exp.innerExpression;
+				if(exp.innerExpression instanceof OperatorToken) {
+					OperatorToken op = (OperatorToken) exp.innerExpression;
 					String content = op.getContent(text);
 					
 					if(operators.contains(content)) {

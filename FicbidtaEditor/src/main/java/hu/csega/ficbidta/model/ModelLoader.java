@@ -8,14 +8,15 @@ import java.util.List;
 import hu.csega.ficbidta.window.FicbidtaCanvas;
 import hu.csega.toolshed.framework.components.ToolComponent;
 import hu.csega.toolshed.framework.impl.AbstractTool;
+import hu.csega.toolshed.parser.preprocessor.ParserToken;
 import hu.csega.toolshed.parser.preprocessor.PreProcessor;
-import hu.csega.toolshed.parser.preprocessor.PreProcessorImpl;
-import hu.csega.toolshed.parser.preprocessor.PreProcessorUtil;
-import hu.csega.toolshed.parser.preprocessor.helper.ExpressionWithPositions;
-import hu.csega.toolshed.parser.preprocessor.helper.NumberExpression;
-import hu.csega.toolshed.parser.preprocessor.helper.OperatorExpression;
 import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedText;
+import hu.csega.toolshed.parser.preprocessor.impl.ExpressionWithPositions;
 import hu.csega.toolshed.parser.preprocessor.impl.PreProcessorException;
+import hu.csega.toolshed.parser.preprocessor.impl.PreProcessorImpl;
+import hu.csega.toolshed.parser.preprocessor.impl.PreProcessorUtil;
+import hu.csega.toolshed.parser.tokens.NumberToken;
+import hu.csega.toolshed.parser.tokens.OperatorToken;
 import hu.csega.units.UnitStore;
 
 public class ModelLoader extends ToolComponent {
@@ -52,11 +53,11 @@ public class ModelLoader extends ToolComponent {
 			getComponent(FicbidtaCanvas.class).resetMarkings();
 
 			PreProcessor parser = UnitStore.instance(PreProcessor.class);
-			List<ExpressionWithPositions> expressions = parser.parseText(text);
+			List<ParserToken> expressions = parser.parseText(text);
 			ExpressionWithPositions tmp;
 			ModelObject lastObject = null;
 
-			Iterator<ExpressionWithPositions> it = expressions.iterator();
+			Iterator<ParserToken> it = expressions.iterator();
 			while(it.hasNext()) {
 				String type = it.next().getContent(text);
 
@@ -66,18 +67,18 @@ public class ModelLoader extends ToolComponent {
 					node.id = Integer.parseInt(it.next().getContent(text));
 
 					tmp = it.next();
-					if(tmp instanceof NumberExpression) {
+					if(tmp instanceof NumberToken) {
 						node.x = Integer.parseInt(tmp.getContent(text));
-					} else if(tmp instanceof OperatorExpression && tmp.getContent(text).equals("-")) {
+					} else if(tmp instanceof OperatorToken && tmp.getContent(text).equals("-")) {
 						node.x = -Integer.parseInt(it.next().getContent(text));
 					} else {
 						throw new PreProcessorException(tmp.getStartColumn(), tmp.getStartRow());
 					}
 
 					tmp = it.next();
-					if(tmp instanceof NumberExpression) {
+					if(tmp instanceof NumberToken) {
 						node.y = Integer.parseInt(tmp.getContent(text));
-					} else if(tmp instanceof OperatorExpression && tmp.getContent(text).equals("-")) {
+					} else if(tmp instanceof OperatorToken && tmp.getContent(text).equals("-")) {
 						node.y = -Integer.parseInt(it.next().getContent(text));
 					} else {
 						throw new PreProcessorException(tmp.getStartColumn(), tmp.getStartRow());

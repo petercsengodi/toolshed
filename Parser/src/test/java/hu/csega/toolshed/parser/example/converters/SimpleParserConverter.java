@@ -3,15 +3,15 @@ package hu.csega.toolshed.parser.example.converters;
 import hu.csega.toolshed.parser.example.formulas.FormulaFactory;
 import hu.csega.toolshed.parser.lr.oo.analyzer.Node;
 import hu.csega.toolshed.parser.lr.oo.formulas.Atom;
-import hu.csega.toolshed.parser.preprocessor.helper.CharacterConstantExpression;
-import hu.csega.toolshed.parser.preprocessor.helper.CommentExpression;
-import hu.csega.toolshed.parser.preprocessor.helper.ExpressionWithPositions;
-import hu.csega.toolshed.parser.preprocessor.helper.NameExpression;
-import hu.csega.toolshed.parser.preprocessor.helper.NumberExpression;
-import hu.csega.toolshed.parser.preprocessor.helper.OperatorExpression;
-import hu.csega.toolshed.parser.preprocessor.helper.StringExpression;
 import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedText;
-import hu.csega.toolshed.parser.preprocessor.helper.WhitespaceExpression;
+import hu.csega.toolshed.parser.preprocessor.impl.ExpressionWithPositions;
+import hu.csega.toolshed.parser.tokens.CharacterToken;
+import hu.csega.toolshed.parser.tokens.CommentToken;
+import hu.csega.toolshed.parser.tokens.NameToken;
+import hu.csega.toolshed.parser.tokens.NumberToken;
+import hu.csega.toolshed.parser.tokens.OperatorToken;
+import hu.csega.toolshed.parser.tokens.StringToken;
+import hu.csega.toolshed.parser.tokens.WhitespaceToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,19 +38,19 @@ public class SimpleParserConverter {
 	}
 
 	private Node convert(ExpressionWithPositions expression) {
-		if(expression instanceof CharacterConstantExpression) {
+		if(expression instanceof CharacterToken) {
 			return toConstantNode(expression);
-		} else if(expression instanceof CommentExpression) {
+		} else if(expression instanceof CommentToken) {
 			return null;
-		} else if(expression instanceof NameExpression) {
+		} else if(expression instanceof NameToken) {
 			return toConstantNode(expression);
-		} else if(expression instanceof NumberExpression) {
+		} else if(expression instanceof NumberToken) {
 			return toConstantNode(expression);
-		} else if(expression instanceof OperatorExpression) {
+		} else if(expression instanceof OperatorToken) {
 			return toOperationNode(expression);
-		} else if(expression instanceof StringExpression) {
+		} else if(expression instanceof StringToken) {
 			return toConstantNode(expression);
-		} else if(expression instanceof WhitespaceExpression) {
+		} else if(expression instanceof WhitespaceToken) {
 			return null;
 		} else {
 			return null;
@@ -60,7 +60,7 @@ public class SimpleParserConverter {
 	private Node toOperationNode(Object expression) {
 		Atom atom;
 		
-		OperatorExpression op = (OperatorExpression) expression;
+		OperatorToken op = (OperatorToken) expression;
 		String content = op.getContent(text);
 		
 		if(eq(content, "=")) {
@@ -102,14 +102,14 @@ public class SimpleParserConverter {
 		node.setData(expression);
 		
 		String title = null;
-		if(expression instanceof CharacterConstantExpression) {
-			title = ((CharacterConstantExpression) expression).getContent(text);
-		} else if(expression instanceof NameExpression) {
-			title = ((NameExpression) expression).getContent(text);
-		} else if(expression instanceof NumberExpression) {
-			title = ((NumberExpression) expression).getContent(text);
-		} else if(expression instanceof StringExpression) {
-			title = ((StringExpression) expression).getContent(text);
+		if(expression instanceof CharacterToken) {
+			title = ((CharacterToken) expression).getContent(text);
+		} else if(expression instanceof NameToken) {
+			title = ((NameToken) expression).getContent(text);
+		} else if(expression instanceof NumberToken) {
+			title = ((NumberToken) expression).getContent(text);
+		} else if(expression instanceof StringToken) {
+			title = ((StringToken) expression).getContent(text);
 		}
 		
 		node.setTitle(title);

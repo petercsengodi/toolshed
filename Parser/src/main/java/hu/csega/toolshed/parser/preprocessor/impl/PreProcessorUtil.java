@@ -1,8 +1,6 @@
-package hu.csega.toolshed.parser.preprocessor;
+package hu.csega.toolshed.parser.preprocessor.impl;
 
 import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedText;
-import hu.csega.toolshed.parser.preprocessor.impl.ConvertInputStreamIntoUnprocessedText;
-import hu.csega.toolshed.parser.preprocessor.impl.PreProcessorException;
 
 import java.io.File;
 import java.io.FileInputStream;

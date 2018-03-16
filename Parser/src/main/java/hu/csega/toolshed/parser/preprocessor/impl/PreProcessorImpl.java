@@ -1,16 +1,9 @@
-package hu.csega.toolshed.parser.preprocessor;
+package hu.csega.toolshed.parser.preprocessor.impl;
 
-import hu.csega.toolshed.parser.preprocessor.helper.ExpressionWithPositions;
+import hu.csega.toolshed.parser.preprocessor.ParserToken;
+import hu.csega.toolshed.parser.preprocessor.PreProcessor;
 import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedChunkWithPositions;
 import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedText;
-import hu.csega.toolshed.parser.preprocessor.impl.DropIgnorableExpressions;
-import hu.csega.toolshed.parser.preprocessor.impl.IdentifyOperatorSequences;
-import hu.csega.toolshed.parser.preprocessor.impl.IdentifyStandAloneOperators;
-import hu.csega.toolshed.parser.preprocessor.impl.IdentifyStringsAndComments;
-import hu.csega.toolshed.parser.preprocessor.impl.IdentifyWhitespaceSequences;
-import hu.csega.toolshed.parser.preprocessor.impl.PreProcessorException;
-import hu.csega.toolshed.parser.preprocessor.impl.TransformUnprocessedExpressions;
-import hu.csega.toolshed.parser.preprocessor.impl.ValidateExpressions;
 import hu.csega.units.AbstractUnitWithState;
 
 import java.util.Arrays;
@@ -21,7 +14,9 @@ public class PreProcessorImpl extends AbstractUnitWithState<PreProcessorImpl, Pr
 	private static final String HEX_DIGIST = "0123456789ABCDEF";
 
 	@Override
-	public List<ExpressionWithPositions> parseText(UnprocessedText text) throws PreProcessorException {
+	public List<ParserToken> parseText(String source) throws PreProcessorException {
+		UnprocessedText text = UnprocessedText.of(source);
+
 		naturalStoppingPoint(PreProcessorState.INIT);
 
 		List<ExpressionWithPositions> chunks = Arrays.asList((ExpressionWithPositions) new UnprocessedChunkWithPositions(text));
@@ -63,7 +58,7 @@ public class PreProcessorImpl extends AbstractUnitWithState<PreProcessorImpl, Pr
 
 		naturalStoppingPoint(PreProcessorState.VALIDATED);
 
-		return chunks;
+		return ((List<ParserToken>)((Object)chunks));
 	}
 
 	public static String writeStringEscaped(String original) {

@@ -8,7 +8,7 @@ import java.util.Map;
 
 import hu.csega.toolshed.framework.components.ToolComponent;
 import hu.csega.toolshed.framework.impl.AbstractTool;
-import hu.csega.toolshed.parser.preprocessor.PreProcessorImpl;
+import hu.csega.toolshed.parser.preprocessor.impl.PreProcessorImpl;
 
 public class ModelSaver extends ToolComponent {
 

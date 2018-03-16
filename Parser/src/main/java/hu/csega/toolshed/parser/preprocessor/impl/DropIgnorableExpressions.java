@@ -5,7 +5,6 @@ import java.util.List;
 
 import hu.csega.toolshed.logging.Logger;
 import hu.csega.toolshed.logging.LoggerFactory;
-import hu.csega.toolshed.parser.preprocessor.helper.ExpressionWithPositions;
 import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedText;
 
 public class DropIgnorableExpressions extends PreProcessorStep {

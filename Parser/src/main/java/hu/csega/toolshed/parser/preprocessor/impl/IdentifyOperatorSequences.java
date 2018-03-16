@@ -5,10 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import hu.csega.toolshed.parser.preprocessor.helper.CodeIterator;
-import hu.csega.toolshed.parser.preprocessor.helper.ExpressionWithPositions;
-import hu.csega.toolshed.parser.preprocessor.helper.OperatorExpression;
 import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedChunkWithPositions;
 import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedText;
+import hu.csega.toolshed.parser.tokens.OperatorToken;
 
 public class IdentifyOperatorSequences extends PreProcessorStep {
 
@@ -44,7 +43,7 @@ public class IdentifyOperatorSequences extends PreProcessorStep {
 						}
 					} else if(sequenceStarted && !isRemainingOperator(c)) {
 						sequenceStarted = false;
-						ret.add(new OperatorExpression(startPosition, lastPosition));
+						ret.add(new OperatorToken(startPosition, lastPosition));
 						startPosition.x = lastPosition.x;
 						startPosition.y = lastPosition.y;
 					} else {
@@ -56,7 +55,7 @@ public class IdentifyOperatorSequences extends PreProcessorStep {
 					if(sequenceStarted) {
 						lastPosition = it.getPosition();
 						if(isAfter(lastPosition, startPosition)) {
-							ret.add(new OperatorExpression(startPosition, lastPosition));
+							ret.add(new OperatorToken(startPosition, lastPosition));
 						}
 					} else {
 						lastPosition = it.getPosition();

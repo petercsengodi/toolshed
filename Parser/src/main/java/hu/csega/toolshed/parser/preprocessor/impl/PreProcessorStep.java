@@ -3,7 +3,6 @@ package hu.csega.toolshed.parser.preprocessor.impl;
 import java.awt.Point;
 import java.util.List;
 
-import hu.csega.toolshed.parser.preprocessor.helper.ExpressionWithPositions;
 import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedText;
 
 public abstract class PreProcessorStep {

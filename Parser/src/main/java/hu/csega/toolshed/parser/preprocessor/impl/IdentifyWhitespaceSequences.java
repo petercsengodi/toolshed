@@ -5,10 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import hu.csega.toolshed.parser.preprocessor.helper.CodeIterator;
-import hu.csega.toolshed.parser.preprocessor.helper.ExpressionWithPositions;
 import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedChunkWithPositions;
 import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedText;
-import hu.csega.toolshed.parser.preprocessor.helper.WhitespaceExpression;
+import hu.csega.toolshed.parser.tokens.WhitespaceToken;
 
 public class IdentifyWhitespaceSequences extends PreProcessorStep {
 
@@ -44,7 +43,7 @@ public class IdentifyWhitespaceSequences extends PreProcessorStep {
 						}
 					} else if(sequenceStarted && !Character.isWhitespace(c)) {
 						sequenceStarted = false;
-						ret.add(new WhitespaceExpression(startPosition, lastPosition));
+						ret.add(new WhitespaceToken(startPosition, lastPosition));
 						startPosition.x = lastPosition.x;
 						startPosition.y = lastPosition.y;
 					} else {
@@ -56,7 +55,7 @@ public class IdentifyWhitespaceSequences extends PreProcessorStep {
 					if(sequenceStarted) {
 						lastPosition = it.getPosition();
 						if(isAfter(lastPosition, startPosition)) {
-							ret.add(new WhitespaceExpression(startPosition, lastPosition));
+							ret.add(new WhitespaceToken(startPosition, lastPosition));
 						}
 					} else {
 						lastPosition = it.getPosition();
