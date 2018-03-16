@@ -6,8 +6,8 @@
 		<artifactId>toolshed</artifactId>
 		<version>1.0.0</version>
 	</parent>
-	<artifactId>FicbidtaEditor</artifactId>
-	<name>FicbidtaEditor</name>
+	<artifactId>Parser</artifactId>
+	<name>Parser</name>
 	<version>1.0.0</version>
 
 	<properties>
@@ -16,7 +16,7 @@
 	</properties>
 
 	<build>
-		<finalName>FicbidtaEditor</finalName>
+		<finalName>Parser</finalName>
 		<plugins>
 		
 			<!-- Eclipse project -->
@@ -50,11 +50,6 @@
 		<dependency>
 			<groupId>hu.csega.toolshed</groupId>
 			<artifactId>ToolShedFramework</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>hu.csega.toolshed</groupId>
-			<artifactId>Parser</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
