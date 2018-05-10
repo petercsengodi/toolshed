@@ -51,16 +51,13 @@
 	</dependencies>
 
 	<modules>
-		<module>LoggingBitch</module>
-		<module>Units</module>
 		<module>ToolShedFramework</module>
 		<module>ToolShedMiniWebApp</module>
+		<module>Parser</module>
+		<module>FicbidtaEditor</module>
 		<module>AGeneticAlgorithmFramework</module>
 		<module>AnEquationSeekerWithGeneticAlgorithm</module>
 		<module>AnImageDegrader</module>
 		<module>AnAgentGenerator</module>
-		<module>ParserPreProcessor</module>
-		<module>ParserLRAnalyzer</module>
-		<module>ParserExampleLanguage</module>
 	</modules>
 </project>
