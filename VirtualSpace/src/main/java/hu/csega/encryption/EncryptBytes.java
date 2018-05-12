@@ -1,10 +1,13 @@
 package hu.csega.encryption;
 
 import java.nio.charset.Charset;
+import java.security.MessageDigest;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+
+import org.apache.commons.codec.binary.Base64;
 
 import hu.csega.virtual.space.VirtualSpaceProperties;
 
@@ -20,6 +23,17 @@ public class EncryptBytes {
 	public EncryptBytes() {
 		this.keyBytes = VirtualSpaceProperties.ENCRYPTION_KEY;
 		this.ivBytes = VirtualSpaceProperties.ENCRYPTION_IV;
+	}
+
+	public String hash(String id) {
+		try {
+			MessageDigest digest = MessageDigest.getInstance("SHA-256");
+			digest.update(id.getBytes(UTF8));
+			byte[] hashValue = digest.digest();
+			return Base64.encodeBase64String(hashValue);
+		} catch(Exception ex) {
+			throw new RuntimeException("Error when initializing encryption layer!", ex);
+		}
 	}
 
 	public byte[] encrypt(byte[] input) {

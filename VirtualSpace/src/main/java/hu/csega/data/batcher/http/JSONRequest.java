@@ -14,18 +14,20 @@ import java.util.Map.Entry;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import hu.csega.virtual.space.VirtualSpaceProperties;
+
 public class JSONRequest {
 
-	private String user;
-	private String password;
-	private String endPoint;
+	private String username = VirtualSpaceProperties.CONNECTION_USERNAME;
+	private String password = VirtualSpaceProperties.CONNECTION_PASSWORD;
+	private String endpoint = VirtualSpaceProperties.CONNECTION_ENDPOINT;
 
     public boolean authenticate() {
 
     	try {
             JSONObject request = new JSONObject();
             request.put("action", "login");
-            request.put("username", user);
+            request.put("username", username);
             request.put("password", password);
 
             JSONObject response = send(request);
@@ -49,7 +51,7 @@ public class JSONRequest {
         String responseString = null;
 
         try {
-            URL url = new URL(endPoint);
+            URL url = new URL(endpoint);
             URLConnection con = url.openConnection();
             HttpURLConnection http = (HttpURLConnection)con;
             http.setRequestMethod("POST"); // PUT is another valid option
