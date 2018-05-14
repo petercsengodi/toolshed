@@ -10,4 +10,5 @@ BLooper/loops/properties.ini
 GenerateStoryCollection/input/*.story
 GenerateStoryCollection/output/*.php
 ToolShedMiniWebApp/local/*.ser
+VirtualSpace/config/config.properties
 

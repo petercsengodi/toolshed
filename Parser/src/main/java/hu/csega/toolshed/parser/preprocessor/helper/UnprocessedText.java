@@ -1,5 +1,10 @@
 package hu.csega.toolshed.parser.preprocessor.helper;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +43,19 @@ public class UnprocessedText extends ExpressionWithPositions {
 
 		if(tmp.length() > 0)
 			content.add(tmp);
+
+		return new UnprocessedText(content);
+	}
+
+	public static UnprocessedText of(InputStream in) throws IOException {
+		List<String> content = new ArrayList<>();
+
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, Charset.forName("UTF-8")))) {
+			String line;
+			while((line = reader.readLine()) != null) {
+				content.add(line);
+			}
+		}
 
 		return new UnprocessedText(content);
 	}

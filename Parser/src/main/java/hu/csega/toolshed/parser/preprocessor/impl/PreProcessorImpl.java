@@ -6,17 +6,34 @@ import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedChunkWithPosition
 import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedText;
 import hu.csega.units.AbstractUnitWithState;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
 public class PreProcessorImpl extends AbstractUnitWithState<PreProcessorImpl, PreProcessorState> implements PreProcessor {
 
-	private static final String HEX_DIGIST = "0123456789ABCDEF";
-
 	@Override
 	public List<ParserToken> parseText(String source) throws PreProcessorException {
 		UnprocessedText text = UnprocessedText.of(source);
+		return parseText(text);
+	}
 
+	@Override
+	public List<ParserToken> parseText(InputStream in) throws PreProcessorException {
+		UnprocessedText text;
+
+		try {
+			text = UnprocessedText.of(in);
+		} catch (IOException ex) {
+			throw new RuntimeException("Couldn't read stream!", ex);
+		}
+
+		return parseText(text);
+	}
+
+	@Override
+	public List<ParserToken> parseText(UnprocessedText text) throws PreProcessorException {
 		naturalStoppingPoint(PreProcessorState.INIT);
 
 		List<ExpressionWithPositions> chunks = Arrays.asList((ExpressionWithPositions) new UnprocessedChunkWithPositions(text));
@@ -182,4 +199,5 @@ public class PreProcessorImpl extends AbstractUnitWithState<PreProcessorImpl, Pr
 		return builder.toString();
 	}
 
+	private static final String HEX_DIGIST = "0123456789ABCDEF";
 }
