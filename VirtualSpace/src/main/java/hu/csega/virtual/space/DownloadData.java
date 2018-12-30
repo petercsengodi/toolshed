@@ -31,7 +31,7 @@ public class DownloadData {
 			return;
 		}
 
-		String resourcesListFileName = "content/" + RESOURCES_LIST_FILENAME;
+		String resourcesListFileName = "download/" + RESOURCES_LIST_FILENAME;
 
 		try {
 			byte[] resourceListBytes = load(null, "/" + RESOURCES_LIST_FILENAME, RESOURCES_LIST_FILENAME, logger);
