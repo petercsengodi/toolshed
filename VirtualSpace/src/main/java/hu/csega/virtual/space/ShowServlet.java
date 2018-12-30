@@ -20,6 +20,8 @@ public class ShowServlet extends HttpServlet {
 		response.setHeader("Expires", "Expires: Sat, 26 Jul 1997 05:00:00 GMT");
 		response.setHeader("Pragma", "no-cache");
 
+		// If the specified path doesn't start with the appropriate prefix,
+		// we redirect the user to the main page of the confidental content.
 		String uri = request.getRequestURI();
 		if(!uri.startsWith(PREFIX)) {
 			response.sendRedirect(PREFIX);
