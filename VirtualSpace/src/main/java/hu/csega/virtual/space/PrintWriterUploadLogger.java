@@ -15,4 +15,9 @@ public class PrintWriterUploadLogger implements UploadLogger {
 		printWriter.println("<p>Uploaded " + contentType + " / " + filename + " as " + path + "</p>");
 	}
 
+	@Override
+	public void warning(String message) {
+		printWriter.println("<p>Warning: " + message + "</p>");
+	}
+
 }

@@ -21,7 +21,7 @@ public class ShowServlet extends HttpServlet {
 		response.setHeader("Pragma", "no-cache");
 
 		// If the specified path doesn't start with the appropriate prefix,
-		// we redirect the user to the main page of the confidental content.
+		// we redirect the user to the main page of the confidential content.
 		String uri = request.getRequestURI();
 		if(!uri.startsWith(PREFIX)) {
 			response.sendRedirect(PREFIX);

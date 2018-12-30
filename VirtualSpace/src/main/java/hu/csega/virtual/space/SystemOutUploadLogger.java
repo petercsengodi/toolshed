@@ -7,4 +7,9 @@ public class SystemOutUploadLogger implements UploadLogger {
 		System.out.println("Uploaded " + contentType + " / " + filename + " as " + path);
 	}
 
+	@Override
+	public void warning(String message) {
+		System.out.println("Warning: " + message);
+	}
+
 }

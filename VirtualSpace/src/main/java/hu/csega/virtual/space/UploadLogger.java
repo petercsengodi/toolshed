@@ -4,4 +4,6 @@ public interface UploadLogger {
 
 	void log(String filename, String path, String contentType);
 
+	void warning(String message);
+
 }
