@@ -19,6 +19,7 @@ public class DataBatcher {
 
 			// check version
 			boolean connectionSucceeded;
+
 			{
 				JSONObject request = new JSONObject();
 				request.put("action", "version");
@@ -31,6 +32,7 @@ public class DataBatcher {
 				System.out.println();
 			}
 
+			/*
 			if (connectionSucceeded) {
 				// deleteContent(connection, "/");
 
@@ -40,6 +42,8 @@ public class DataBatcher {
 				DecryptedContent dc = readContent(connection, "/");
 				System.out.println(dc.asString());
 			}
+			*/
+
 		}
 	}
 
