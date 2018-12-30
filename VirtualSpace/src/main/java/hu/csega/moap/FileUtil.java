@@ -3,6 +3,7 @@ package hu.csega.moap;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -32,6 +33,13 @@ public class FileUtil {
 		}
 
 		return result;
+	}
+
+	public static void writeFileBytes(String filename, byte[] bytes) throws IOException {
+		File file = new File(filename);
+		FileOutputStream fos = new FileOutputStream(file);
+		fos.write(bytes);
+		fos.close();
 	}
 
 }

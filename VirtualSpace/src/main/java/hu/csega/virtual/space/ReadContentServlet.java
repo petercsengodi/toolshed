@@ -18,16 +18,10 @@ public class ReadContentServlet extends HttpServlet {
 		response.setHeader("Content-type", "text/html; charset=utf-8");
 
 		try (PrintWriter writer = new PrintWriter(response.getOutputStream())) {
+			PrintWriterDownloadLogger logger = new PrintWriterDownloadLogger(writer);
 			writer.println("<html>\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>");
-			writer.println("<title>Virtual Space</title>\n</head>\n<body>");
-
-			writer.println("<p><a href=\"/show\">Show virtual space</a></p>");
-
-			writer.println("<p><br/><hr/><br/></p>");
-
-			writer.println("<p><a href=\"/sendContent\">Send content from local to server</a></p>");
-			writer.println("<p><a href=\"/readContent\">Read content from server to local</a></p>");
-
+			writer.println("<title>Virtual Space -- Downloading Content</title>\n</head>\n<body>");
+			DownloadData.fullDownload(logger);
 			writer.println("</body>\n</html>");
 		}
 	}

@@ -65,7 +65,7 @@ public class UploadData {
 				path = json.getString("path");
 			} catch (JSONException e) {
 				logger.warning("Line has invalid format: " + item);
-				return;
+				continue;
 			}
 
 			String extension = null;

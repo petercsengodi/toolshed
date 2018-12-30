@@ -1,14 +1,10 @@
 package hu.csega.virtual.space;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import hu.csega.data.batcher.DataConnection;
-import hu.csega.encryption.DecryptedContent;
 
 public class ShowServlet extends HttpServlet {
 
@@ -28,19 +24,14 @@ public class ShowServlet extends HttpServlet {
 			return;
 		}
 
+		String path;
 		if(uri == null || uri.length() <= PREFIX.length()) {
-			uri = "/";
+			path = "/";
 		} else {
-			uri = "/" + uri.substring(PREFIX.length());
+			path = "/" + uri.substring(PREFIX.length());
 		}
 
-		DecryptedContent page = DataConnection.INSTANCE.load(uri);
-		String contentType = page.getContentType();
-		response.setHeader("Content-type", contentType);
-
-		try (OutputStream stream = response.getOutputStream()) {
-			stream.write(page.asBytes());
-		}
+		DownloadData.load(response, path, null, null);
 	}
 
 	private static final long serialVersionUID = 1L;
