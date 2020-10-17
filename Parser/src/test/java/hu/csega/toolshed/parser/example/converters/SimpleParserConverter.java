@@ -3,6 +3,7 @@ package hu.csega.toolshed.parser.example.converters;
 import hu.csega.toolshed.parser.example.formulas.FormulaFactory;
 import hu.csega.toolshed.parser.lr.oo.analyzer.Node;
 import hu.csega.toolshed.parser.lr.oo.formulas.Atom;
+import hu.csega.toolshed.parser.preprocessor.ParserToken;
 import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedText;
 import hu.csega.toolshed.parser.preprocessor.impl.ExpressionWithPositions;
 import hu.csega.toolshed.parser.tokens.CharacterToken;
@@ -19,21 +20,21 @@ import java.util.List;
 public class SimpleParserConverter {
 
 	private UnprocessedText text;
-	
+
 	public SimpleParserConverter(UnprocessedText text) {
 		this.text = text;
 	}
-	
-	public List<Node> convertFromSimpleParserExpressions(List<ExpressionWithPositions> expressions) {
+
+	public List<Node> convertFromSimpleParserExpressions(List<ParserToken> expressions) {
 		List<Node> ret = new ArrayList<Node>();
-		
+
 		for(ExpressionWithPositions expression : expressions) {
 			Node node = convert(expression);
 			if(node != null) {
 				ret.add(node);
-			}			
+			}
 		}
-		
+
 		return ret;
 	}
 
@@ -59,10 +60,10 @@ public class SimpleParserConverter {
 
 	private Node toOperationNode(Object expression) {
 		Atom atom;
-		
+
 		OperatorToken op = (OperatorToken) expression;
 		String content = op.getContent(text);
-		
+
 		if(eq(content, "=")) {
 			atom = FormulaFactory.assignment;
 		} else if(eq(content, "|", "||")) {
@@ -88,19 +89,19 @@ public class SimpleParserConverter {
 		} else {
 			atom = null;
 		}
-		
+
 		Node node = new Node();
 		node.setAtom(atom);
 		node.setData(expression);
 		node.setTitle(content);
 		return node;
 	}
-	
+
 	private Node toConstantNode(Object expression) {
 		Node node = new Node();
 		node.setAtom(FormulaFactory.constant);
 		node.setData(expression);
-		
+
 		String title = null;
 		if(expression instanceof CharacterToken) {
 			title = ((CharacterToken) expression).getContent(text);
@@ -111,9 +112,9 @@ public class SimpleParserConverter {
 		} else if(expression instanceof StringToken) {
 			title = ((StringToken) expression).getContent(text);
 		}
-		
+
 		node.setTitle(title);
-		
+
 		return node;
 	}
 
@@ -123,8 +124,8 @@ public class SimpleParserConverter {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 }

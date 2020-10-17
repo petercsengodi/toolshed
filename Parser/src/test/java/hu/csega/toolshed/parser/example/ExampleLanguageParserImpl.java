@@ -5,9 +5,9 @@ import hu.csega.toolshed.parser.example.formulas.FormulaFactory;
 import hu.csega.toolshed.parser.lr.LRAnalyzer;
 import hu.csega.toolshed.parser.lr.oo.analyzer.Node;
 import hu.csega.toolshed.parser.lr.oo.formulas.FormulaBook;
+import hu.csega.toolshed.parser.preprocessor.ParserToken;
 import hu.csega.toolshed.parser.preprocessor.PreProcessor;
 import hu.csega.toolshed.parser.preprocessor.helper.UnprocessedText;
-import hu.csega.toolshed.parser.preprocessor.impl.ExpressionWithPositions;
 import hu.csega.toolshed.parser.preprocessor.impl.PreProcessorException;
 import hu.csega.units.AbstractUnit;
 import hu.csega.units.Unit;
@@ -25,20 +25,20 @@ public class ExampleLanguageParserImpl extends AbstractUnit implements ExampleLa
 	public void setLoseR1(LRAnalyzer loseR1) {
 		this.loseR1 = loseR1;
 	}
-	
+
 	@Override
 	public Node parse(UnprocessedText text) throws PreProcessorException {
-		List<ExpressionWithPositions> parsedText = simpleParser.parseText(text);
-		
+		List<ParserToken> parsedText = simpleParser.parseText(text);
+
 		SimpleParserConverter converter = new SimpleParserConverter(text);
 		List<Node> converted = converter.convertFromSimpleParserExpressions(parsedText);
-		
+
 		FormulaBook formulaBook = FormulaFactory.formulaBook;
 		Node rootNode = loseR1.buildTree(formulaBook, converted);
-		
+
 		return rootNode;
 	}
-	
+
 	private PreProcessor simpleParser;
 	private LRAnalyzer loseR1;
 }
